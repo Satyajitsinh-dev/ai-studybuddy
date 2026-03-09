@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Study Buddy – Class 7 CBSE</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== TOP NAV ===== -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="logo-emoji">🤖</span>
+      <span class="logo-text">AI Study Buddy</span>
+      <span class="logo-badge">Class 7 CBSE</span>
+    </div>
+    <div class="topbar-right">
+      <span class="score-pill">⭐ Score: <span id="nav-score">0</span></span>
+      <span class="streak-pill">🔥 <span id="nav-streak">0</span> streak</span>
+    </div>
+  </header>
+
+  <!-- ===== HERO / HOME ===== -->
+  <section class="hero" id="page-home">
+    <div class="hero-blob blob1"></div>
+    <div class="hero-blob blob2"></div>
+    <div class="hero-content">
+      <div class="hero-mascot">🤖</div>
+      <h1 class="hero-title">Hey there, Scholar! 👋</h1>
+      <p class="hero-sub">Your fun AI-powered study partner for Class 7 CBSE.<br>Let's learn, practice and ace those exams! 🚀</p>
+      <div class="hero-stats-row">
+        <div class="hstat"><span id="hs-attempts">0</span><small>Attempts</small></div>
+        <div class="hstat"><span id="hs-correct">0</span><small>Correct</small></div>
+        <div class="hstat"><span id="hs-score">0%</span><small>Accuracy</small></div>
+      </div>
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="feature-grid">
+      <button class="feat-card card-ai"    onclick="showPage('page-tutor')">
+        <span class="feat-icon">💬</span>
+        <span class="feat-title">Ask AI Tutor</span>
+        <span class="feat-desc">Get instant doubt help!</span>
+      </button>
+      <button class="feat-card card-quiz"  onclick="showPage('page-quiz')">
+        <span class="feat-icon">📝</span>
+        <span class="feat-title">Practice Quiz</span>
+        <span class="feat-desc">Test chapter by chapter</span>
+      </button>
+      <button class="feat-card card-daily" onclick="startDaily()">
+        <span class="feat-icon">☀️</span>
+        <span class="feat-title">Daily Practice</span>
+        <span class="feat-desc">10 mixed questions</span>
+      </button>
+      <button class="feat-card card-mock"  onclick="startMock()">
+        <span class="feat-icon">🎓</span>
+        <span class="feat-title">Mock Exam</span>
+        <span class="feat-desc">Full exam simulation</span>
+      </button>
+      <button class="feat-card card-prog"  onclick="showPage('page-progress')">
+        <span class="feat-icon">📊</span>
+        <span class="feat-title">My Progress</span>
+        <span class="feat-desc">Track your scores</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== AI TUTOR ===== -->
+  <section class="page" id="page-tutor" style="display:none;">
+    <div class="page-header">
+      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
+      <h2>💬 Ask AI Tutor</h2>
+      <p>Choose Claude 🟣, ChatGPT 🟢 or Gemini 🔵 — ask anything about Class 7!</p>
+      <div id="key-badge-row" style="margin-top:8px"></div>
+    </div>
+
+    <div class="tutor-container">
+      <div class="chat-box" id="chat-box">
+        <div class="chat-msg bot">
+          <span class="chat-avatar">🤖</span>
+          <div class="chat-bubble">
+            Hi there, Scholar! 👋 I'm your AI Study Buddy!<br><br>
+            I can be powered by <b>🟣 Claude</b>, <b>🟢 ChatGPT</b>, or <b>🔵 Gemini</b> — pick your favourite above! 🌟<br><br>
+            Ask me <b>anything</b> about your Class 7 CBSE subjects and I'll explain it in simple, fun language!<br><br>
+            <b>Try asking:</b><br>
+            • "What is photosynthesis and why is it important?"<br>
+            • "Explain integers with examples"<br>
+            • "Who was Akbar and what made him great?"<br>
+            • "What is the difference between a noun and a pronoun?"
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-topics">
+        <span>Quick topics:</span>
+        <button onclick="quickAsk('What are integers? Explain with examples.')">Integers</button>
+        <button onclick="quickAsk('Explain photosynthesis in simple words.')">Photosynthesis</button>
+        <button onclick="quickAsk('What is a noun? Give examples.')">Nouns</button>
+        <button onclick="quickAsk('What is democracy? Why is it important for India?')">Democracy</button>
+        <button onclick="quickAsk('How do fractions work? Explain addition of fractions.')">Fractions</button>
+        <button onclick="quickAsk('What is heat and how does it travel from one object to another?')">Heat</button>
+      </div>
+
+      <div class="tutor-input-row">
+        <input type="text" id="tutor-input" placeholder="Type your question here… 🤔" onkeypress="if(event.key==='Enter') askTutor()" />
+        <button class="send-btn" onclick="askTutor()">Ask 🚀</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRACTICE QUIZ ===== -->
+  <section class="page" id="page-quiz" style="display:none;">
+    <div class="page-header">
+      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
+      <h2>📝 Practice Quiz</h2>
+      <p>Pick a subject and chapter to start! 🎯</p>
+    </div>
+
+    <div id="quiz-setup">
+      <div class="subject-tabs">
+        <button class="stab active" onclick="selectSubject('Math',this)">➕ Math</button>
+        <button class="stab" onclick="selectSubject('Science',this)">🔬 Science</button>
+        <button class="stab" onclick="selectSubject('English',this)">📖 English</button>
+        <button class="stab" onclick="selectSubject('SST',this)">🌍 Social Sci</button>
+      </div>
+      <div class="chapter-grid" id="chapter-grid"></div>
+      <div class="quiz-start-row" id="quiz-start-row" style="display:none;">
+        <p class="selected-info" id="selected-info"></p>
+        <button class="big-btn btn-green" onclick="generateQuiz()">Start Quiz 🚀</button>
+      </div>
+    </div>
+
+    <div id="quiz-play" style="display:none;">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qpf"></div></div>
+      <div class="quiz-counter" id="quiz-counter">Question 1 of 5</div>
+      <div class="question-card" id="question-card"></div>
+      <div class="options-grid" id="options-grid"></div>
+      <div class="quiz-feedback" id="quiz-feedback" style="display:none;"></div>
+      <button class="big-btn btn-blue" id="next-btn" style="display:none;" onclick="nextQuestion()">Next Question ➡️</button>
+    </div>
+
+    <div id="quiz-result" style="display:none;"></div>
+  </section>
+
+  <!-- ===== DAILY PRACTICE ===== -->
+  <section class="page" id="page-daily" style="display:none;">
+    <div class="page-header">
+      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
+      <h2>☀️ Daily Practice</h2>
+      <p>10 mixed questions from all subjects! Ready? 💪</p>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="dpf"></div></div>
+    <div class="quiz-counter" id="daily-counter">Question 1 of 10</div>
+    <div class="question-card" id="daily-question-card"></div>
+    <div class="options-grid" id="daily-options-grid"></div>
+    <div class="quiz-feedback" id="daily-feedback" style="display:none;"></div>
+    <button class="big-btn btn-blue" id="daily-next-btn" style="display:none;" onclick="nextDailyQuestion()">Next ➡️</button>
+    <div id="daily-result" style="display:none;"></div>
+  </section>
+
+  <!-- ===== MOCK EXAM ===== -->
+  <section class="page" id="page-mock" style="display:none;">
+    <div class="page-header">
+      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
+      <h2>🎓 Mock Exam</h2>
+      <p>Complete exam simulation – MCQ + Short + Long answers! ✍️</p>
+    </div>
+    <div id="mock-content"></div>
+    <div id="mock-result" style="display:none;"></div>
+  </section>
+
+  <!-- ===== PROGRESS ===== -->
+  <section class="page" id="page-progress" style="display:none;">
+    <div class="page-header">
+      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
+      <h2>📊 My Progress</h2>
+      <p>Look how amazing you're doing! 🌟</p>
+    </div>
+    <div class="progress-grid">
+      <div class="prog-card prog-blue">
+        <div class="prog-big" id="prog-total">0</div>
+        <div class="prog-label">Total Attempts</div>
+        <div class="prog-emoji">🎯</div>
+      </div>
+      <div class="prog-card prog-green">
+        <div class="prog-big" id="prog-correct">0</div>
+        <div class="prog-label">Correct Answers</div>
+        <div class="prog-emoji">✅</div>
+      </div>
+      <div class="prog-card prog-orange">
+        <div class="prog-big" id="prog-accuracy">0%</div>
+        <div class="prog-label">Accuracy</div>
+        <div class="prog-emoji">📈</div>
+      </div>
+      <div class="prog-card prog-purple">
+        <div class="prog-big" id="prog-streak">0</div>
+        <div class="prog-label">Best Streak</div>
+        <div class="prog-emoji">🔥</div>
+      </div>
+    </div>
+
+    <div class="subject-breakdown">
+      <h3>📚 Subject Breakdown</h3>
+      <div id="subject-bars"></div>
+    </div>
+
+    <div class="achievements-section">
+      <h3>🏆 Achievements</h3>
+      <div class="achievements-grid" id="achievements-grid"></div>
+    </div>
+
+    <div class="prog-actions">
+      <button class="big-btn btn-red" onclick="resetProgress()">🗑️ Reset Progress</button>
+    </div>
+  </section>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
