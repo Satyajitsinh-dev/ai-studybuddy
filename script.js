@@ -607,7 +607,43 @@ function removeTyping() {
 }
 
 // =====================================================
-// SECTION 8: QUIZ SETUP
+// SECTION 8: COMBINED QUESTION BANK (built-in + CSV)
+// =====================================================
+
+// Returns full question pool: built-in QUESTION_BANK + all saved CSV banks
+function getAllQuestions() {
+  const csvBanks = loadAllCsvBanks();
+  const csvQuestions = csvBanks.flatMap(b => b.questions);
+  return [...QUESTION_BANK, ...csvQuestions];
+}
+
+// Returns sorted unique list of subjects across all questions
+function getAllSubjects() {
+  const all = getAllQuestions();
+  const subjects = [...new Set(all.map(q => q.subject).filter(Boolean))];
+  // Ensure built-in subjects appear first in a predictable order
+  const preferred = ['Math','Science','English','SST'];
+  const sorted = [
+    ...preferred.filter(s => subjects.includes(s)),
+    ...subjects.filter(s => !preferred.includes(s)).sort()
+  ];
+  return sorted;
+}
+
+// Returns chapters for a given subject (or ALL if subject === '__all__')
+function getChaptersForSubject(subject) {
+  if (subject === '__all__') return ['All Chapters'];
+  const all = getAllQuestions();
+  const chapters = [...new Set(all.filter(q => q.subject === subject).map(q => q.chapter).filter(Boolean))];
+  return chapters.length ? chapters : ['General'];
+}
+
+// Subject emoji map (built-in + fallback)
+const SUBJECT_EMOJI = { Math:'➕', Science:'🔬', English:'📖', SST:'🌍' };
+function subjectEmoji(s) { return SUBJECT_EMOJI[s] || '📚'; }
+
+// =====================================================
+// SECTION 9: QUIZ SETUP
 // =====================================================
 
 let selectedSubject = 'Math';
@@ -615,22 +651,53 @@ let selectedChapter = null;
 let currentQuizQuestions = [];
 let currentQIndex = 0;
 let quizScore = 0;
-let quizMode = 'chapter'; // 'chapter' | 'daily' | 'mock'
+let quizMode = 'chapter';
+let dailySubjectFilter = '__all__';
 
+// Render subject tab bar into any container element
+// includeAll: whether to show an "All Subjects" tab
+// activeSubject: which subject is currently active
+// onSelectFn: string name of JS function to call on click
+function renderSubjectTabs(containerId, activeSubject, onSelectFn, includeAll = true) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const subjects = getAllSubjects();
+  const tabs = [];
+  if (includeAll) {
+    tabs.push(`<button class="stab ${activeSubject === '__all__' ? 'active' : ''}"
+      onclick="${onSelectFn}('__all__', this)">🌈 All Subjects</button>`);
+  }
+  subjects.forEach(s => {
+    tabs.push(`<button class="stab ${activeSubject === s ? 'active' : ''}"
+      onclick="${onSelectFn}('${s.replace(/'/g,"\\'")}', this)">${subjectEmoji(s)} ${s}</button>`);
+  });
+  container.innerHTML = tabs.join('');
+}
+
+// Quiz page: subject selected
 function selectSubject(subj, btn) {
   selectedSubject = subj;
   selectedChapter = null;
-  document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#quiz-subject-tabs .stab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderChapters();
+  renderQuizChapters();
   document.getElementById('quiz-start-row').style.display = 'none';
 }
 
-function renderChapters() {
+function renderQuizChapters() {
   const grid = document.getElementById('chapter-grid');
-  const chapters = CHAPTERS[selectedSubject];
-  grid.innerHTML = chapters.map((ch, i) =>
-    `<button class="chap-btn" onclick="selectChapter('${ch}', this)">${ch}</button>`
+  if (selectedSubject === '__all__') {
+    // All subjects: show a single "All Chapters" option auto-selected
+    selectedChapter = '__all__';
+    grid.innerHTML = `<button class="chap-btn selected" onclick="">All Chapters</button>`;
+    const row = document.getElementById('quiz-start-row');
+    row.style.display = 'block';
+    document.getElementById('selected-info').textContent = `📚 All Subjects — Mixed Questions`;
+    return;
+  }
+  const chapters = getChaptersForSubject(selectedSubject);
+  grid.innerHTML = chapters.map(ch =>
+    `<button class="chap-btn" onclick="selectChapter('${ch.replace(/'/g,"\\'")}', this)">${ch}</button>`
   ).join('');
 }
 
@@ -638,25 +705,42 @@ function selectChapter(ch, btn) {
   selectedChapter = ch;
   document.querySelectorAll('.chap-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
-  const row = document.getElementById('quiz-start-row');
-  row.style.display = 'block';
-  document.getElementById('selected-info').textContent = `📚 ${selectedSubject} › ${ch} — 5 MCQ questions`;
+  document.getElementById('quiz-start-row').style.display = 'block';
+  const label = ch === '__all__' || ch === 'All Chapters'
+    ? `📚 ${selectedSubject} — All Chapters`
+    : `📚 ${selectedSubject} › ${ch}`;
+  document.getElementById('selected-info').textContent = label;
 }
 
 // =====================================================
-// SECTION 9: GENERATE QUIZ
+// SECTION 10: GENERATE QUIZ
 // =====================================================
 
 function generateQuiz() {
   quizMode = 'chapter';
-  // Filter questions by subject and chapter (fall back to subject only if not enough)
-  let pool = QUESTION_BANK.filter(q => q.subject === selectedSubject && q.chapter === selectedChapter);
-  if (pool.length < 5) {
-    pool = [...pool, ...QUESTION_BANK.filter(q => q.subject === selectedSubject && q.chapter !== selectedChapter)];
+  const allQ   = getAllQuestions();
+  const count  = parseInt(document.getElementById('quiz-count-select')?.value || '5');
+  let pool = [];
+
+  if (selectedSubject === '__all__') {
+    pool = allQ;
+  } else if (!selectedChapter || selectedChapter === '__all__' || selectedChapter === 'All Chapters') {
+    pool = allQ.filter(q => q.subject === selectedSubject);
+  } else {
+    pool = allQ.filter(q => q.subject === selectedSubject && q.chapter === selectedChapter);
+    if (pool.length < count) {
+      // pad with same-subject questions
+      const extra = allQ.filter(q => q.subject === selectedSubject && q.chapter !== selectedChapter);
+      pool = [...pool, ...extra];
+    }
   }
-  if (pool.length < 5) pool = [...pool, ...QUESTION_BANK.filter(q => q.subject === selectedSubject)];
-  pool = pool.slice(0, 20);
-  currentQuizQuestions = shuffle(pool).slice(0, 5);
+
+  if (pool.length === 0) {
+    showToast('⚠️ No questions found! Upload a CSV or pick another subject.');
+    return;
+  }
+
+  currentQuizQuestions = shuffle(pool).slice(0, Math.min(count, pool.length));
   currentQIndex = 0;
   quizScore = 0;
 
@@ -666,17 +750,42 @@ function generateQuiz() {
   renderQuestion();
 }
 
+// Daily practice: subject filter changed
+function selectDailySubject(subj, btn) {
+  dailySubjectFilter = subj;
+  document.querySelectorAll('#daily-subject-tabs .stab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  generateDailyPractice();
+}
+
 function generateDailyPractice() {
   quizMode = 'daily';
-  const pool = shuffle([...QUESTION_BANK]);
-  currentQuizQuestions = pool.slice(0, 10);
+  const allQ = getAllQuestions();
+  let pool = dailySubjectFilter === '__all__'
+    ? allQ
+    : allQ.filter(q => q.subject === dailySubjectFilter);
+
+  if (pool.length === 0) {
+    showToast('⚠️ No questions for this subject yet!');
+    return;
+  }
+
+  currentQuizQuestions = shuffle(pool).slice(0, Math.min(10, pool.length));
   currentQIndex = 0;
   quizScore = 0;
+  dailyScore = 0;
+  dailyIndex = 0;
+
+  // Reset UI
+  document.getElementById('daily-result').style.display = 'none';
+  document.getElementById('daily-feedback').style.display = 'none';
+  document.getElementById('daily-next-btn').style.display = 'none';
   renderDailyQuestion();
 }
 
 function startDaily() {
   showPage('page-daily');
+  renderSubjectTabs('daily-subject-tabs', dailySubjectFilter, 'selectDailySubject', true);
   generateDailyPractice();
 }
 
@@ -1092,31 +1201,313 @@ function showToast(msg) {
 }
 
 // =====================================================
-// SECTION 15: INIT
+// SECTION 14b: CSV QUESTION BANK MANAGER
 // =====================================================
 
-// Render a small status badge in tutor header
-function renderKeyBadge() {
-  const row = document.getElementById('key-badge-row');
-  if (!row) return;
-  const provider = getProvider();
-  const cfg      = AI_PROVIDERS[provider];
-  const hasKey   = !!getApiKey(provider);
-  row.innerHTML  = hasKey
-    ? `<span class="key-status" style="background:#d1fae5;border-color:#10b981;color:#065f46">
-         ✅ ${cfg.logo} ${cfg.name} Active &nbsp;·&nbsp;
-         <span style="text-decoration:underline;cursor:pointer" onclick="switchProvider('${provider}')">Switch AI</span>
-       </span>`
-    : `<span class="key-status no-key">❌ No API Key — offline mode &nbsp;·&nbsp;
-         <span style="text-decoration:underline;cursor:pointer" onclick="checkApiKeyBanner()">Add Key</span>
-       </span>`;
+const CSV_STORAGE_KEY = 'studyBuddy_csvBanks';
+
+// Load all saved CSV banks from localStorage
+function loadAllCsvBanks() {
+  try {
+    return JSON.parse(localStorage.getItem(CSV_STORAGE_KEY) || '[]');
+  } catch { return []; }
+}
+
+// Save all CSV banks back to localStorage
+function saveAllCsvBanks(banks) {
+  try {
+    localStorage.setItem(CSV_STORAGE_KEY, JSON.stringify(banks));
+  } catch(e) {
+    showToast('⚠️ Storage full! Try removing an older bank first.');
+  }
+}
+
+// Drag-over handler
+function csvDragOver(e) {
+  e.preventDefault();
+  document.getElementById('csv-drop-zone').style.borderColor = '#4f46e5';
+}
+
+// Drop handler
+function csvDrop(e) {
+  e.preventDefault();
+  document.getElementById('csv-drop-zone').style.borderColor = '';
+  const file = e.dataTransfer?.files?.[0];
+  if (file) processCsvFile(file);
+}
+
+// Input change handler
+function handleCsvFile(e) {
+  const file = e.target.files?.[0];
+  if (file) processCsvFile(file);
+  e.target.value = ''; // reset so same file can be re-uploaded
+}
+
+// Parse and preview CSV
+function processCsvFile(file) {
+  if (!file.name.endsWith('.csv')) {
+    showToast('⚠️ Please upload a .csv file!');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const result = parseCSV(text);
+    if (result.errors.length && result.questions.length === 0) {
+      showCsvError(result.errors);
+      return;
+    }
+    showCsvPreview(file.name, result);
+  };
+  reader.readAsText(file);
+}
+
+// Parse CSV text into question objects
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return { questions: [], errors: ['CSV file is empty or has no data rows.'] };
+
+  // Parse header (handle quoted headers too)
+  const headers = parseCsvRow(lines[0]).map(h => h.toLowerCase().trim().replace(/\s+/g,'_'));
+
+  const required = ['question','option_a','option_b','option_c','option_d','correct_answer'];
+  const missing = required.filter(r => !headers.includes(r));
+  if (missing.length) {
+    return { questions: [], errors: [`Missing required columns: ${missing.join(', ')}`] };
+  }
+
+  const questions = [];
+  const errors = [];
+  const ansMap = { 'a':0, 'b':1, 'c':2, 'd':3 };
+
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const cols = parseCsvRow(lines[i]);
+    const row = {};
+    headers.forEach((h, idx) => row[h] = (cols[idx] || '').trim());
+
+    if (!row.question) { errors.push(`Row ${i+1}: Empty question skipped.`); continue; }
+    const ansKey = row.correct_answer.toLowerCase().replace(/[^a-d]/g,'');
+    if (!(ansKey in ansMap)) { errors.push(`Row ${i+1}: correct_answer must be A/B/C/D — got "${row.correct_answer}"`); continue; }
+
+    questions.push({
+      q:       row.question,
+      opts:    [row.option_a, row.option_b, row.option_c, row.option_d],
+      ans:     ansMap[ansKey],
+      exp:     row.explanation || row.exp || '💡 See your textbook for more details.',
+      subject: row.subject || 'Custom',
+      chapter: row.chapter || row.topic || 'General'
+    });
+  }
+  return { questions, errors };
+}
+
+// Minimal CSV row parser that handles quoted fields
+function parseCsvRow(line) {
+  const result = [];
+  let cur = '', inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQuote = !inQuote; }
+    else if (ch === ',' && !inQuote) { result.push(cur); cur = ''; }
+    else { cur += ch; }
+  }
+  result.push(cur);
+  return result;
+}
+
+// Show preview before saving
+function showCsvPreview(filename, result) {
+  const area = document.getElementById('csv-preview-area');
+  const { questions, errors } = result;
+
+  const subjects = [...new Set(questions.map(q => q.subject))];
+  const chapters = [...new Set(questions.map(q => q.chapter))];
+
+  const errHtml = errors.length
+    ? `<div class="csv-warn">⚠️ ${errors.length} row(s) had issues and were skipped:<br><small>${errors.slice(0,5).join('<br>')}</small></div>`
+    : '';
+
+  const previewRows = questions.slice(0, 5).map((q, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${q.q.slice(0,60)}${q.q.length>60?'…':''}</td>
+      <td>${q.opts[q.ans]}</td>
+      <td><span class="subj-tag">${q.subject}</span></td>
+      <td>${q.chapter}</td>
+    </tr>`).join('');
+
+  area.innerHTML = `
+    <div class="csv-preview-card">
+      <div class="csv-preview-header">
+        <span>📄 <b>${filename}</b></span>
+        <span class="csv-stat">✅ ${questions.length} questions</span>
+        <span class="csv-stat">📚 ${subjects.join(', ')}</span>
+      </div>
+      ${errHtml}
+      <div class="csv-table-wrap">
+        <table class="csv-preview-table">
+          <thead><tr><th>#</th><th>Question</th><th>Correct Answer</th><th>Subject</th><th>Chapter</th></tr></thead>
+          <tbody>${previewRows}</tbody>
+        </table>
+        ${questions.length > 5 ? `<div class="csv-more">…and ${questions.length - 5} more questions</div>` : ''}
+      </div>
+      ${questions.length > 0 ? `
+        <div class="csv-preview-actions">
+          <input type="text" id="csv-bank-name" placeholder="Name this bank (e.g. Science Term 1)" class="csv-name-input"
+                 value="${filename.replace('.csv','')}" />
+          <button class="big-btn btn-green" onclick="saveCsvBank('${filename}')">💾 Save to Question Bank</button>
+          <button class="big-btn btn-red"   onclick="document.getElementById('csv-preview-area').innerHTML=''">✕ Discard</button>
+        </div>` : ''}
+    </div>`;
+
+  // Store pending parsed questions temporarily
+  window._pendingCsvData = result.questions;
+}
+
+function showCsvError(errors) {
+  document.getElementById('csv-preview-area').innerHTML = `
+    <div class="csv-preview-card">
+      <div class="csv-preview-header"><span>❌ Could not parse CSV</span></div>
+      <div class="csv-warn">${errors.join('<br>')}</div>
+      <p style="font-size:13px;color:#6b7280;margin-top:8px">Please check your column headers match the format shown above.</p>
+    </div>`;
+}
+
+// Save bank to localStorage
+function saveCsvBank(filename) {
+  const questions = window._pendingCsvData;
+  if (!questions || questions.length === 0) return;
+  const name = document.getElementById('csv-bank-name')?.value?.trim() || filename;
+  const banks = loadAllCsvBanks();
+  const id = 'bank_' + Date.now();
+  banks.push({ id, name, filename, questions, addedAt: new Date().toISOString() });
+  saveAllCsvBanks(banks);
+  window._pendingCsvData = null;
+  document.getElementById('csv-preview-area').innerHTML = '';
+  showToast(`✅ "${name}" saved! ${questions.length} questions added.`);
+  renderCsvBanksList();
+  // Refresh quiz subject tabs in case new subjects were added
+  renderSubjectTabs('quiz-subject-tabs', selectedSubject, 'selectSubject', true);
+}
+
+// Render saved banks list
+function renderCsvBanksList() {
+  const banks = loadAllCsvBanks();
+  const container = document.getElementById('csv-banks-list');
+  if (!container) return;
+
+  if (banks.length === 0) {
+    container.innerHTML = `<div class="csv-empty">No question banks uploaded yet. Upload a CSV above to get started! 📂</div>`;
+    return;
+  }
+
+  container.innerHTML = banks.map(bank => {
+    const subjects = [...new Set(bank.questions.map(q => q.subject))];
+    const date = new Date(bank.addedAt).toLocaleDateString('en-IN');
+    return `
+      <div class="csv-bank-item" id="bankcard-${bank.id}">
+        <div class="csv-bank-info">
+          <div class="csv-bank-name">📚 ${bank.name}</div>
+          <div class="csv-bank-meta">
+            <span>📄 ${bank.filename}</span>
+            <span>✅ ${bank.questions.length} questions</span>
+            <span>📘 ${subjects.join(', ')}</span>
+            <span>🗓️ ${date}</span>
+          </div>
+        </div>
+        <div class="csv-bank-actions">
+          <button class="key-change-btn" onclick="previewBankQuestions('${bank.id}')">👁️ Preview</button>
+          <button class="key-change-btn danger" onclick="deleteCsvBank('${bank.id}')">🗑️ Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function previewBankQuestions(bankId) {
+  const banks = loadAllCsvBanks();
+  const bank = banks.find(b => b.id === bankId);
+  if (!bank) return;
+  const rows = bank.questions.slice(0, 10).map((q, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${q.q.slice(0,70)}${q.q.length>70?'…':''}</td>
+      <td>${q.opts[q.ans]}</td>
+      <td>${q.subject}</td>
+      <td>${q.chapter}</td>
+    </tr>`).join('');
+
+  const el = document.getElementById('csv-preview-area');
+  el.innerHTML = `
+    <div class="csv-preview-card">
+      <div class="csv-preview-header">
+        <b>👁️ Preview: ${bank.name}</b>
+        <button class="key-change-btn" onclick="document.getElementById('csv-preview-area').innerHTML=''">✕ Close</button>
+      </div>
+      <div class="csv-table-wrap">
+        <table class="csv-preview-table">
+          <thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Subject</th><th>Chapter</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${bank.questions.length > 10 ? `<div class="csv-more">…and ${bank.questions.length - 10} more</div>` : ''}
+      </div>
+    </div>`;
+  el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteCsvBank(bankId) {
+  const banks = loadAllCsvBanks();
+  const bank = banks.find(b => b.id === bankId);
+  if (!bank) return;
+  if (!confirm(`Delete "${bank.name}"? This will remove ${bank.questions.length} questions.`)) return;
+  const updated = banks.filter(b => b.id !== bankId);
+  saveAllCsvBanks(updated);
+  renderCsvBanksList();
+  renderSubjectTabs('quiz-subject-tabs', selectedSubject, 'selectSubject', true);
+  showToast(`🗑️ "${bank.name}" deleted.`);
+}
+
+// Download a sample CSV for reference
+function downloadSampleCsv() {
+  const header = 'question,option_a,option_b,option_c,option_d,correct_answer,explanation,subject,chapter';
+  const rows = [
+    'What is 5 × 6?,25,30,35,40,B,5 multiplied by 6 equals 30,Math,Multiplication',
+    'Which planet is closest to the Sun?,Venus,Earth,Mercury,Mars,C,Mercury is the closest planet to the Sun,Science,Solar System',
+    'What is the plural of "child"?,Childs,Childes,Children,Childrens,C,Child is an irregular plural — it becomes Children,English,Grammar – Nouns',
+    'Who built the Taj Mahal?,Akbar,Aurangzeb,Shah Jahan,Babur,C,Shah Jahan built the Taj Mahal in memory of Mumtaz Mahal,SST,The Mughal Empire',
+    'What is the chemical formula for water?,CO2,H2O,O2,NaCl,B,Water is made of 2 Hydrogen and 1 Oxygen atom,Science,Acids Bases and Salts'
+  ];
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'sample_questions.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 Sample CSV downloaded!');
+}
+
+function showPage(id) {
+  document.querySelectorAll('.hero, .page').forEach(el => el.style.display = 'none');
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'block';
+  if (id === 'page-progress') renderProgress();
+  if (id === 'page-tutor')    { checkApiKeyBanner(); renderKeyBadge(); }
+  if (id === 'page-quiz') {
+    document.getElementById('quiz-setup').style.display = 'block';
+    document.getElementById('quiz-play').style.display = 'none';
+    document.getElementById('quiz-result').style.display = 'none';
+    renderSubjectTabs('quiz-subject-tabs', selectedSubject, 'selectSubject', true);
+    renderQuizChapters();
+  }
+  if (id === 'page-csv') renderCsvBanksList();
+  window.scrollTo(0, 0);
 }
 
 function init() {
   updateNavScore();
   updateHomeStats();
-  renderChapters();
+  const subjects = getAllSubjects();
+  selectedSubject = subjects[0] || 'Math';
 }
 
-// Run on load
 window.addEventListener('DOMContentLoaded', init);

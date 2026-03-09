@@ -64,6 +64,11 @@
         <span class="feat-title">My Progress</span>
         <span class="feat-desc">Track your scores</span>
       </button>
+      <button class="feat-card card-csv"   onclick="showPage('page-csv')">
+        <span class="feat-icon">📂</span>
+        <span class="feat-title">Question Bank</span>
+        <span class="feat-desc">Upload CSV questions</span>
+      </button>
     </div>
   </section>
 
@@ -113,51 +118,99 @@
   <!-- ===== PRACTICE QUIZ ===== -->
   <section class="page" id="page-quiz" style="display:none;">
     <div class="page-header">
-      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
-      <h2>📝 Practice Quiz</h2>
-      <p>Pick a subject and chapter to start! 🎯</p>
+      <button class="back-btn" onclick="showPage('page-home')">&#8592; Back</button>
+      <h2>&#x1F4DD; Practice Quiz</h2>
+      <p>Pick a subject and chapter to start! &#x1F3AF;</p>
     </div>
-
     <div id="quiz-setup">
-      <div class="subject-tabs">
-        <button class="stab active" onclick="selectSubject('Math',this)">➕ Math</button>
-        <button class="stab" onclick="selectSubject('Science',this)">🔬 Science</button>
-        <button class="stab" onclick="selectSubject('English',this)">📖 English</button>
-        <button class="stab" onclick="selectSubject('SST',this)">🌍 Social Sci</button>
-      </div>
+      <div class="subject-tabs" id="quiz-subject-tabs"></div>
       <div class="chapter-grid" id="chapter-grid"></div>
       <div class="quiz-start-row" id="quiz-start-row" style="display:none;">
         <p class="selected-info" id="selected-info"></p>
-        <button class="big-btn btn-green" onclick="generateQuiz()">Start Quiz 🚀</button>
+        <div class="quiz-count-row">
+          <label>Questions:
+            <select id="quiz-count-select" class="quiz-count-sel">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+            </select>
+          </label>
+        </div>
+        <button class="big-btn btn-green" onclick="generateQuiz()">Start Quiz &#x1F680;</button>
       </div>
     </div>
-
     <div id="quiz-play" style="display:none;">
       <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qpf"></div></div>
       <div class="quiz-counter" id="quiz-counter">Question 1 of 5</div>
       <div class="question-card" id="question-card"></div>
       <div class="options-grid" id="options-grid"></div>
       <div class="quiz-feedback" id="quiz-feedback" style="display:none;"></div>
-      <button class="big-btn btn-blue" id="next-btn" style="display:none;" onclick="nextQuestion()">Next Question ➡️</button>
+      <button class="big-btn btn-blue" id="next-btn" style="display:none;" onclick="nextQuestion()">Next Question &#x27A1;&#xFE0F;</button>
     </div>
-
     <div id="quiz-result" style="display:none;"></div>
   </section>
 
   <!-- ===== DAILY PRACTICE ===== -->
   <section class="page" id="page-daily" style="display:none;">
     <div class="page-header">
-      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
-      <h2>☀️ Daily Practice</h2>
-      <p>10 mixed questions from all subjects! Ready? 💪</p>
+      <button class="back-btn" onclick="showPage('page-home')">&#8592; Back</button>
+      <h2>&#x2600;&#xFE0F; Daily Practice</h2>
+      <p>Mixed questions from your chosen subject! &#x1F4AA;</p>
     </div>
+    <div class="subject-tabs" id="daily-subject-tabs" style="margin-bottom:18px;justify-content:center;"></div>
     <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="dpf"></div></div>
     <div class="quiz-counter" id="daily-counter">Question 1 of 10</div>
     <div class="question-card" id="daily-question-card"></div>
     <div class="options-grid" id="daily-options-grid"></div>
     <div class="quiz-feedback" id="daily-feedback" style="display:none;"></div>
-    <button class="big-btn btn-blue" id="daily-next-btn" style="display:none;" onclick="nextDailyQuestion()">Next ➡️</button>
+    <button class="big-btn btn-blue" id="daily-next-btn" style="display:none;" onclick="nextDailyQuestion()">Next &#x27A1;&#xFE0F;</button>
     <div id="daily-result" style="display:none;"></div>
+  </section>
+
+  <!-- ===== CSV QUESTION BANK MANAGER ===== -->
+  <section class="page" id="page-csv" style="display:none;">
+    <div class="page-header">
+      <button class="back-btn" onclick="showPage('page-home')">&#8592; Back</button>
+      <h2>&#x1F4C2; Question Bank Manager</h2>
+      <p>Upload CSV files to add your own questions! &#x1F4CA;</p>
+    </div>
+    <div class="csv-upload-card">
+      <div class="csv-drop-zone" id="csv-drop-zone"
+           onclick="document.getElementById('csv-file-input').click()"
+           ondragover="csvDragOver(event)" ondrop="csvDrop(event)">
+        <div class="csv-drop-icon">&#x1F4C2;</div>
+        <div class="csv-drop-title">Click or Drag &amp; Drop your CSV file here</div>
+        <div class="csv-drop-sub">Supports .csv files — up to 500 questions per file</div>
+        <input type="file" id="csv-file-input" accept=".csv" style="display:none" onchange="handleCsvFile(event)" />
+      </div>
+      <div class="csv-format-box">
+        <div class="csv-format-title">&#x1F4CB; Required CSV Column Headers</div>
+        <div class="csv-format-table-wrap">
+          <table class="csv-format-table">
+            <thead><tr>
+              <th>question</th><th>option_a</th><th>option_b</th><th>option_c</th><th>option_d</th>
+              <th>correct_answer</th><th>explanation</th><th>subject</th><th>chapter</th>
+            </tr></thead>
+            <tbody><tr>
+              <td>What is 2+2?</td><td>3</td><td>4</td><td>5</td><td>6</td>
+              <td>B</td><td>2+2 equals 4!</td><td>Math</td><td>Integers</td>
+            </tr></tbody>
+          </table>
+        </div>
+        <div class="csv-format-notes">
+          <span>&#x2705; <b>correct_answer</b>: A, B, C or D</span>
+          <span>&#x2705; <b>subject</b>: Any label you want</span>
+          <span>&#x2705; <b>explanation</b> and <b>chapter</b>: Optional but helpful</span>
+          <button class="csv-download-btn" onclick="downloadSampleCsv()">&#x2B07;&#xFE0F; Download Sample CSV</button>
+        </div>
+      </div>
+    </div>
+    <div id="csv-preview-area"></div>
+    <div class="csv-banks-section">
+      <h3>&#x1F4DA; Saved Question Banks</h3>
+      <div id="csv-banks-list"></div>
+    </div>
   </section>
 
   <!-- ===== MOCK EXAM ===== -->
