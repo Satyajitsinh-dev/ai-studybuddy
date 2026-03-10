@@ -680,103 +680,48 @@ body {
 @keyframes fadeIn { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
 .page { animation: fadeIn .3s ease; }
 
-/* ===================== CLASS SELECTOR PAGE ===================== */
-#page-class-select {
-  display: flex !important;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 24px 16px 40px;
-  background: linear-gradient(135deg, #f0f4ff 0%, #ede9fe 100%);
-  min-height: calc(100vh - 56px); /* account for topbar */
-}
-.class-select-wrap {
-  max-width: 520px; width: 100%;
-  text-align: center;
-  animation: fadeIn .3s ease;
-  padding-top: 20px;
-}
-.class-select-mascot { font-size: 40px; margin-bottom: 4px; line-height: 1; }
-.class-select-title {
-  font-family: 'Baloo 2', sans-serif;
-  font-size: 20px; font-weight: 800;
-  color: var(--clr-primary); margin-bottom: 4px;
-}
-.class-select-sub {
-  font-size: 13px; color: var(--clr-muted);
-  margin-bottom: 18px; line-height: 1.4;
-}
-.class-select-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 10px; margin-bottom: 14px;
-}
-.class-card {
-  background: white;
-  border: 2px solid #e0e7ff;
-  border-radius: 14px;
-  padding: 12px 6px 10px;
-  cursor: pointer;
-  transition: all .15s;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 3px;
-  box-shadow: 0 2px 6px rgba(79,70,229,.06);
+/* ===================== CLASS DROPDOWN (topbar) ===================== */
+.class-dropdown-wrap {
   position: relative;
 }
-.class-card:hover {
-  border-color: var(--clr-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 14px rgba(79,70,229,.15);
-}
-.class-card:active { transform: scale(.97); }
-.class-card.active-class {
-  border-color: var(--clr-primary);
-  background: linear-gradient(135deg, #eef2ff, #ede9fe);
-}
-.class-card-num {
-  font-family: 'Baloo 2', sans-serif;
-  font-size: 24px; font-weight: 800;
-  color: var(--clr-primary); line-height: 1;
-}
-.class-card-label {
-  font-size: 10px; font-weight: 700;
-  color: var(--clr-muted); text-transform: uppercase; letter-spacing: .3px;
-}
-.class-card-count {
-  font-size: 9px; color: #a5b4fc;
-  background: #eef2ff; border-radius: 20px;
-  padding: 1px 6px;
-}
-.class-card-active-badge {
-  position: absolute; top: -6px; right: -6px;
-  background: var(--clr-green); color: white;
-  border-radius: 50%; width: 16px; height: 16px;
-  font-size: 9px; display: flex; align-items: center; justify-content: center;
-}
-.class-select-hint {
-  font-size: 12px; color: var(--clr-muted);
-  display: flex; flex-wrap: wrap; align-items: center;
-  justify-content: center; gap: 3px;
-}
-.link-btn {
-  background: none; border: none; color: var(--clr-primary);
-  font-size: 12px; font-weight: 700; cursor: pointer;
-  text-decoration: underline; padding: 0;
-}
-.link-btn:hover { color: var(--clr-secondary); }
-
-/* ===================== CLASS SWITCH BUTTON (top nav) ===================== */
-.class-switch-btn {
-  background: rgba(255,255,255,.15);
+.class-dropdown-btn {
+  background: rgba(255,255,255,.18);
   border: 1.5px solid rgba(255,255,255,.35);
   color: white; border-radius: 20px;
-  padding: 4px 10px; font-size: 11px; font-weight: 700;
-  cursor: pointer; transition: all .2s;
-  font-family: 'Nunito', sans-serif;
-  white-space: nowrap;
+  padding: 5px 13px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: 'Nunito', sans-serif;
+  display: flex; align-items: center; gap: 5px;
+  white-space: nowrap; transition: background .2s;
 }
-.class-switch-btn:hover {
-  background: rgba(255,255,255,.28);
-  border-color: rgba(255,255,255,.6);
+.class-dropdown-btn:hover { background: rgba(255,255,255,.28); }
+.class-dropdown-arrow { font-size: 11px; opacity: .8; }
+.class-dropdown-menu {
+  position: absolute; right: 0; top: calc(100% + 8px);
+  background: white; border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(79,70,229,.22);
+  border: 1.5px solid #e0e7ff;
+  min-width: 190px; z-index: 999;
+  overflow: hidden; animation: fadeIn .15s ease;
+}
+.cdrop-item {
+  padding: 10px 16px; font-size: 14px; font-weight: 700;
+  color: var(--clr-text); cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .15s;
+}
+.cdrop-item:hover { background: #eef2ff; color: var(--clr-primary); }
+.cdrop-item.cdrop-active {
+  background: linear-gradient(90deg, #eef2ff, #ede9fe);
+  color: var(--clr-primary);
+}
+.cdrop-item.cdrop-active::before { content: '✓ '; font-size: 12px; }
+.cdrop-count {
+  background: #e0e7ff; color: var(--clr-primary);
+  border-radius: 20px; padding: 1px 8px; font-size: 11px; font-weight: 700;
+}
+.cdrop-empty {
+  padding: 10px 16px; font-size: 13px; color: var(--clr-muted);
+  text-align: center;
 }
 
 /* ===================== CLASS FILTER BANNER (inside pages) ===================== */
@@ -813,22 +758,13 @@ body {
   .topbar-right { gap: 4px; flex-shrink: 0; }
   .logo-emoji { font-size: 20px; flex-shrink: 0; }
   .logo-text { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .logo-badge { display: none; } /* hidden on mobile — class shown in switch btn */
   .score-pill { display: none; } /* hide score on small screens to save space */
   .streak-pill { font-size: 11px; padding: 3px 8px; }
-  .class-switch-btn { font-size: 10px; padding: 3px 8px; }
 
-  /* --- Class selector --- */
-  #page-class-select { padding: 12px 12px 24px; align-items: flex-start; }
-  .class-select-wrap { padding-top: 8px; }
-  .class-select-mascot { font-size: 32px; margin-bottom: 2px; }
-  .class-select-title { font-size: 17px; }
-  .class-select-sub { font-size: 11px; margin-bottom: 12px; }
-  .class-select-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
-  .class-card { padding: 10px 4px 8px; border-radius: 10px; gap: 2px; }
-  .class-card-num { font-size: 20px; }
-  .class-card-label { font-size: 8px; }
-  .class-card-count { font-size: 8px; padding: 1px 5px; }
+  /* --- Class dropdown (mobile) --- */
+  .class-dropdown-btn { font-size: 11px; padding: 4px 10px; }
+  .class-dropdown-menu { min-width: 170px; right: -4px; border-radius: 12px; }
+  .cdrop-item { font-size: 13px; padding: 9px 14px; }
 
   /* --- Hero --- */
   .hero { padding: 18px 12px 14px; }

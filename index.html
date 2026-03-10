@@ -14,32 +14,24 @@
     <div class="topbar-left">
       <span class="logo-emoji">🤖</span>
       <span class="logo-text">AI Study Buddy</span>
-      <span class="logo-badge" id="nav-class-badge">Select Class</span>
     </div>
     <div class="topbar-right">
-      <button class="class-switch-btn" id="class-switch-btn" onclick="showClassSelector()" title="Switch Class" style="display:none">🎓 Switch Class</button>
-      <span class="score-pill">⭐ Score: <span id="nav-score">0</span></span>
-      <span class="streak-pill">🔥 <span id="nav-streak">0</span> streak</span>
+      <div class="class-dropdown-wrap" id="class-dropdown-wrap">
+        <button class="class-dropdown-btn" id="class-dropdown-btn" onclick="toggleClassDropdown()" title="Select Class">
+          <span id="class-dropdown-label">🎓 Select Class</span>
+          <span class="class-dropdown-arrow">▾</span>
+        </button>
+        <div class="class-dropdown-menu" id="class-dropdown-menu" style="display:none;">
+          <div id="class-dropdown-list"></div>
+        </div>
+      </div>
+      <span class="score-pill">⭐ <span id="nav-score">0</span></span>
+      <span class="streak-pill">🔥 <span id="nav-streak">0</span></span>
     </div>
   </header>
 
-  <!-- ===== CLASS SELECTOR (shown on first load / switch) ===== -->
-  <section class="page" id="page-class-select" style="display:none;">
-    <div class="class-select-wrap">
-      <div class="class-select-mascot">🤖</div>
-      <h1 class="class-select-title">Welcome to AI Study Buddy!</h1>
-      <p class="class-select-sub">Select your class to get started. All questions, subjects and the AI tutor will be tailored to your class! 🚀</p>
-      <div id="class-select-grid" class="class-select-grid"></div>
-      <div class="class-select-hint">
-        <span>📂 Don't see your class?</span>
-        <button class="link-btn" onclick="showPage('page-csv')">Upload your own question bank</button>
-        <span>— your class will appear here automatically!</span>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== HERO / HOME ===== -->
-  <section class="hero" id="page-home" style="display:none;">
+  <section class="hero" id="page-home">
     <div class="hero-blob blob1"></div>
     <div class="hero-blob blob2"></div>
     <div class="hero-content">
@@ -177,9 +169,11 @@
           <label>Questions:
             <select id="quiz-count-select" class="quiz-count-sel">
               <option value="5">5</option>
-              <option value="10">10</option>
+              <option value="10" selected>10</option>
               <option value="15">15</option>
               <option value="20">20</option>
+              <option value="25">25</option>
+              <option value="30">30</option>
             </select>
           </label>
         </div>

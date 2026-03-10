@@ -41,83 +41,89 @@ function getClassFilteredQuestions() {
 // Update all dynamic UI text that references the active class
 function updateClassUI() {
   const cls = getActiveClass();
-  const label = cls ? `Class ${cls}` : 'All Classes';
-  const badge = document.getElementById('nav-class-badge');
-  if (badge) badge.textContent = label;
-  const switchBtn = document.getElementById('class-switch-btn');
-  if (switchBtn) switchBtn.style.display = cls ? 'inline-block' : 'none';
+  const label = cls ? `🎓 Class ${cls}` : '🎓 Select Class';
+  const btnLabel = document.getElementById('class-dropdown-label');
+  if (btnLabel) btnLabel.textContent = label;
+
   const heroSub = document.getElementById('hero-sub-text');
   if (heroSub) heroSub.innerHTML = `Your fun AI-powered study partner${cls ? ` for <b>Class ${cls}</b>` : ''}.<br>Let's learn, practice and ace those exams! 🚀`;
   const tutorSub = document.getElementById('tutor-page-sub');
   if (tutorSub) tutorSub.textContent = `Choose Claude 🟣, ChatGPT 🟢 or Gemini 🔵 — ask anything${cls ? ` about Class ${cls}` : ''}!`;
 }
 
-// Show the class selector screen
-function showClassSelector(fromNav = false) {
-  document.querySelectorAll('.hero, .page').forEach(el => el.style.display = 'none');
-  const pg = document.getElementById('page-class-select');
-  if (pg) pg.style.display = 'flex';
-  renderClassSelectorGrid(fromNav);
-  window.scrollTo(0, 0);
-}
-
-function renderClassSelectorGrid(showAllOption = false) {
-  const grid = document.getElementById('class-select-grid');
-  if (!grid) return;
+// Build and populate the dropdown list
+function renderClassDropdown() {
+  const list = document.getElementById('class-dropdown-list');
+  if (!list) return;
   const classes = getAllAvailableClasses();
   const active  = getActiveClass();
-
-  // Count questions per class
   const all = getAllQuestions();
   const countByClass = {};
   all.forEach(q => {
     const c = q.classLevel || 'General';
     countByClass[c] = (countByClass[c] || 0) + 1;
   });
-
   const classEmojis = { '1':'🌱','2':'🌿','3':'🌳','4':'🌸','5':'⭐','6':'🚀','7':'🎯','8':'🏆','9':'💡','10':'🎓','11':'🔬','12':'🎪' };
 
-  let html = '';
-
-  if (showAllOption) {
-    html += `<div class="class-card ${!active ? 'active-class' : ''}" onclick="selectClass(null)">
-      <div class="class-card-num">🌈</div>
-      <div class="class-card-label">All Classes</div>
-      <div class="class-card-count">${all.length} Qs</div>
-      ${!active ? '<div class="class-card-active-badge">✓</div>' : ''}
-    </div>`;
-  }
+  let html = `<div class="cdrop-item ${!active ? 'cdrop-active' : ''}" onclick="selectClass(null)">
+    🌈 All Classes <span class="cdrop-count">${all.length}</span>
+  </div>`;
 
   if (classes.length === 0) {
-    html += `<div style="grid-column:1/-1;text-align:center;color:var(--clr-muted);padding:20px;">
-      No built-in classes found. Upload a CSV question bank to get started! 📂
-    </div>`;
+    html += `<div class="cdrop-empty">Upload a CSV to add classes 📂</div>`;
   } else {
     classes.forEach(cls => {
       const count = countByClass[cls] || 0;
       const emoji = classEmojis[String(cls)] || '📚';
       const isActive = String(active) === String(cls);
-      html += `<div class="class-card ${isActive ? 'active-class' : ''}" onclick="selectClass('${cls}')">
-        <div class="class-card-num">${emoji}</div>
-        <div class="class-card-label">Class ${cls}</div>
-        <div class="class-card-count">${count} Questions</div>
-        ${isActive ? '<div class="class-card-active-badge">✓</div>' : ''}
+      html += `<div class="cdrop-item ${isActive ? 'cdrop-active' : ''}" onclick="selectClass('${cls}')">
+        ${emoji} Class ${cls} <span class="cdrop-count">${count}</span>
       </div>`;
     });
   }
-  grid.innerHTML = html;
+  list.innerHTML = html;
 }
 
+function toggleClassDropdown() {
+  const menu = document.getElementById('class-dropdown-menu');
+  if (!menu) return;
+  const isOpen = menu.style.display !== 'none';
+  if (isOpen) {
+    closeClassDropdown();
+  } else {
+    renderClassDropdown();
+    menu.style.display = 'block';
+    // Close on outside click
+    setTimeout(() => document.addEventListener('click', outsideDropdownClose, { once: true }), 0);
+  }
+}
+
+function outsideDropdownClose(e) {
+  const wrap = document.getElementById('class-dropdown-wrap');
+  if (wrap && !wrap.contains(e.target)) closeClassDropdown();
+}
+
+function closeClassDropdown() {
+  const menu = document.getElementById('class-dropdown-menu');
+  if (menu) menu.style.display = 'none';
+}
+
+// Kept for backward compatibility (CSV page "Upload your own" link)
+function showClassSelector() { toggleClassDropdown(); }
+
 function selectClass(cls) {
+  closeClassDropdown();
   if (cls !== null) setActiveClass(cls);
   else {
     localStorage.removeItem(CLASS_STORE_KEY);
     updateClassUI();
   }
   // Reset quiz state so it reloads with new class filter
-  selectedSubject = null;
+  const subjects = getAllSubjects();
+  selectedSubject = subjects[0] || null;
   selectedChapter = null;
   dailySubjectFilter = '__all__';
+  showToast(`✅ ${cls ? `Class ${cls} selected!` : 'Showing all classes'}`);
   showPage('page-home');
 }
 
@@ -1088,51 +1094,48 @@ function countBy(arr, fn) {
 
 function generateQuiz() {
   quizMode = 'chapter';
-  const count     = parseInt(document.getElementById('quiz-count-select')?.value || '5');
-  const strictPool = getFilteredPool();   // questions matching all filters exactly
+  const count      = parseInt(document.getElementById('quiz-count-select')?.value || '10');
+  const strictPool = getFilteredPool();
 
   if (!strictPool.length) {
     showToast('⚠️ No questions match your filters! Try a broader selection.');
     return;
   }
 
-  let finalPool  = shuffle(strictPool);
+  let finalPool  = [];
   let padded     = false;
   let paddedFrom = '';
 
-  // If strict pool is smaller than requested count, pad with same-subject questions
-  if (finalPool.length < count) {
-    const allQ       = getActiveQuestions();
-    const isAllChap  = !selectedChapter || selectedChapter === '__all__' || selectedChapter === 'All Chapters';
-    const isAllSubj  = selectedSubject === '__all__';
+  if (strictPool.length >= count) {
+    // Enough questions — pick randomly without repetition
+    finalPool = randomPick(strictPool, count);
+  } else {
+    // Not enough — use all strict questions + pad from wider pool
+    const allQ      = getActiveQuestions();
+    const isAllChap = !selectedChapter || selectedChapter === '__all__' || selectedChapter === 'All Chapters';
+    const isAllSubj = selectedSubject === '__all__';
 
-    // Build padding pool: same subject, different chapter
     let padPool = [];
     if (!isAllSubj && !isAllChap) {
-      padPool = allQ.filter(q =>
-        q.subject === selectedSubject &&
-        q.chapter !== selectedChapter &&
-        !strictPool.includes(q)
-      );
+      padPool = allQ.filter(q => q.subject === selectedSubject && q.chapter !== selectedChapter && !strictPool.includes(q));
       paddedFrom = `other ${selectedSubject} chapters`;
     } else if (!isAllSubj) {
       padPool = allQ.filter(q => q.subject === selectedSubject && !strictPool.includes(q));
       paddedFrom = `other ${selectedSubject} questions`;
     }
 
-    if (padPool.length) {
-      finalPool = [...finalPool, ...shuffle(padPool)].slice(0, count);
-      padded = true;
-    } else {
-      // Last resort: any subject
-      finalPool = shuffle(allQ.filter(q => !strictPool.includes(q))).slice(0, count - finalPool.length);
-      finalPool = [...shuffle(strictPool), ...finalPool];
-      padded = true;
+    if (!padPool.length) {
+      padPool = allQ.filter(q => !strictPool.includes(q));
       paddedFrom = 'other subjects';
     }
-  } else {
-    finalPool = finalPool.slice(0, count);
+
+    const needed  = count - strictPool.length;
+    finalPool = [...shuffle(strictPool), ...randomPick(padPool, needed)];
+    padded    = true;
   }
+
+  // Clear any cached shuffle data from previous quiz runs
+  finalPool.forEach(q => { delete q._shuffled; delete q._correctText; });
 
   currentQuizQuestions = finalPool;
   currentQIndex = 0;
@@ -1142,11 +1145,10 @@ function generateQuiz() {
   document.getElementById('quiz-result').style.display = 'none';
   document.getElementById('quiz-play').style.display   = 'block';
 
-  // Show a notice if we had to pad
   if (padded) {
     const notice = document.createElement('div');
     notice.className = 'quiz-pad-notice';
-    notice.innerHTML = `💡 Only <b>${strictPool.length}</b> questions found for this selection — added questions from ${paddedFrom} to reach <b>${currentQuizQuestions.length}</b>.`;
+    notice.innerHTML = `💡 Only <b>${strictPool.length}</b> questions matched — added from ${paddedFrom} to reach <b>${finalPool.length}</b>.`;
     const playEl = document.getElementById('quiz-play');
     const existing = playEl.querySelector('.quiz-pad-notice');
     if (existing) existing.remove();
@@ -1178,7 +1180,10 @@ function generateDailyPractice() {
     return;
   }
 
-  currentQuizQuestions = shuffle(pool).slice(0, Math.min(10, pool.length));
+  const picked = randomPick(pool, Math.min(20, pool.length));
+  picked.forEach(q => { delete q._shuffled; delete q._correctText; });
+
+  currentQuizQuestions = picked;
   currentQIndex = 0;
   quizScore = 0;
   dailyScore = 0;
@@ -1622,13 +1627,48 @@ function resetProgress() {
 // SECTION 14: HELPERS
 // =====================================================
 
+// Cryptographically seeded shuffle (uses crypto.getRandomValues when available)
 function shuffle(arr) {
   const a = [...arr];
-  for (let i = a.length-1; i > 0; i--) {
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]] = [a[j],a[i]];
+  const len = a.length;
+  // Use crypto.getRandomValues for better randomness if available
+  let randoms;
+  try {
+    randoms = new Uint32Array(len);
+    crypto.getRandomValues(randoms);
+  } catch(e) {
+    randoms = null;
+  }
+  for (let i = len - 1; i > 0; i--) {
+    const j = randoms
+      ? Math.floor((randoms[i] / 0x100000000) * (i + 1))
+      : Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+// Pick `n` random unique items from arr — uses crypto shuffle for true randomness
+function randomPick(arr, n) {
+  if (n >= arr.length) return shuffle(arr);
+  // Partial Fisher-Yates: stop after n swaps
+  const a = [...arr];
+  const len = a.length;
+  let randoms;
+  try {
+    randoms = new Uint32Array(n);
+    crypto.getRandomValues(randoms);
+  } catch(e) { randoms = null; }
+  const result = [];
+  for (let i = 0; i < n; i++) {
+    const remaining = len - i;
+    const j = i + (randoms
+      ? Math.floor((randoms[i] / 0x100000000) * remaining)
+      : Math.floor(Math.random() * remaining));
+    [a[i], a[j]] = [a[j], a[i]];
+    result.push(a[i]);
+  }
+  return result;
 }
 
 function getEncouragement(correct) {
@@ -1866,7 +1906,7 @@ function saveCsvBank(filename) {
   document.getElementById('csv-preview-area').innerHTML = '';
   showToast(`✅ "${name}" saved! ${questions.length} questions added.`);
   renderCsvBanksList();
-  renderClassSelectorGrid(true); // refresh class cards in case new classes were added
+  renderClassDropdown(); // refresh dropdown in case new classes were added
   renderSubjectTabs('quiz-subject-tabs', selectedSubject, 'selectSubject', true);
 }
 
@@ -1980,7 +2020,7 @@ function downloadSampleCsv() {
 function showPage(id) {
   document.querySelectorAll('.hero, .page').forEach(el => el.style.display = 'none');
   const el = document.getElementById(id);
-  if (el) el.style.display = id === 'page-home' ? 'block' : 'block';
+  if (el) el.style.display = 'block';
   if (id === 'page-progress') renderProgress();
   if (id === 'page-tutor')    { checkApiKeyBanner(); renderKeyBadge(); injectClassBanner('page-tutor'); }
   if (id === 'page-quiz') {
@@ -1999,7 +2039,7 @@ function showPage(id) {
   window.scrollTo(0, 0);
 }
 
-// Inject a small "Active: Class X" banner at top of content pages with a Switch link
+// Inject a small "Active: Class X" banner at top of content pages
 function injectClassBanner(pageId) {
   const page = document.getElementById(pageId);
   if (!page) return;
@@ -2010,9 +2050,8 @@ function injectClassBanner(pageId) {
   banner.className = 'active-class-banner';
   banner.innerHTML = cls
     ? `🎓 Active: <span class="acb-tag">Class ${cls}</span>
-       <button class="acb-change" onclick="showClassSelector(true)">Switch Class</button>`
-    : `🌈 Showing all classes — <button class="acb-change" onclick="showClassSelector(true)">Select a class</button>`;
-  // Insert after page-header
+       <button class="acb-change" onclick="toggleClassDropdown()">Switch ▾</button>`
+    : `🌈 All classes — <button class="acb-change" onclick="toggleClassDropdown()">Select class ▾</button>`;
   const header = page.querySelector('.page-header');
   if (header) header.after(banner);
   else page.insertBefore(banner, page.firstChild);
@@ -2022,15 +2061,10 @@ function init() {
   updateClassUI();
   updateNavScore();
   updateHomeStats();
-  const cls = getActiveClass();
-  if (!cls) {
-    // First time — show class selector
-    showClassSelector(false);
-  } else {
-    const subjects = getAllSubjects();
-    selectedSubject = subjects[0] || 'Math';
-    showPage('page-home');
-  }
+  const subjects = getAllSubjects();
+  selectedSubject = subjects[0] || 'Math';
+  // Render the dropdown list so it's ready
+  renderClassDropdown();
 }
 
 window.addEventListener('DOMContentLoaded', init);
