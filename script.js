@@ -1,4 +1,160 @@
 /* =====================================================
+// Embedded starter CSV (152 Class 7 questions) — loaded at runtime
+window._starterCsv = `question_id,class,subject,chapter,topic,difficulty,question_type,question,option_a,option_b,option_c,option_d,correct_answer,explanation,learning_objective,ncert_reference
+"Q001","7","Math","Integers","Addition of Integers","Easy","MCQ","What is (-5) + (-3)?","-8","8","-2","2","-8","Negative + Negative = More Negative. (-5)+(-3) = -8","Students understand addition of integers","NCERT Class 7 Math - Integers"
+"Q002","7","Math","Integers","Multiplication of Integers","Easy","MCQ","What is (-7) × (-3)?","21","-21","10","-10","21","Negative × Negative = Positive! (-7)×(-3) = 21","Students understand multiplication of integers","NCERT Class 7 Math - Integers"
+"Q003","7","Math","Integers","Division of Integers","Easy","MCQ","What is (-12) ÷ 4?","-3","3","-8","8","-3","Negative ÷ Positive = Negative. (-12)÷4 = -3","Students understand division of integers","NCERT Class 7 Math - Integers"
+"Q004","7","Math","Integers","Comparing Integers","Easy","MCQ","Which integer is greater: -5 or -2?","-2","-5","Both equal","Cannot say","-2","On the number line -2 is to the right of -5 so -2 is greater","Students understand comparing integers","NCERT Class 7 Math - Integers"
+"Q005","7","Math","Integers","Properties of Integers","Medium","MCQ","What is the additive inverse of 8?","-8","8","0","1","-8","Additive inverse of a number n is -n. So additive inverse of 8 is -8","Students understand properties of integers","NCERT Class 7 Math - Integers"
+"Q006","7","Math","Fractions and Decimals","Addition of Fractions","Easy","MCQ","What is 2/5 + 1/5?","3/5","3/10","1/5","2/5","3/5","Same denominator? Just add numerators! 2/5 + 1/5 = 3/5","Students understand addition of fractions","NCERT Class 7 Math - Fractions and Decimals"
+"Q007","7","Math","Fractions and Decimals","Multiplication of Decimals","Easy","MCQ","0.1 x 0.1 = ?","0.01","0.1","1","0.001","0.01","0.1 x 0.1 = 0.01 (count decimal places: 1+1=2 places)","Students understand multiplication of decimals","NCERT Class 7 Math - Fractions and Decimals"
+"Q008","7","Math","Fractions and Decimals","Comparing Fractions","Medium","MCQ","Which fraction is bigger: 3/4 or 2/3?","3/4","2/3","Both equal","Cannot say","3/4","Convert to same denominator: 9/12 vs 8/12. So 3/4 is bigger!","Students understand comparing fractions","NCERT Class 7 Math - Fractions and Decimals"
+"Q009","7","Math","Fractions and Decimals","Division of Decimals","Medium","MCQ","2.5 / 0.5 = ?","5","25","0.5","50","5","2.5 / 0.5 = 25/5 = 5. Multiply both by 10 to remove decimal!","Students understand division of decimals","NCERT Class 7 Math - Fractions and Decimals"
+"Q010","7","Math","Fractions and Decimals","Fraction of a Quantity","Medium","MCQ","What is 3/4 of 20?","15","12","10","8","15","3/4 of 20 = (3x20)/4 = 60/4 = 15","Students understand fraction of a quantity","NCERT Class 7 Math - Fractions and Decimals"
+"Q011","7","Math","Simple Equations","Solving Equations","Medium","MCQ","If 2x + 3 = 11, what is x?","4","3","7","8","4","2x = 11-3 = 8 so x = 8/2 = 4. Always do the same to both sides!","Students understand solving equations","NCERT Class 7 Math - Simple Equations"
+"Q012","7","Math","Simple Equations","Solving Equations","Easy","MCQ","If x/3 = 5, what is x?","15","5/3","8","2","15","Multiply both sides by 3: x = 5x3 = 15","Students understand solving equations","NCERT Class 7 Math - Simple Equations"
+"Q013","7","Math","Simple Equations","Identifying Linear Equations","Easy","MCQ","Which is a linear equation?","2x+3=7","x^2=4","x^3=8","sqrtx=2","2x+3=7","Linear equation has variable with power 1 only. 2x+3=7 is linear!","Students understand identifying linear equations","NCERT Class 7 Math - Simple Equations"
+"Q014","7","Math","Simple Equations","Solving Equations","Medium","MCQ","If 5y - 2 = 13 then y =","3","5","2","11","3","5y = 13+2 = 15 so y = 15/5 = 3. Transpose -2 to the other side!","Students understand solving equations","NCERT Class 7 Math - Simple Equations"
+"Q015","7","Math","Simple Equations","Solving Equations","Easy","MCQ","The solution of 3x = 0 is:","0","3","1","-3","0","3x = 0 so x = 0/3 = 0. Zero is the only solution!","Students understand solving equations","NCERT Class 7 Math - Simple Equations"
+"Q016","7","Math","Data Handling","Mean","Easy","MCQ","Mean of 2, 4, 6, 8, 10 is:","6","5","7","8","6","Mean = Sum/Count = 30/5 = 6","Students understand mean","NCERT Class 7 Math - Data Handling"
+"Q017","7","Math","Data Handling","Mode","Easy","MCQ","Mode of 3,3,5,7,7,7,9 is:","7","3","9","5","7","Mode = most frequently appearing number. 7 appears 3 times!","Students understand mode","NCERT Class 7 Math - Data Handling"
+"Q018","7","Math","Data Handling","Median","Easy","MCQ","The middle value of arranged data is called:","Median","Mean","Mode","Range","Median","When data is arranged in order the middle value is called Median!","Students understand median","NCERT Class 7 Math - Data Handling"
+"Q019","7","Math","Data Handling","Median","Medium","MCQ","Median of 3, 5, 7, 9, 11 is:","7","5","9","6","7","The data is already ordered. Middle value (3rd of 5) = 7. That is the median!","Students understand median","NCERT Class 7 Math - Data Handling"
+"Q020","7","Math","Data Handling","Bar Graphs","Easy","MCQ","A bar graph is used to:","Compare data using bars","Show parts of a whole","Plot points on a grid","Draw pie slices","Compare data using bars","Bar graphs use rectangular bars of different heights to compare data!","Students understand bar graphs","NCERT Class 7 Math - Data Handling"
+"Q021","7","Math","Data Handling","Range","Easy","MCQ","Range of 4, 7, 2, 9, 1 is:","8","9","5","7","8","Range = Highest - Lowest = 9 - 1 = 8","Students understand range","NCERT Class 7 Math - Data Handling"
+"Q022","7","Math","Data Handling","Mean","Medium","MCQ","If mean of 5 numbers is 8 their sum is:","40","8","13","45","40","Sum = Mean x Count = 8 x 5 = 40","Students understand mean","NCERT Class 7 Math - Data Handling"
+"Q023","7","Math","Data Handling","Central Tendency","Hard","MCQ","Which of these is NOT a measure of central tendency?","Range","Mean","Median","Mode","Range","Range measures spread of data not central tendency. Mean Median Mode are central tendency measures!","Students understand central tendency","NCERT Class 7 Math - Data Handling"
+"Q024","7","Math","The Triangle","Angle Sum Property","Easy","MCQ","Sum of angles in a triangle is:","180 degrees","360 degrees","90 degrees","270 degrees","180 degrees","The angles in any triangle always add up to 180 degrees!","Students understand angle sum property","NCERT Class 7 Math - The Triangle"
+"Q025","7","Math","The Triangle","Types of Triangles","Easy","MCQ","An equilateral triangle has:","All 3 sides equal","2 sides equal","No sides equal","1 right angle","All 3 sides equal","Equilateral = all three sides AND all three angles are equal (60 degrees each)!","Students understand types of triangles","NCERT Class 7 Math - The Triangle"
+"Q026","7","Math","The Triangle","Types of Triangles","Easy","MCQ","In a right triangle one angle is:","90 degrees","60 degrees","45 degrees","180 degrees","90 degrees","A right triangle has exactly one angle of 90 degrees!","Students understand types of triangles","NCERT Class 7 Math - The Triangle"
+"Q027","7","Math","The Triangle","Types of Triangles","Easy","MCQ","An isosceles triangle has:","2 equal sides","3 equal sides","No equal sides","1 equal side","2 equal sides","Isosceles triangle has exactly 2 equal sides and 2 equal base angles!","Students understand types of triangles","NCERT Class 7 Math - The Triangle"
+"Q028","7","Math","The Triangle","Angle Sum Property","Medium","MCQ","If two angles of a triangle are 60 and 80 the third angle is:","40 degrees","20 degrees","50 degrees","60 degrees","40 degrees","Sum of angles = 180 degrees. Third angle = 180 - 60 - 80 = 40 degrees!","Students understand angle sum property","NCERT Class 7 Math - The Triangle"
+"Q029","7","Math","Lines and Angles","Types of Angles","Easy","MCQ","Complementary angles add up to:","90 degrees","180 degrees","360 degrees","270 degrees","90 degrees","Complementary angles sum to 90 degrees. Like 30 and 60 degrees - they complement each other!","Students understand types of angles","NCERT Class 7 Math - Lines and Angles"
+"Q030","7","Math","Lines and Angles","Types of Angles","Easy","MCQ","Supplementary angles add up to:","180 degrees","90 degrees","360 degrees","270 degrees","180 degrees","Supplementary angles sum to 180 degrees. Like 110 and 70 degrees on a straight line!","Students understand types of angles","NCERT Class 7 Math - Lines and Angles"
+"Q031","7","Math","Lines and Angles","Intersecting Lines","Easy","MCQ","Vertically opposite angles are:","Equal","Supplementary","Complementary","Adjacent","Equal","When two lines intersect the vertically opposite angles are always equal!","Students understand intersecting lines","NCERT Class 7 Math - Lines and Angles"
+"Q032","7","Math","Lines and Angles","Types of Angles","Easy","MCQ","A straight angle measures:","180 degrees","90 degrees","360 degrees","270 degrees","180 degrees","A straight angle is exactly 180 degrees - like a flat line!","Students understand types of angles","NCERT Class 7 Math - Lines and Angles"
+"Q033","7","Math","Lines and Angles","Parallel Lines","Easy","MCQ","Parallel lines are lines that:","Never meet","Meet at one point","Meet at two points","Are perpendicular","Never meet","Parallel lines remain equidistant and never intersect no matter how far extended!","Students understand parallel lines","NCERT Class 7 Math - Lines and Angles"
+"Q034","7","Math","Lines and Angles","Parallel Lines","Medium","MCQ","A transversal is a line that:","Cuts two or more lines","Is parallel to another","Is perpendicular to x-axis","Bisects an angle","Cuts two or more lines","A transversal is a line that crosses two or more other lines at distinct points!","Students understand parallel lines","NCERT Class 7 Math - Lines and Angles"
+"Q035","7","Math","Comparing Quantities","Percentage","Easy","MCQ","What percent of 200 is 50?","25%","10%","50%","20%","25%","Percent = (50/200) x 100 = 25%","Students understand percentage","NCERT Class 7 Math - Comparing Quantities"
+"Q036","7","Math","Comparing Quantities","Simple Interest","Medium","MCQ","Simple interest on Rs 1000 at 10% for 2 years is:","Rs 200","Rs 100","Rs 300","Rs 150","Rs 200","SI = P x R x T / 100 = 1000 x 10 x 2 / 100 = Rs 200","Students understand simple interest","NCERT Class 7 Math - Comparing Quantities"
+"Q037","7","Math","Comparing Quantities","Discount","Medium","MCQ","A 20% discount on Rs 500 gives a sale price of:","Rs 400","Rs 100","Rs 450","Rs 300","Rs 400","Discount = 20% of 500 = Rs 100. Sale price = 500 - 100 = Rs 400","Students understand discount","NCERT Class 7 Math - Comparing Quantities"
+"Q038","7","Math","Comparing Quantities","Ratio","Easy","MCQ","Ratio of 15 to 25 in simplest form is:","3:5","15:25","1:5","5:3","3:5","HCF of 15 and 25 is 5. So 15:25 = 3:5 in simplest form!","Students understand ratio","NCERT Class 7 Math - Comparing Quantities"
+"Q039","7","Math","Comparing Quantities","Profit and Loss","Medium","MCQ","If cost price is 80 and selling price is 100 profit percent is:","25%","20%","10%","15%","25%","Profit = 100-80 = 20. Profit% = (20/80) x 100 = 25%","Students understand profit and loss","NCERT Class 7 Math - Comparing Quantities"
+"Q040","7","Science","Nutrition in Plants","Photosynthesis","Easy","MCQ","The process by which plants make their own food is called:","Photosynthesis","Respiration","Digestion","Transpiration","Photosynthesis","Plants use sunlight water and CO2 to make food through Photosynthesis","Students understand photosynthesis","NCERT Class 7 Science - Nutrition in Plants"
+"Q041","7","Science","Nutrition in Plants","Photosynthesis","Easy","MCQ","The green pigment in leaves is called:","Chlorophyll","Glucose","Starch","Cellulose","Chlorophyll","Chlorophyll is the green pigment that traps sunlight for photosynthesis!","Students understand photosynthesis","NCERT Class 7 Science - Nutrition in Plants"
+"Q042","7","Science","Nutrition in Plants","Photosynthesis","Easy","MCQ","Plants release which gas during photosynthesis?","Oxygen","Carbon dioxide","Nitrogen","Hydrogen","Oxygen","Plants release Oxygen during photosynthesis. That is why trees are so important!","Students understand photosynthesis","NCERT Class 7 Science - Nutrition in Plants"
+"Q043","7","Science","Nutrition in Plants","Photosynthesis","Medium","MCQ","The raw materials for photosynthesis are:","CO2 and water","O2 and water","CO2 and glucose","O2 and glucose","CO2 and water","Plants take in Carbon dioxide from air and water from soil for photosynthesis!","Students understand photosynthesis","NCERT Class 7 Science - Nutrition in Plants"
+"Q044","7","Science","Nutrition in Plants","Modes of Nutrition","Hard","MCQ","Plants that grow on other plants for food are called:","Parasites","Saprophytes","Autotrophs","Heterotrophs","Parasites","Parasitic plants like Cuscuta grow on host plants and take food from them!","Students understand modes of nutrition","NCERT Class 7 Science - Nutrition in Plants"
+"Q045","7","Science","Nutrition in Animals","Digestion","Medium","MCQ","Saliva contains which enzyme?","Amylase","Pepsin","Lipase","Trypsin","Amylase","Saliva contains salivary amylase which begins the digestion of starch in the mouth!","Students understand digestion","NCERT Class 7 Science - Nutrition in Animals"
+"Q046","7","Science","Nutrition in Animals","Human Body","Easy","MCQ","The largest organ in the human body is:","Skin","Liver","Brain","Heart","Skin","Skin is the largest organ! It covers the entire body and has many functions.","Students understand human body","NCERT Class 7 Science - Nutrition in Animals"
+"Q047","7","Science","Nutrition in Animals","Digestion","Medium","MCQ","Digestion of proteins begins in the:","Stomach","Mouth","Small intestine","Large intestine","Stomach","Stomach produces pepsin enzyme and HCl to begin protein digestion!","Students understand digestion","NCERT Class 7 Science - Nutrition in Animals"
+"Q048","7","Science","Nutrition in Animals","Absorption","Easy","MCQ","Absorption of digested food takes place in the:","Small intestine","Large intestine","Stomach","Mouth","Small intestine","The small intestine has villi that absorb nutrients into the blood!","Students understand absorption","NCERT Class 7 Science - Nutrition in Animals"
+"Q049","7","Science","Nutrition in Animals","Nutrition in Simple Organisms","Hard","MCQ","Amoeba gets its food by a process called:","Phagocytosis","Photosynthesis","Digestion","Absorption","Phagocytosis","Amoeba engulfs food particles using pseudopodia - this is called phagocytosis!","Students understand nutrition in simple organisms","NCERT Class 7 Science - Nutrition in Animals"
+"Q050","7","Science","Nutrition in Animals","Absorption","Medium","MCQ","The finger-like projections in the small intestine are called:","Villi","Cilia","Microvilli","Papillae","Villi","Villi greatly increase the surface area of the small intestine for better absorption!","Students understand absorption","NCERT Class 7 Science - Nutrition in Animals"
+"Q051","7","Science","Nutrition in Animals","Digestion","Hard","MCQ","Bile is produced by the:","Liver","Pancreas","Stomach","Small intestine","Liver","The liver produces bile which is stored in the gall bladder and helps digest fats!","Students understand digestion","NCERT Class 7 Science - Nutrition in Animals"
+"Q052","7","Science","Heat","Transfer of Heat","Easy","MCQ","Heat flows from a:","Hot body to cold body","Cold body to hot body","Both directions","Only in solids","Hot body to cold body","Heat always flows from regions of higher temperature to lower temperature!","Students understand transfer of heat","NCERT Class 7 Science - Heat"
+"Q053","7","Science","Heat","Conductors and Insulators","Easy","MCQ","Which of these is a good conductor of heat?","Iron","Wood","Plastic","Rubber","Iron","Metals like iron are good conductors of heat. Wood and plastic are insulators!","Students understand conductors and insulators","NCERT Class 7 Science - Heat"
+"Q054","7","Science","Heat","Transfer of Heat","Medium","MCQ","The transfer of heat through liquids and gases is called:","Convection","Conduction","Radiation","Insulation","Convection","Convection occurs in fluids (liquids and gases) where heated fluid rises and cool fluid sinks!","Students understand transfer of heat","NCERT Class 7 Science - Heat"
+"Q055","7","Science","Heat","Temperature","Easy","MCQ","The normal body temperature of a human is:","37 degrees C","100 degrees C","0 degrees C","50 degrees C","37 degrees C","Normal human body temperature is 37 degrees C or 98.6 degrees F!","Students understand temperature","NCERT Class 7 Science - Heat"
+"Q056","7","Science","Heat","Thermometer","Easy","MCQ","A clinical thermometer uses which liquid?","Mercury","Water","Alcohol","Oil","Mercury","Clinical thermometers use mercury which expands with temperature to give accurate readings!","Students understand thermometer","NCERT Class 7 Science - Heat"
+"Q057","7","Science","Heat","Convection","Medium","MCQ","Sea breeze blows from:","Sea to land","Land to sea","North to south","South to north","Sea to land","During day sea is cooler than land. Cool air from sea moves to land - this is sea breeze!","Students understand convection","NCERT Class 7 Science - Heat"
+"Q058","7","Science","Heat","Convection","Medium","MCQ","Land breeze blows at:","Night","Day","Morning","Noon","Night","At night land cools faster than sea. Air flows from land to sea - this is land breeze!","Students understand convection","NCERT Class 7 Science - Heat"
+"Q059","7","Science","Heat","Conductors and Insulators","Medium","MCQ","Woollen clothes keep us warm because wool is a:","Poor conductor of heat","Good conductor of heat","Source of heat","Radiator of heat","Poor conductor of heat","Wool is a poor conductor (insulator) - it traps body heat and keeps us warm!","Students understand conductors and insulators","NCERT Class 7 Science - Heat"
+"Q060","7","Science","Heat","Temperature","Hard","MCQ","The unit of temperature in SI system is:","Kelvin","Celsius","Fahrenheit","Calorie","Kelvin","The SI unit of temperature is Kelvin (K). 0 K is called Absolute Zero!","Students understand temperature","NCERT Class 7 Science - Heat"
+"Q061","7","Science","Acids Bases and Salts","Indicators","Easy","MCQ","Acids turn blue litmus:","Red","Green","Yellow","Violet","Red","Acids turn blue litmus red. Remember: Acid = Red!","Students understand indicators","NCERT Class 7 Science - Acids Bases and Salts"
+"Q062","7","Science","Acids Bases and Salts","Indicators","Easy","MCQ","Bases turn red litmus:","Blue","Green","Yellow","Violet","Blue","Bases turn red litmus blue. Remember: Base = Blue!","Students understand indicators","NCERT Class 7 Science - Acids Bases and Salts"
+"Q063","7","Science","Acids Bases and Salts","Bases","Easy","MCQ","Baking soda is:","A base","An acid","A salt","Neutral","A base","Baking soda (sodium bicarbonate) is a base. It turns red litmus blue!","Students understand bases","NCERT Class 7 Science - Acids Bases and Salts"
+"Q064","7","Science","Acids Bases and Salts","Acids","Easy","MCQ","Vinegar is an example of:","Acid","Base","Salt","Neutral substance","Acid","Vinegar contains acetic acid. It tastes sour and turns blue litmus red!","Students understand acids","NCERT Class 7 Science - Acids Bases and Salts"
+"Q065","7","Science","Acids Bases and Salts","Neutralization","Medium","MCQ","When an acid reacts with a base the reaction is called:","Neutralization","Oxidation","Reduction","Combustion","Neutralization","Acid + Base = Salt + Water. This reaction is called Neutralization!","Students understand neutralization","NCERT Class 7 Science - Acids Bases and Salts"
+"Q066","7","Science","Acids Bases and Salts","Salts","Easy","MCQ","Common salt is chemically known as:","NaCl","HCl","NaOH","Na2CO3","NaCl","Common salt (table salt) is Sodium Chloride - NaCl!","Students understand salts","NCERT Class 7 Science - Acids Bases and Salts"
+"Q067","7","Science","Acids Bases and Salts","Indicators","Medium","MCQ","Turmeric is used as a natural:","Indicator","Acid","Base","Salt","Indicator","Turmeric is a natural indicator - it turns red in base (like soap) and stays yellow in acid!","Students understand indicators","NCERT Class 7 Science - Acids Bases and Salts"
+"Q068","7","Science","Acids Bases and Salts","Acids","Easy","MCQ","Lemon juice is:","Acidic","Basic","Neutral","A salt","Acidic","Lemon juice contains citric acid so it is acidic and tastes sour!","Students understand acids","NCERT Class 7 Science - Acids Bases and Salts"
+"Q069","7","Science","Physical and Chemical Changes","Chemical Changes","Easy","MCQ","Rusting of iron is a:","Chemical change","Physical change","Reversible change","Natural change","Chemical change","Rusting forms a new substance (iron oxide) so it is a chemical change - irreversible!","Students understand chemical changes","NCERT Class 7 Science - Physical and Chemical Changes"
+"Q070","7","Science","Physical and Chemical Changes","Physical Changes","Easy","MCQ","Melting of ice is a:","Physical change","Chemical change","Irreversible change","Permanent change","Physical change","Melting ice is physical - no new substance formed and it is reversible (freeze again)!","Students understand physical changes","NCERT Class 7 Science - Physical and Chemical Changes"
+"Q071","7","Science","Physical and Chemical Changes","Chemical Changes","Easy","MCQ","Burning of paper is a:","Chemical change","Physical change","Reversible change","Temporary change","Chemical change","Burning paper creates ash and gases - new substances are formed. It is chemical and irreversible!","Students understand chemical changes","NCERT Class 7 Science - Physical and Chemical Changes"
+"Q072","7","Science","Physical and Chemical Changes","Physical Changes","Medium","MCQ","Which of these is a reversible change?","Melting of wax","Burning of wood","Rusting of iron","Cooking of food","Melting of wax","Melted wax can be solidified again by cooling - so it is a reversible physical change!","Students understand physical changes","NCERT Class 7 Science - Physical and Chemical Changes"
+"Q073","7","Science","Physical and Chemical Changes","Physical Changes","Medium","MCQ","Crystallization is an example of:","Physical change","Chemical change","Biological change","Nuclear change","Physical change","Crystallization involves changing the physical state - no new substance is formed!","Students understand physical changes","NCERT Class 7 Science - Physical and Chemical Changes"
+"Q074","7","Science","Physical and Chemical Changes","Prevention of Rusting","Hard","MCQ","Galvanization is the process of coating iron with:","Zinc","Tin","Copper","Aluminium","Zinc","Galvanization coats iron with zinc to prevent rusting. Zinc protects iron from corrosion!","Students understand prevention of rusting","NCERT Class 7 Science - Physical and Chemical Changes"
+"Q075","7","Science","Physical and Chemical Changes","Chemical Changes","Medium","MCQ","A sign that a chemical change has occurred is:","Change in colour or new gas produced","Change in shape only","Change in size only","Change in state only","Change in colour or new gas produced","Chemical changes show signs like colour change gas production heat light or smell!","Students understand chemical changes","NCERT Class 7 Science - Physical and Chemical Changes"
+"Q076","7","Science","Respiration in Organisms","Respiration","Easy","MCQ","The process by which organisms release energy from food is:","Respiration","Photosynthesis","Digestion","Transpiration","Respiration","Respiration breaks down glucose to release energy for all life activities!","Students understand respiration","NCERT Class 7 Science - Respiration in Organisms"
+"Q077","7","Science","Respiration in Organisms","Types of Respiration","Easy","MCQ","Aerobic respiration requires:","Oxygen","Carbon dioxide","Nitrogen","Hydrogen","Oxygen","Aerobic respiration uses oxygen to break down glucose completely into CO2 water and energy!","Students understand types of respiration","NCERT Class 7 Science - Respiration in Organisms"
+"Q078","7","Science","Respiration in Organisms","Types of Respiration","Medium","MCQ","Yeast respires:","Anaerobically","Aerobically","Both ways","Only with sunlight","Anaerobically","Yeast performs anaerobic respiration producing alcohol and CO2 - used in bread making!","Students understand types of respiration","NCERT Class 7 Science - Respiration in Organisms"
+"Q079","7","Science","Respiration in Organisms","Breathing Organs","Easy","MCQ","The breathing organ of fish is:","Gills","Lungs","Skin","Spiracles","Gills","Fish use gills to absorb dissolved oxygen from water for respiration!","Students understand breathing organs","NCERT Class 7 Science - Respiration in Organisms"
+"Q080","7","Science","Respiration in Organisms","Breathing Organs","Medium","MCQ","Insects breathe through:","Spiracles","Gills","Lungs","Skin","Spiracles","Insects have small openings called spiracles on their body through which they breathe!","Students understand breathing organs","NCERT Class 7 Science - Respiration in Organisms"
+"Q081","7","Science","Respiration in Organisms","Breathing","Easy","MCQ","During exercise we breathe:","Faster","Slower","At same rate","Stop breathing","Faster","During exercise muscles need more oxygen so breathing rate increases to supply more O2!","Students understand breathing","NCERT Class 7 Science - Respiration in Organisms"
+"Q082","7","Science","Transportation in Animals and Plants","Transport in Plants","Easy","MCQ","The fluid that transports materials in plants is:","Sap","Blood","Lymph","Plasma","Sap","Plants transport water and nutrients through sap in xylem and phloem vessels!","Students understand transport in plants","NCERT Class 7 Science - Transportation in Animals and Plants"
+"Q083","7","Science","Transportation in Animals and Plants","Transport in Plants","Medium","MCQ","The tissue that transports water in plants is:","Xylem","Phloem","Epidermis","Cortex","Xylem","Xylem transports water and minerals from roots to leaves!","Students understand transport in plants","NCERT Class 7 Science - Transportation in Animals and Plants"
+"Q084","7","Science","Transportation in Animals and Plants","Transport in Plants","Medium","MCQ","The tissue that transports food in plants is:","Phloem","Xylem","Epidermis","Cambium","Phloem","Phloem transports prepared food (glucose) from leaves to all parts of the plant!","Students understand transport in plants","NCERT Class 7 Science - Transportation in Animals and Plants"
+"Q085","7","Science","Transportation in Animals and Plants","Circulatory System","Easy","MCQ","The human heart has how many chambers?","4","2","3","6","4","The human heart has 4 chambers: 2 atria (upper) and 2 ventricles (lower)!","Students understand circulatory system","NCERT Class 7 Science - Transportation in Animals and Plants"
+"Q086","7","Science","Transportation in Animals and Plants","Excretion","Easy","MCQ","Blood is filtered by the:","Kidneys","Liver","Lungs","Heart","Kidneys","Kidneys filter waste products from blood and remove them as urine!","Students understand excretion","NCERT Class 7 Science - Transportation in Animals and Plants"
+"Q087","7","Science","Transportation in Animals and Plants","Transport in Plants","Medium","MCQ","The opening in leaves through which transpiration occurs is:","Stomata","Lenticels","Root hair","Cuticle","Stomata","Stomata are tiny pores in leaves through which water vapour exits during transpiration!","Students understand transport in plants","NCERT Class 7 Science - Transportation in Animals and Plants"
+"Q088","7","English","Grammar - Nouns","Proper Nouns","Easy","MCQ","Which of these is a proper noun?","Delhi","city","river","mountain","Delhi","Proper nouns name specific places people or things. Delhi is a specific city so it is a proper noun!","Students understand proper nouns","NCERT Class 7 English - Grammar - Nouns"
+"Q089","7","English","Grammar - Nouns","Collective Nouns","Medium","MCQ","A collective noun for a group of lions is:","Pride","Pack","Herd","Flock","Pride","A group of lions is called a Pride! Pack is for wolves herd for cattle flock for birds.","Students understand collective nouns","NCERT Class 7 English - Grammar - Nouns"
+"Q090","7","English","Grammar - Nouns","Abstract Nouns","Medium","MCQ","Which of these is an abstract noun?","Happiness","Dog","Table","River","Happiness","Abstract nouns name feelings ideas or qualities that cannot be touched. Happiness is abstract!","Students understand abstract nouns","NCERT Class 7 English - Grammar - Nouns"
+"Q091","7","English","Grammar - Nouns","Plural Nouns","Easy","MCQ","The plural of child is:","Children","Childs","Childes","Child","Children","Child has an irregular plural: children. Not just adding -s!","Students understand plural nouns","NCERT Class 7 English - Grammar - Nouns"
+"Q092","7","English","Grammar - Nouns","Countable and Uncountable Nouns","Easy","MCQ","A noun that can be counted is called a:","Countable noun","Proper noun","Abstract noun","Collective noun","Countable noun","Countable nouns (book books cat cats) can be counted. Uncountable nouns (water air) cannot!","Students understand countable and uncountable nouns","NCERT Class 7 English - Grammar - Nouns"
+"Q093","7","English","Grammar - Verbs and Tenses","Simple Past Tense","Easy","MCQ","Which sentence is in Simple Past Tense?","She played cricket","She plays cricket","She will play cricket","She is playing cricket","She played cricket","Simple Past uses V2 (played). Present uses V1 (plays). Future uses will+V1!","Students understand simple past tense","NCERT Class 7 English - Grammar - Verbs and Tenses"
+"Q094","7","English","Grammar - Verbs and Tenses","Present Continuous Tense","Medium","MCQ","The Present Continuous tense uses:","is/am/are + V-ing","was/were + V-ing","has/have + V3","will + V1","is/am/are + V-ing","Present Continuous = is/am/are + verb-ing. Example: She is reading!","Students understand present continuous tense","NCERT Class 7 English - Grammar - Verbs and Tenses"
+"Q095","7","English","Grammar - Verbs and Tenses","Past Perfect Tense","Hard","MCQ","Which is the correct Past Perfect sentence?","She had finished her work","She has finished her work","She finished her work","She was finishing her work","She had finished her work","Past Perfect = had + V3. Shows action completed before another past action!","Students understand past perfect tense","NCERT Class 7 English - Grammar - Verbs and Tenses"
+"Q096","7","English","Grammar - Verbs and Tenses","Types of Verbs","Easy","MCQ","An action verb shows:","Action done by subject","State of being","Quality of noun","Time of action","Action done by subject","Action verbs show what the subject does: run jump sing write eat etc.!","Students understand types of verbs","NCERT Class 7 English - Grammar - Verbs and Tenses"
+"Q097","7","English","Grammar - Verbs and Tenses","Future Tense","Easy","MCQ","The future tense of go is:","Will go","Went","Gone","Going","Will go","Future tense = will + base verb. Will go is future tense of go!","Students understand future tense","NCERT Class 7 English - Grammar - Verbs and Tenses"
+"Q098","7","English","Grammar - Adjectives","Identifying Adjectives","Easy","MCQ","Which word is an adjective in: The tall boy ran fast?","tall","boy","ran","fast","tall","Tall describes the noun boy so it is an adjective! Fast describes the verb ran so it is an adverb.","Students understand identifying adjectives","NCERT Class 7 English - Grammar - Adjectives"
+"Q099","7","English","Grammar - Adjectives","Degrees of Comparison","Medium","MCQ","The comparative degree of good is:","Better","Best","Gooder","More good","Better","Good - Better - Best. These are irregular adjective forms!","Students understand degrees of comparison","NCERT Class 7 English - Grammar - Adjectives"
+"Q100","7","English","Grammar - Adjectives","Degrees of Comparison","Medium","MCQ","The superlative degree of beautiful is:","Most beautiful","More beautiful","Beautifulest","Beautifuller","Most beautiful","Long adjectives use most for superlative: beautiful - more beautiful - most beautiful!","Students understand degrees of comparison","NCERT Class 7 English - Grammar - Adjectives"
+"Q101","7","English","Grammar - Adjectives","Types of Adjectives","Medium","MCQ","An adjective of quantity answers which question?","How much/many?","What kind?","Which one?","Whose?","How much/many?","Adjectives of quantity tell how much or how many: some all few much several!","Students understand types of adjectives","NCERT Class 7 English - Grammar - Adjectives"
+"Q102","7","English","Grammar - Adjectives","Articles","Easy","MCQ","Choose the correct adjective: She is __ honest girl.","an","a","the","no article","an","Use an before words starting with a vowel sound. Honest starts with vowel sound H (silent) so use an!","Students understand articles","NCERT Class 7 English - Grammar - Adjectives"
+"Q103","7","English","Grammar - Pronouns","Personal Pronouns","Easy","MCQ","Which of these is a personal pronoun?","He","This","Who","Each","He","Personal pronouns refer to specific persons: I you he she it we they them!","Students understand personal pronouns","NCERT Class 7 English - Grammar - Pronouns"
+"Q104","7","English","Grammar - Pronouns","Reflexive Pronouns","Easy","MCQ","The reflexive pronoun for I is:","Myself","Himself","Herself","Itself","Myself","Reflexive pronouns end in -self or -selves. For I the reflexive pronoun is myself!","Students understand reflexive pronouns","NCERT Class 7 English - Grammar - Pronouns"
+"Q105","7","English","Grammar - Pronouns","Relative Pronouns","Medium","MCQ","Which sentence uses a relative pronoun?","The book that I read was good","I read a book yesterday","She reads books daily","Books are useful","The book that I read was good","That is a relative pronoun connecting the clause to the noun book!","Students understand relative pronouns","NCERT Class 7 English - Grammar - Pronouns"
+"Q106","7","English","Grammar - Pronouns","Pronoun Agreement","Hard","MCQ","Choose the correct pronoun: Neither Ram nor Shyam did __ homework.","his","their","its","our","his","When two singulars are joined by neither-nor the pronoun is singular (his)!","Students understand pronoun agreement","NCERT Class 7 English - Grammar - Pronouns"
+"Q107","7","English","Grammar - Pronouns","Relative Pronouns","Easy","MCQ","Who is used for:","Persons","Animals only","Things only","All of these","Persons","Who is used for persons. Which is for animals/things. That can be used for all!","Students understand relative pronouns","NCERT Class 7 English - Grammar - Pronouns"
+"Q108","7","English","Grammar - Pronouns","Personal Pronouns","Medium","MCQ","The object form of they is:","Them","Their","Theirs","Themselves","Them","They (subject) - Them (object) - Their (possessive adjective) - Theirs (possessive pronoun)!","Students understand personal pronouns","NCERT Class 7 English - Grammar - Pronouns"
+"Q109","7","SST","The Mughal Empire","Mughal Rulers","Easy","MCQ","The Mughal Empire was founded by:","Babur","Akbar","Humayun","Aurangzeb","Babur","Babur founded the Mughal Empire in 1526 after winning the First Battle of Panipat!","Students understand mughal rulers","NCERT Class 7 SST - The Mughal Empire"
+"Q110","7","SST","The Mughal Empire","Akbars Policies","Medium","MCQ","Akbars policy of religious tolerance was called:","Sulh-i-kul","Jihad","Dharma","Sarvajanik","Sulh-i-kul","Sulh-i-kul means universal peace. Akbar believed all religions should be respected!","Students understand akbars policies","NCERT Class 7 SST - The Mughal Empire"
+"Q111","7","SST","The Mughal Empire","Mughal Architecture","Easy","MCQ","The Taj Mahal was built by:","Shah Jahan","Akbar","Babur","Aurangzeb","Shah Jahan","Shah Jahan built the Taj Mahal in memory of his beloved wife Mumtaz Mahal!","Students understand mughal architecture","NCERT Class 7 SST - The Mughal Empire"
+"Q112","7","SST","The Mughal Empire","Akbars Policies","Medium","MCQ","Mansabdari system was introduced by:","Akbar","Babur","Humayun","Jahangir","Akbar","Akbar introduced the Mansabdari system to organize the army and administration!","Students understand akbars policies","NCERT Class 7 SST - The Mughal Empire"
+"Q113","7","SST","The Mughal Empire","Mughal History","Medium","MCQ","The First Battle of Panipat was fought in:","1526","1556","1605","1761","1526","1526: Babur defeated Ibrahim Lodi in the First Battle of Panipat to establish Mughal rule!","Students understand mughal history","NCERT Class 7 SST - The Mughal Empire"
+"Q114","7","SST","The Mughal Empire","Mughal Rulers","Hard","MCQ","The Mughal emperor known for his love of painting is:","Jahangir","Akbar","Shah Jahan","Babur","Jahangir","Jahangir was a great patron of painting. His court had many brilliant artists!","Students understand mughal rulers","NCERT Class 7 SST - The Mughal Empire"
+"Q115","7","SST","The Mughal Empire","Mughal Architecture","Hard","MCQ","Fatehpur Sikri was built by:","Akbar","Shah Jahan","Humayun","Aurangzeb","Akbar","Akbar built Fatehpur Sikri as his new capital near Agra to honour Saint Salim Chishti!","Students understand mughal architecture","NCERT Class 7 SST - The Mughal Empire"
+"Q116","7","SST","The Mughal Empire","Mughal Rulers","Hard","MCQ","Which Mughal emperor ended the policy of Sulh-i-kul?","Aurangzeb","Shah Jahan","Jahangir","Akbar","Aurangzeb","Aurangzeb was strict in following Islam and reversed Akbars tolerant policies!","Students understand mughal rulers","NCERT Class 7 SST - The Mughal Empire"
+"Q117","7","SST","Democracy - Equality and Justice","Democracy","Easy","MCQ","Universal Adult Franchise means:","All adults can vote","Only rich can vote","Only men can vote","Only educated can vote","All adults can vote","Universal Adult Franchise means every citizen above 18 has the right to vote regardless of caste religion or gender!","Students understand democracy","NCERT Class 7 SST - Democracy - Equality and Justice"
+"Q118","7","SST","Democracy - Equality and Justice","Equality","Medium","MCQ","The Indian Constitution guarantees equality through:","Fundamental Rights","Directive Principles","Fundamental Duties","Preamble only","Fundamental Rights","Fundamental Rights (Part III of Constitution) guarantee equality to all citizens!","Students understand equality","NCERT Class 7 SST - Democracy - Equality and Justice"
+"Q119","7","SST","Democracy - Equality and Justice","Equality","Hard","MCQ","Untouchability was abolished by:","Article 17","Article 14","Article 21","Article 32","Article 17","Article 17 of the Indian Constitution abolished untouchability and forbids its practice!","Students understand equality","NCERT Class 7 SST - Democracy - Equality and Justice"
+"Q120","7","SST","Democracy - Equality and Justice","Global Equality Movements","Medium","MCQ","Civil rights movement in USA was led by:","Martin Luther King Jr","Abraham Lincoln","George Washington","John F Kennedy","Martin Luther King Jr","Martin Luther King Jr led the civil rights movement fighting for equal rights for African Americans!","Students understand global equality movements","NCERT Class 7 SST - Democracy - Equality and Justice"
+"Q121","7","SST","Democracy - Equality and Justice","Democracy","Easy","MCQ","The right to vote in India is given from age:","18","21","25","16","18","In India the voting age is 18 years. This was reduced from 21 to 18 by the 61st Amendment in 1988!","Students understand democracy","NCERT Class 7 SST - Democracy - Equality and Justice"
+"Q122","7","SST","Democracy - Equality and Justice","Global Equality Movements","Medium","MCQ","Rosa Parks became famous for:","Refusing to give up her bus seat","Leading an army","Becoming president","Writing a constitution","Refusing to give up her bus seat","Rosa Parks refused to give up her seat for a white person on a bus in 1955 sparking the US civil rights movement!","Students understand global equality movements","NCERT Class 7 SST - Democracy - Equality and Justice"
+"Q123","7","SST","Democracy - Equality and Justice","Equality","Hard","MCQ","The Indian Constitution prohibits discrimination on the basis of:","Religion caste sex or place of birth","Only religion","Only caste","Only gender","Religion caste sex or place of birth","Article 15 prohibits discrimination on grounds of religion race caste sex or place of birth!","Students understand equality","NCERT Class 7 SST - Democracy - Equality and Justice"
+"Q124","7","SST","State Government","State Executive","Easy","MCQ","The head of a state government is the:","Chief Minister","Governor","Prime Minister","President","Chief Minister","The Chief Minister is the head of the elected state government - like a PM at the state level!","Students understand state executive","NCERT Class 7 SST - State Government"
+"Q125","7","SST","State Government","State Executive","Medium","MCQ","The constitutional head of a state is the:","Governor","Chief Minister","Speaker","High Court Judge","Governor","The Governor is the constitutional head of state appointed by the President of India!","Students understand state executive","NCERT Class 7 SST - State Government"
+"Q126","7","SST","State Government","State Legislature","Easy","MCQ","State laws are made by the:","State Legislature","Parliament","High Court","Supreme Court","State Legislature","State Legislature (Vidhan Sabha/Vidhan Parishad) makes laws for the state!","Students understand state legislature","NCERT Class 7 SST - State Government"
+"Q127","7","SST","State Government","State Legislature","Medium","MCQ","The lower house of state legislature is called:","Vidhan Sabha","Vidhan Parishad","Lok Sabha","Rajya Sabha","Vidhan Sabha","Vidhan Sabha is the lower house of state legislature where MLAs (elected members) sit!","Students understand state legislature","NCERT Class 7 SST - State Government"
+"Q128","7","SST","State Government","State Legislature","Easy","MCQ","MLAs are elected by:","Citizens of the constituency","Governor","Chief Minister","Parliament","Citizens of the constituency","MLAs (Members of Legislative Assembly) are directly elected by voters of each constituency!","Students understand state legislature","NCERT Class 7 SST - State Government"
+"Q129","7","SST","State Government","State Legislature","Hard","MCQ","The state of Goa has how many Lok Sabha seats?","2","5","1","4","2","Goa is a small state with 2 Lok Sabha constituencies: North Goa and South Goa!","Students understand state legislature","NCERT Class 7 SST - State Government"
+"Q130","7","SST","Inside Our Earth","Layers of the Earth","Easy","MCQ","The outermost layer of the Earth is called the:","Crust","Mantle","Core","Hydrosphere","Crust","The Crust is the outermost solid layer of the Earth. We live on it!","Students understand layers of the earth","NCERT Class 7 SST - Inside Our Earth"
+"Q131","7","SST","Inside Our Earth","Layers of the Earth","Easy","MCQ","The innermost layer of the Earth is:","Core","Mantle","Crust","Hydrosphere","Core","The Core is at the centre of the Earth. The inner core is solid outer core is liquid!","Students understand layers of the earth","NCERT Class 7 SST - Inside Our Earth"
+"Q132","7","SST","Inside Our Earth","Types of Rocks","Easy","MCQ","Rocks formed from cooled lava are called:","Igneous rocks","Sedimentary rocks","Metamorphic rocks","Limestone only","Igneous rocks","Igneous means fire. Lava cools and solidifies to form igneous rocks like basalt and granite!","Students understand types of rocks","NCERT Class 7 SST - Inside Our Earth"
+"Q133","7","SST","Inside Our Earth","Types of Rocks","Medium","MCQ","Fossils are found in which type of rock?","Sedimentary","Igneous","Metamorphic","All types","Sedimentary","Fossils form when organisms are buried in sediment layers that turn to sedimentary rock!","Students understand types of rocks","NCERT Class 7 SST - Inside Our Earth"
+"Q134","7","SST","Inside Our Earth","Layers of the Earth","Easy","MCQ","The middle layer of the Earth is called:","Mantle","Crust","Core","Magma layer","Mantle","The Mantle lies between the Crust and the Core. It contains semi-molten rock called magma!","Students understand layers of the earth","NCERT Class 7 SST - Inside Our Earth"
+"Q135","7","SST","Inside Our Earth","Layers of the Earth","Hard","MCQ","The deepest mine in the world can reach up to:","About 4 km","About 40 km","About 400 km","About 4000 km","About 4 km","Even our deepest mines only reach about 4 km - the Earths crust alone is 35 km thick!","Students understand layers of the earth","NCERT Class 7 SST - Inside Our Earth"
+"Q136","7","SST","Our Changing Earth","Earthquakes","Easy","MCQ","Earthquakes occur because of movement of:","Tectonic plates","Clouds","Oceans","Volcanoes","Tectonic plates","The Earths crust is made of tectonic plates. When they move and collide earthquakes occur!","Students understand earthquakes","NCERT Class 7 SST - Our Changing Earth"
+"Q137","7","SST","Our Changing Earth","Volcanoes","Easy","MCQ","A volcano is formed when:","Magma erupts through the Earths surface","Plates freeze","Ice melts quickly","Rivers flood plains","Magma erupts through the Earths surface","Magma (molten rock) from inside the Earth erupts through weak spots to form volcanoes!","Students understand volcanoes","NCERT Class 7 SST - Our Changing Earth"
+"Q138","7","SST","Our Changing Earth","Earthquakes","Medium","MCQ","The instrument used to measure earthquakes is:","Seismograph","Thermometer","Barometer","Anemometer","Seismograph","A Seismograph measures the intensity and location of earthquakes!","Students understand earthquakes","NCERT Class 7 SST - Our Changing Earth"
+"Q139","7","SST","Our Changing Earth","River Features","Medium","MCQ","Meanders are formed by:","Rivers","Glaciers","Wind","Volcanoes","Rivers","Rivers form curved loops called meanders on flat land as they wind across the surface!","Students understand river features","NCERT Class 7 SST - Our Changing Earth"
+"Q140","7","SST","Our Changing Earth","River Features","Medium","MCQ","Which of these is a depositional feature of rivers?","Delta","Valley","Gorge","Waterfall","Delta","A delta is formed when a river deposits silt at its mouth before meeting the sea!","Students understand river features","NCERT Class 7 SST - Our Changing Earth"
+"Q141","7","SST","Our Changing Earth","Earthquakes","Hard","MCQ","The Richter scale is used to measure:","Magnitude of earthquakes","Height of volcanoes","Speed of wind","Depth of ocean","Magnitude of earthquakes","The Richter scale measures the magnitude (strength) of earthquakes from 1 to 10!","Students understand earthquakes","NCERT Class 7 SST - Our Changing Earth"
+"Q142","7","SST","Tracing Changes Through Thousand Years","Historical Sources","Medium","MCQ","Manuscripts in medieval India were usually written on:","Palm leaves or bark","Paper only","Cloth only","Stone always","Palm leaves or bark","Before paper became common manuscripts were written on palm leaves or the bark of the birch tree!","Students understand historical sources","NCERT Class 7 SST - Tracing Changes Through Thousand Years"
+"Q143","7","SST","Tracing Changes Through Thousand Years","Medieval Technology","Medium","MCQ","The Persian wheel was used for:","Irrigation","Grinding grain","Measuring time","Warfare","Irrigation","The Persian wheel (rhat) is a water-lifting device driven by animals used for irrigation!","Students understand medieval technology","NCERT Class 7 SST - Tracing Changes Through Thousand Years"
+"Q144","7","SST","Tracing Changes Through Thousand Years","Historical Geography","Hard","MCQ","The word Hindustan originally referred to:","The region around the Indus river","All of India","South India","The Deccan plateau","The region around the Indus river","Hindustan originally referred to the region around the Indus used by early Islamic writers!","Students understand historical geography","NCERT Class 7 SST - Tracing Changes Through Thousand Years"
+"Q145","7","SST","Tracing Changes Through Thousand Years","Historical Sources","Medium","MCQ","Historical records written by court historians are called:","Chronicles","Inscriptions","Coins","Maps","Chronicles","Chronicles are historical accounts written by court historians recording events of their time!","Students understand historical sources","NCERT Class 7 SST - Tracing Changes Through Thousand Years"
+"Q146","7","SST","Tracing Changes Through Thousand Years","Historical Sources","Easy","MCQ","Coins are an important source of history because they show:","Rulers dates and symbols","Weather patterns","Agricultural practices","Population size","Rulers dates and symbols","Coins tell us about rulers who issued them the time period and the symbols of their kingdoms!","Students understand historical sources","NCERT Class 7 SST - Tracing Changes Through Thousand Years"
+"Q147","7","SST","Tracing Changes Through Thousand Years","Historical Sources","Hard","MCQ","The study of inscriptions is called:","Epigraphy","Numismatics","Archaeology","Palaeography","Epigraphy","Epigraphy = study of inscriptions carved on stone metal or other materials!","Students understand historical sources","NCERT Class 7 SST - Tracing Changes Through Thousand Years"
+"Q148","7","SST","New Kings and Kingdoms","Regional Kingdoms","Easy","MCQ","The Chola Empire was located in:","South India","North India","East India","Central India","South India","The Chola dynasty was one of the longest-ruling dynasties in South India!","Students understand regional kingdoms","NCERT Class 7 SST - New Kings and Kingdoms"
+"Q149","7","SST","New Kings and Kingdoms","Historical Sources","Medium","MCQ","Prashastis were:","Inscriptions praising kings","Tax records","Religious texts","Land grants","Inscriptions praising kings","Prashastis were inscriptions composed to praise kings recording their victories and qualities!","Students understand historical sources","NCERT Class 7 SST - New Kings and Kingdoms"
+"Q150","7","SST","New Kings and Kingdoms","Land Grants","Hard","MCQ","Land grants given to Brahmanas were called:","Agrahara","Prashasti","Mandala","Samanta","Agrahara","Agrahara were land grants given to Brahmanas and temples free from taxes!","Students understand land grants","NCERT Class 7 SST - New Kings and Kingdoms"
+"Q151","7","SST","New Kings and Kingdoms","Regional Kingdoms","Medium","MCQ","The Rashtrakutas were rulers of:","Deccan","Bengal","Punjab","Rajasthan","Deccan","The Rashtrakutas were a powerful dynasty who ruled over the Deccan region of India!","Students understand regional kingdoms","NCERT Class 7 SST - New Kings and Kingdoms"
+"Q152","7","SST","New Kings and Kingdoms","Political Structure","Hard","MCQ","Samantas were:","Subordinate rulers who paid tribute","Priests","Merchants","Tax collectors","Subordinate rulers who paid tribute","Samantas were subordinate kings who paid tribute and provided military service to more powerful kings!","Students understand political structure","NCERT Class 7 SST - New Kings and Kingdoms"
+"Q153","7","SST","New Kings and Kingdoms","Regional Kingdoms","Hard","MCQ","Tripartite struggle was fought over control of:","Kannauj","Panipat","Delhi","Agra","Kannauj","Three kingdoms - Gurjara-Pratiharas Rashtrakutas and Palas - fought for control of Kannauj!","Students understand regional kingdoms","NCERT Class 7 SST - New Kings and Kingdoms"`;
+
    AI Study Buddy – Multi-Class Edition
    script.js – All app logic, question banks, AI tutor
    ===================================================== */
@@ -19,6 +175,10 @@ function setActiveClass(cls) {
 }
 
 // Returns all classes available across built-in + CSV banks
+// Normalise a filter string for case/space-insensitive matching.
+// Used everywhere subject, chapter, topic strings are compared.
+function norm(s) { return String(s == null ? '' : s).trim().toLowerCase(); }
+
 function getAllAvailableClasses() {
   const all = [...QUESTION_BANK, ...loadAllCsvBanks().flatMap(b => b.questions)];
   const classes = [...new Set(all.map(q => q.classLevel).filter(Boolean))];
@@ -196,210 +356,11 @@ const CHAPTERS = {
 /* Each question: { q, opts:[A,B,C,D], ans:0-3, exp, subject, chapter, topic, difficulty, classLevel }
    NOTE: opts are shuffled at render time — ans stores the CORRECT ANSWER TEXT, not an index */
 
-const QUESTION_BANK = [/*
+// QUESTION_BANK is intentionally empty.
+// All questions must be uploaded via CSV in the 📂 Manage Questions section.
+// A ready-to-use starter CSV (class7_questions.csv) is available for download.
+const QUESTION_BANK = [];
 
-  // ---- MATH: Integers ----
-  { q:"What is (-5) + (-3)?", opts:["-8","8","-2","2"], ans:"-8", exp:"Negative + Negative = More Negative. (-5)+(-3) = -8 🎯", subject:"Math", chapter:"Integers", topic:"Addition of Integers", difficulty:"Easy", classLevel:"7" },
-  { q:"What is (-7) × (-3)?", opts:["21","-21","10","-10"], ans:"21", exp:"Negative × Negative = Positive! (-7)×(-3) = 21 🌟", subject:"Math", chapter:"Integers", topic:"Multiplication of Integers", difficulty:"Easy", classLevel:"7" },
-  { q:"What is (-12) ÷ 4?", opts:["-3","3","-8","8"], ans:"-3", exp:"Negative ÷ Positive = Negative. (-12)÷4 = -3 👍", subject:"Math", chapter:"Integers", topic:"Division of Integers", difficulty:"Easy", classLevel:"7" },
-  { q:"Which integer is greater: -5 or -2?", opts:["-2","-5","Both equal","Cannot say"], ans:"-2", exp:"On the number line, -2 is to the right of -5, so -2 is greater! 📏", subject:"Math", chapter:"Integers", topic:"Comparing Integers", difficulty:"Easy", classLevel:"7" },
-  { q:"What is the additive inverse of 8?", opts:["-8","8","0","1"], ans:"-8", exp:"Additive inverse of a number n is -n. So additive inverse of 8 is -8 ✅", subject:"Math", chapter:"Integers", topic:"Properties of Integers", difficulty:"Medium", classLevel:"7" },
-
-  // ---- MATH: Fractions and Decimals ----
-  { q:"What is 2/5 + 1/5?", opts:["3/5","3/10","1/5","2/5"], ans:"3/5", exp:"Same denominator? Just add numerators! 2/5 + 1/5 = 3/5 🍕", subject:"Math", chapter:"Fractions and Decimals", topic:"Addition of Fractions", difficulty:"Easy", classLevel:"7" },
-  { q:"0.1 × 0.1 = ?", opts:["0.01","0.1","1","0.001"], ans:"0.01", exp:"0.1 × 0.1 = 0.01 (count decimal places: 1+1=2 places) 🧮", subject:"Math", chapter:"Fractions and Decimals", topic:"Multiplication of Decimals", difficulty:"Easy", classLevel:"7" },
-  { q:"Which fraction is bigger: 3/4 or 2/3?", opts:["3/4","2/3","Both equal","Cannot say"], ans:"3/4", exp:"Convert to same denominator: 9/12 vs 8/12. So 3/4 is bigger! 🏆", subject:"Math", chapter:"Fractions and Decimals", topic:"Comparing Fractions", difficulty:"Medium", classLevel:"7" },
-  { q:"2.5 ÷ 0.5 = ?", opts:["5","25","0.5","50"], ans:"5", exp:"2.5 ÷ 0.5 = 25/5 = 5. Multiply both by 10 to remove decimal! 💡", subject:"Math", chapter:"Fractions and Decimals", topic:"Division of Decimals", difficulty:"Medium", classLevel:"7" },
-  { q:"What is 3/4 of 20?", opts:["15","12","10","8"], ans:"15", exp:"3/4 of 20 = (3×20)/4 = 60/4 = 15 🌟", subject:"Math", chapter:"Fractions and Decimals", topic:"Fraction of a Quantity", difficulty:"Medium", classLevel:"7" },
-
-  // ---- MATH: Simple Equations ----
-  { q:"If 2x + 3 = 11, what is x?", opts:["4","3","7","8"], ans:"4", exp:"2x = 11-3 = 8, so x = 8/2 = 4. Always do the same to both sides! ⚖️", subject:"Math", chapter:"Simple Equations", topic:"Solving Equations", difficulty:"Medium", classLevel:"7" },
-  { q:"If x/3 = 5, what is x?", opts:["15","5/3","8","2"], ans:"15", exp:"Multiply both sides by 3: x = 5×3 = 15 ✅", subject:"Math", chapter:"Simple Equations", topic:"Solving Equations", difficulty:"Easy", classLevel:"7" },
-  { q:"Which is a linear equation?", opts:["2x+3=7","x²=4","x³=8","√x=2"], ans:"2x+3=7", exp:"Linear equation has variable with power 1 only. 2x+3=7 is linear! 📐", subject:"Math", chapter:"Simple Equations", topic:"Identifying Linear Equations", difficulty:"Easy", classLevel:"7" },
-  { q:"If 5y − 2 = 13, then y =", opts:["3","5","2","11"], ans:"3", exp:"5y = 13+2 = 15, so y = 15/5 = 3. Transpose -2 to the other side! ⚖️", subject:"Math", chapter:"Simple Equations", topic:"Solving Equations", difficulty:"Medium", classLevel:"7" },
-  { q:"The solution of 3x = 0 is:", opts:["0","3","1","-3"], ans:"0", exp:"3x = 0 → x = 0/3 = 0. Zero is the only solution! ✅", subject:"Math", chapter:"Simple Equations", topic:"Solving Equations", difficulty:"Easy", classLevel:"7" },
-
-  // ---- MATH: Data Handling ----
-  { q:"Mean of 2, 4, 6, 8, 10 is:", opts:["6","5","7","8"], ans:"6", exp:"Mean = Sum/Count = 30/5 = 6 📊", subject:"Math", chapter:"Data Handling", topic:"Mean", difficulty:"Easy", classLevel:"7" },
-  { q:"Mode of 3,3,5,7,7,7,9 is:", opts:["7","3","9","5"], ans:"7", exp:"Mode = most frequently appearing number. 7 appears 3 times! 🎯", subject:"Math", chapter:"Data Handling", topic:"Mode", difficulty:"Easy", classLevel:"7" },
-  { q:"The middle value of arranged data is called:", opts:["Median","Mean","Mode","Range"], ans:"Median", exp:"When data is arranged in order, the middle value is called Median! 📏", subject:"Math", chapter:"Data Handling", topic:"Median", difficulty:"Easy", classLevel:"7" },
-  { q:"Median of 3, 5, 7, 9, 11 is:", opts:["7","5","9","6"], ans:"7", exp:"The data is already ordered. Middle value (3rd of 5) = 7. That's the median! 📊", subject:"Math", chapter:"Data Handling", topic:"Median", difficulty:"Medium", classLevel:"7" },
-  { q:"A bar graph is used to:", opts:["Compare data using bars","Show parts of a whole","Plot points on a grid","Draw pie slices"], ans:"Compare data using bars", exp:"Bar graphs use rectangular bars of different heights to compare data! 📊", subject:"Math", chapter:"Data Handling", topic:"Bar Graphs", difficulty:"Easy", classLevel:"7" },
-  { q:"Range of 4, 7, 2, 9, 1 is:", opts:["8","9","5","7"], ans:"8", exp:"Range = Highest − Lowest = 9 − 1 = 8 📏", subject:"Math", chapter:"Data Handling", topic:"Range", difficulty:"Easy", classLevel:"7" },
-  { q:"If mean of 5 numbers is 8, their sum is:", opts:["40","8","13","45"], ans:"40", exp:"Sum = Mean × Count = 8 × 5 = 40 🔢", subject:"Math", chapter:"Data Handling", topic:"Mean", difficulty:"Medium", classLevel:"7" },
-  { q:"Which of these is NOT a measure of central tendency?", opts:["Range","Mean","Median","Mode"], ans:"Range", exp:"Range measures spread of data, not central tendency. Mean, Median, Mode are central tendency measures! 📊", subject:"Math", chapter:"Data Handling", topic:"Central Tendency", difficulty:"Hard", classLevel:"7" },
-
-  // ---- MATH: The Triangle ----
-  { q:"Sum of angles in a triangle is:", opts:["180°","360°","90°","270°"], ans:"180°", exp:"The angles in any triangle always add up to 180°! Try drawing one 🔺", subject:"Math", chapter:"The Triangle", topic:"Angle Sum Property", difficulty:"Easy", classLevel:"7" },
-  { q:"An equilateral triangle has:", opts:["All 3 sides equal","2 sides equal","No sides equal","1 right angle"], ans:"All 3 sides equal", exp:"Equilateral = all three sides AND all three angles are equal (60° each)! △", subject:"Math", chapter:"The Triangle", topic:"Types of Triangles", difficulty:"Easy", classLevel:"7" },
-  { q:"A triangle with one angle equal to 90° is called:", opts:["Right-angled triangle","Obtuse triangle","Acute triangle","Equilateral triangle"], ans:"Right-angled triangle", exp:"A right-angled triangle has exactly one 90° angle – think of a set-square! 📐", subject:"Math", chapter:"The Triangle", topic:"Types of Triangles", difficulty:"Easy", classLevel:"7" },
-  { q:"If two angles of a triangle are 60° and 80°, the third angle is:", opts:["40°","60°","80°","100°"], ans:"40°", exp:"Sum of angles = 180°. Third angle = 180° − 60° − 80° = 40° ✅", subject:"Math", chapter:"The Triangle", topic:"Angle Sum Property", difficulty:"Medium", classLevel:"7" },
-  { q:"A scalene triangle has:", opts:["No sides equal","All sides equal","Two sides equal","One right angle"], ans:"No sides equal", exp:"Scalene triangle – all 3 sides are of different lengths! 📏", subject:"Math", chapter:"The Triangle", topic:"Types of Triangles", difficulty:"Easy", classLevel:"7" },
-
-  // ---- MATH: Lines and Angles ----
-  { q:"An angle of exactly 90° is called:", opts:["Right angle","Acute angle","Obtuse angle","Reflex angle"], ans:"Right angle", exp:"A 90° angle is called a Right Angle. Looks like the corner of a book! 📐", subject:"Math", chapter:"Lines and Angles", topic:"Types of Angles", difficulty:"Easy", classLevel:"7" },
-  { q:"Two lines that never meet are called:", opts:["Parallel lines","Perpendicular lines","Intersecting lines","Curved lines"], ans:"Parallel lines", exp:"Parallel lines always stay the same distance apart and never meet! Like railway tracks 🚃", subject:"Math", chapter:"Lines and Angles", topic:"Types of Lines", difficulty:"Easy", classLevel:"7" },
-  { q:"An angle less than 90° is called:", opts:["Acute angle","Obtuse angle","Right angle","Straight angle"], ans:"Acute angle", exp:"Acute means 'sharp' – an acute angle is sharp and small, less than 90°! ✏️", subject:"Math", chapter:"Lines and Angles", topic:"Types of Angles", difficulty:"Easy", classLevel:"7" },
-  { q:"Two angles that add up to 180° are called:", opts:["Supplementary angles","Complementary angles","Adjacent angles","Vertical angles"], ans:"Supplementary angles", exp:"Supplementary angles add up to 180°. Like two angles on a straight line! 📏", subject:"Math", chapter:"Lines and Angles", topic:"Pairs of Angles", difficulty:"Medium", classLevel:"7" },
-  { q:"Vertically opposite angles are always:", opts:["Equal","Supplementary","Complementary","Different"], ans:"Equal", exp:"When two lines cross, the angles opposite each other (vertically opposite) are always equal! ✖️", subject:"Math", chapter:"Lines and Angles", topic:"Pairs of Angles", difficulty:"Medium", classLevel:"7" },
-
-  // ---- MATH: Comparing Quantities ----
-  { q:"If CP = ₹200 and SP = ₹250, profit is:", opts:["₹50","₹200","₹250","₹450"], ans:"₹50", exp:"Profit = SP - CP = 250 - 200 = ₹50 💰", subject:"Math", chapter:"Comparing Quantities", topic:"Profit and Loss", difficulty:"Easy", classLevel:"7" },
-  { q:"20% of 300 = ?", opts:["60","30","20","300"], ans:"60", exp:"20% of 300 = (20/100)×300 = 60 🎯", subject:"Math", chapter:"Comparing Quantities", topic:"Percentage", difficulty:"Easy", classLevel:"7" },
-  { q:"If SP = ₹400 and profit = 25%, then CP is:", opts:["₹320","₹300","₹350","₹380"], ans:"₹320", exp:"CP = SP × 100/(100+profit%) = 400×100/125 = ₹320 💡", subject:"Math", chapter:"Comparing Quantities", topic:"Profit and Loss", difficulty:"Hard", classLevel:"7" },
-  { q:"A discount of 10% on ₹500 gives a selling price of:", opts:["₹450","₹400","₹490","₹510"], ans:"₹450", exp:"Discount = 10% of 500 = ₹50. SP = 500 − 50 = ₹450 🏷️", subject:"Math", chapter:"Comparing Quantities", topic:"Discount", difficulty:"Medium", classLevel:"7" },
-  { q:"Simple interest on ₹1000 at 5% per year for 2 years is:", opts:["₹100","₹50","₹200","₹150"], ans:"₹100", exp:"SI = P×R×T/100 = 1000×5×2/100 = ₹100 🏦", subject:"Math", chapter:"Comparing Quantities", topic:"Simple Interest", difficulty:"Medium", classLevel:"7" },
-
-  // ---- SCIENCE: Nutrition in Plants ----
-  { q:"The process by which plants make their own food is called:", opts:["Photosynthesis","Respiration","Digestion","Transpiration"], ans:"Photosynthesis", exp:"Plants use sunlight, water, and CO₂ to make food through Photosynthesis 🌿☀️", subject:"Science", chapter:"Nutrition in Plants", topic:"Photosynthesis", difficulty:"Easy", classLevel:"7" },
-  { q:"The green pigment in leaves is called:", opts:["Chlorophyll","Glucose","Starch","Cellulose"], ans:"Chlorophyll", exp:"Chlorophyll is the green pigment that traps sunlight for photosynthesis! 🍃", subject:"Science", chapter:"Nutrition in Plants", topic:"Photosynthesis", difficulty:"Easy", classLevel:"7" },
-  { q:"Plants get CO₂ through tiny pores called:", opts:["Stomata","Roots","Flowers","Seeds"], ans:"Stomata", exp:"Stomata are tiny pores on leaves. They let CO₂ in and O₂ out! 🌱", subject:"Science", chapter:"Nutrition in Plants", topic:"Stomata", difficulty:"Easy", classLevel:"7" },
-  { q:"Insectivorous plants eat insects because:", opts:["Lack nitrogen","Lack sunlight","Lack water","Lack CO₂"], ans:"Lack nitrogen", exp:"Insectivorous plants like Venus flytrap grow in nitrogen-poor soil! 🪤", subject:"Science", chapter:"Nutrition in Plants", topic:"Insectivorous Plants", difficulty:"Medium", classLevel:"7" },
-  { q:"Which gas do plants release during photosynthesis?", opts:["Oxygen","Carbon dioxide","Nitrogen","Hydrogen"], ans:"Oxygen", exp:"Plants release Oxygen during photosynthesis. That's why trees are so important! 🌳", subject:"Science", chapter:"Nutrition in Plants", topic:"Photosynthesis", difficulty:"Easy", classLevel:"7" },
-
-  // ---- SCIENCE: Nutrition in Animals ----
-  { q:"Digestion of food starts in the:", opts:["Mouth","Stomach","Small intestine","Large intestine"], ans:"Mouth", exp:"Saliva in the mouth begins breaking down food – especially starch! 👄", subject:"Science", chapter:"Nutrition in Animals", topic:"Digestive System", difficulty:"Easy", classLevel:"7" },
-  { q:"Which organ absorbs most nutrients from food?", opts:["Small intestine","Large intestine","Stomach","Liver"], ans:"Small intestine", exp:"The small intestine has villi that absorb nutrients into the blood! 🫁", subject:"Science", chapter:"Nutrition in Animals", topic:"Digestive System", difficulty:"Easy", classLevel:"7" },
-  { q:"Amoeba gets its food by a process called:", opts:["Phagocytosis","Photosynthesis","Digestion","Absorption"], ans:"Phagocytosis", exp:"Amoeba engulfs food particles using pseudopodia – this is called phagocytosis! 🦠", subject:"Science", chapter:"Nutrition in Animals", topic:"Nutrition in Simple Organisms", difficulty:"Hard", classLevel:"7" },
-  { q:"The digestive juice in the stomach is:", opts:["Gastric juice","Bile","Saliva","Pancreatic juice"], ans:"Gastric juice", exp:"The stomach secretes gastric juice which contains HCl and enzymes to digest food! 🧪", subject:"Science", chapter:"Nutrition in Animals", topic:"Digestive System", difficulty:"Medium", classLevel:"7" },
-  { q:"Cellulose is digested in ruminants by:", opts:["Bacteria in the stomach","Saliva","Liver enzymes","Pancreatic juice"], ans:"Bacteria in the stomach", exp:"Ruminants like cows have special bacteria in their stomach that digest cellulose! 🐄", subject:"Science", chapter:"Nutrition in Animals", topic:"Ruminants", difficulty:"Hard", classLevel:"7" },
-  { q:"The largest gland in the human body is:", opts:["Liver","Stomach","Pancreas","Kidney"], ans:"Liver", exp:"The liver is the largest gland. It produces bile which helps digest fats! 🫀", subject:"Science", chapter:"Nutrition in Animals", topic:"Digestive System", difficulty:"Medium", classLevel:"7" },
-  { q:"Bile is produced by which organ?", opts:["Liver","Pancreas","Stomach","Small intestine"], ans:"Liver", exp:"Bile is produced by the liver and stored in the gall bladder. It helps digest fats! 🟢", subject:"Science", chapter:"Nutrition in Animals", topic:"Digestive System", difficulty:"Medium", classLevel:"7" },
-
-  // ---- SCIENCE: Heat ----
-  { q:"Heat always flows from:", opts:["Hot to cold","Cold to hot","Both ways","Neither way"], ans:"Hot to cold", exp:"Heat always flows from a hotter object to a colder object! 🌡️", subject:"Science", chapter:"Heat", topic:"Transfer of Heat", difficulty:"Easy", classLevel:"7" },
-  { q:"The best conductor of heat among these is:", opts:["Iron","Wood","Plastic","Cotton"], ans:"Iron", exp:"Metals like iron are good conductors of heat. That's why pans are metal! 🍳", subject:"Science", chapter:"Heat", topic:"Conductors and Insulators", difficulty:"Easy", classLevel:"7" },
-  { q:"Which thermometer is used to measure body temperature?", opts:["Clinical thermometer","Lab thermometer","Maximum thermometer","Digital compass"], ans:"Clinical thermometer", exp:"Clinical thermometer measures body temperature (35°C–42°C range)! 🌡️", subject:"Science", chapter:"Heat", topic:"Thermometer", difficulty:"Easy", classLevel:"7" },
-  { q:"Land breeze blows from:", opts:["Land to sea","Sea to land","North to south","South to north"], ans:"Land to sea", exp:"At night, land cools faster, so air flows from land to sea – land breeze! 🌬️", subject:"Science", chapter:"Heat", topic:"Convection", difficulty:"Medium", classLevel:"7" },
-  { q:"Radiation is the transfer of heat:", opts:["Without any medium","Through solids only","Through liquids only","Through gases only"], ans:"Without any medium", exp:"Radiation needs no medium – heat from the Sun reaches Earth through the vacuum of space! ☀️", subject:"Science", chapter:"Heat", topic:"Transfer of Heat", difficulty:"Medium", classLevel:"7" },
-  { q:"Normal body temperature of a human is:", opts:["37°C","32°C","40°C","45°C"], ans:"37°C", exp:"Normal human body temperature is 37°C (98.6°F). Above 37°C indicates fever! 🌡️", subject:"Science", chapter:"Heat", topic:"Thermometer", difficulty:"Easy", classLevel:"7" },
-  { q:"Two angles that add up to 90° are called:", opts:["Complementary","Supplementary","Adjacent","Vertically opposite"], ans:"Complementary", exp:"Complementary angles add up to 90°. Supplementary add up to 180°! 📐", subject:"Math", chapter:"Lines and Angles", topic:"Pairs of Angles", difficulty:"Medium", classLevel:"7" },
-  { q:"Sea breeze blows from:", opts:["Sea to land","Land to sea","East to west","West to east"], ans:"Sea to land", exp:"During the day, land heats up faster than sea, so cooler sea air flows inland – sea breeze! 🌊", subject:"Science", chapter:"Heat", topic:"Convection", difficulty:"Medium", classLevel:"7" },
-  { q:"A dark-coloured object is a:", opts:["Better absorber of heat","Poor absorber of heat","Better reflector","Poor emitter"], ans:"Better absorber of heat", exp:"Dark surfaces absorb more heat and light. That's why we wear light colours in summer! 🌞", subject:"Science", chapter:"Heat", topic:"Radiation", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SCIENCE: Acids Bases and Salts ----
-  { q:"Acids taste:", opts:["Sour","Sweet","Bitter","Salty"], ans:"Sour", exp:"Acids taste sour! Like lemon juice and vinegar 🍋", subject:"Science", chapter:"Acids Bases and Salts", topic:"Properties of Acids", difficulty:"Easy", classLevel:"7" },
-  { q:"Blue litmus paper turns red in:", opts:["Acid","Base","Neutral solution","Distilled water"], ans:"Acid", exp:"Blue litmus turns RED in acid. Red litmus turns BLUE in base! 🔴🔵", subject:"Science", chapter:"Acids Bases and Salts", topic:"Indicators", difficulty:"Easy", classLevel:"7" },
-  { q:"Baking soda is:", opts:["A base","An acid","A salt","Neutral"], ans:"A base", exp:"Baking soda (sodium bicarbonate) is a base. It turns red litmus blue! 🧁", subject:"Science", chapter:"Acids Bases and Salts", topic:"Bases", difficulty:"Easy", classLevel:"7" },
-  { q:"The chemical name of common salt is:", opts:["Sodium chloride","Sodium bicarbonate","Calcium carbonate","Potassium chloride"], ans:"Sodium chloride", exp:"Common salt = Sodium Chloride (NaCl). Formed when HCl reacts with NaOH! 🧂", subject:"Science", chapter:"Acids Bases and Salts", topic:"Salts", difficulty:"Medium", classLevel:"7" },
-  { q:"Turmeric turns red/pink in:", opts:["Basic solutions","Acidic solutions","Neutral solutions","Distilled water"], ans:"Basic solutions", exp:"Turmeric is a natural indicator – it turns red/pink in basic (alkaline) solutions! 🟡", subject:"Science", chapter:"Acids Bases and Salts", topic:"Indicators", difficulty:"Medium", classLevel:"7" },
-  { q:"Which of these is an acid?", opts:["Lemon juice","Soap","Baking soda","Chalk"], ans:"Lemon juice", exp:"Lemon juice contains citric acid – it turns blue litmus paper red! 🍋", subject:"Science", chapter:"Acids Bases and Salts", topic:"Properties of Acids", difficulty:"Easy", classLevel:"7" },
-  { q:"When acid and base react, they form:", opts:["Salt and water","Gas and water","Gas and salt","Only water"], ans:"Salt and water", exp:"Neutralisation reaction: Acid + Base → Salt + Water. This is also called a neutralisation reaction! ⚗️", subject:"Science", chapter:"Acids Bases and Salts", topic:"Neutralisation", difficulty:"Medium", classLevel:"7" },
-  { q:"The pH of a neutral solution is:", opts:["7","0","14","4"], ans:"7", exp:"Pure water is neutral with pH 7. Below 7 = acidic, above 7 = basic! 🔬", subject:"Science", chapter:"Acids Bases and Salts", topic:"pH Scale", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SCIENCE: Physical and Chemical Changes ----
-  { q:"Rusting of iron is a:", opts:["Chemical change","Physical change","Both","Neither"], ans:"Chemical change", exp:"Rusting is a chemical change – new substance (iron oxide) forms and can't be reversed! 🔧", subject:"Science", chapter:"Physical and Chemical Changes", topic:"Chemical Changes", difficulty:"Easy", classLevel:"7" },
-  { q:"Melting of ice is a:", opts:["Physical change","Chemical change","Both","Neither"], ans:"Physical change", exp:"Melting is physical – water can be frozen again! No new substance is formed 🧊", subject:"Science", chapter:"Physical and Chemical Changes", topic:"Physical Changes", difficulty:"Easy", classLevel:"7" },
-  { q:"Burning of wood is a:", opts:["Chemical change","Physical change","Reversible change","Biological change"], ans:"Chemical change", exp:"Burning produces new substances (ash, CO₂) that can't be turned back to wood – chemical change! 🔥", subject:"Science", chapter:"Physical and Chemical Changes", topic:"Chemical Changes", difficulty:"Easy", classLevel:"7" },
-  { q:"Crystallisation is an example of:", opts:["Physical change","Chemical change","Biological change","Nuclear change"], ans:"Physical change", exp:"Crystallisation is a physical change – no new substance forms, and it can be reversed! 💎", subject:"Science", chapter:"Physical and Chemical Changes", topic:"Physical Changes", difficulty:"Medium", classLevel:"7" },
-  { q:"When vinegar and baking soda are mixed, which gas is released?", opts:["Carbon dioxide","Oxygen","Nitrogen","Hydrogen"], ans:"Carbon dioxide", exp:"Vinegar (acid) + baking soda (base) → CO₂ gas + water + salt. It fizzes! 🧁", subject:"Science", chapter:"Physical and Chemical Changes", topic:"Chemical Changes", difficulty:"Medium", classLevel:"7" },
-  { q:"Which of these is a physical change?", opts:["Cutting paper","Burning coal","Souring of milk","Cooking rice"], ans:"Cutting paper", exp:"Cutting paper only changes shape, no new substance forms – it's a physical change! ✂️", subject:"Science", chapter:"Physical and Chemical Changes", topic:"Physical Changes", difficulty:"Easy", classLevel:"7" },
-  { q:"Electroplating uses which type of change?", opts:["Chemical change","Physical change","Biological change","Mechanical change"], ans:"Chemical change", exp:"Electroplating uses electrolysis (a chemical process) to deposit a metal layer on an object! ⚡", subject:"Science", chapter:"Physical and Chemical Changes", topic:"Chemical Changes", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SCIENCE: Respiration in Organisms ----
-  { q:"Respiration in organisms releases:", opts:["Energy","Sunlight","Food","Only water"], ans:"Energy", exp:"Respiration breaks down glucose to release energy for all body activities! ⚡", subject:"Science", chapter:"Respiration in Organisms", topic:"Aerobic Respiration", difficulty:"Easy", classLevel:"7" },
-  { q:"The gas we breathe in is:", opts:["Oxygen","Carbon dioxide","Nitrogen","Hydrogen"], ans:"Oxygen", exp:"We breathe in Oxygen (O₂) and use it to break down food for energy! 💨", subject:"Science", chapter:"Respiration in Organisms", topic:"Aerobic Respiration", difficulty:"Easy", classLevel:"7" },
-  { q:"Yeast performs which type of respiration?", opts:["Anaerobic","Aerobic","Both","None"], ans:"Anaerobic", exp:"Yeast respires anaerobically – without oxygen – producing CO₂ and alcohol! 🍞", subject:"Science", chapter:"Respiration in Organisms", topic:"Anaerobic Respiration", difficulty:"Medium", classLevel:"7" },
-  { q:"During heavy exercise, muscles produce:", opts:["Lactic acid","Glucose","Oxygen","CO₂ only"], ans:"Lactic acid", exp:"When oxygen supply is short, muscles do anaerobic respiration and produce lactic acid (causes cramps)! 💪", subject:"Science", chapter:"Respiration in Organisms", topic:"Anaerobic Respiration", difficulty:"Hard", classLevel:"7" },
-  { q:"The organ used for breathing in fish is:", opts:["Gills","Lungs","Skin","Stomata"], ans:"Gills", exp:"Fish breathe through gills which absorb dissolved oxygen from water! 🐟", subject:"Science", chapter:"Respiration in Organisms", topic:"Breathing in Animals", difficulty:"Easy", classLevel:"7" },
-  { q:"The formula for aerobic respiration is:", opts:["Glucose + Oxygen → CO₂ + Water + Energy","Glucose → CO₂ + Alcohol","CO₂ + Water → Glucose + O₂","Glucose + Water → CO₂ + Energy"], ans:"Glucose + Oxygen → CO₂ + Water + Energy", exp:"Aerobic respiration: Glucose + O₂ → CO₂ + H₂O + Energy. This is the opposite of photosynthesis! ⚡", subject:"Science", chapter:"Respiration in Organisms", topic:"Aerobic Respiration", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SCIENCE: Transportation in Animals and Plants ----
-  { q:"Which blood vessels carry blood away from the heart?", opts:["Arteries","Veins","Capillaries","Nerves"], ans:"Arteries", exp:"Arteries carry blood AWAY from the heart. Remember: A for Away and Artery! ❤️", subject:"Science", chapter:"Transportation in Animals and Plants", topic:"Blood Vessels", difficulty:"Easy", classLevel:"7" },
-  { q:"Which blood cells help in clotting of blood?", opts:["Platelets","Red blood cells","White blood cells","Plasma"], ans:"Platelets", exp:"Platelets (thrombocytes) help form clots to stop bleeding at a wound! 🩸", subject:"Science", chapter:"Transportation in Animals and Plants", topic:"Blood", difficulty:"Medium", classLevel:"7" },
-  { q:"Water is transported in plants through:", opts:["Xylem","Phloem","Stomata","Roots alone"], ans:"Xylem", exp:"Xylem vessels transport water and minerals from roots to leaves! 🌿", subject:"Science", chapter:"Transportation in Animals and Plants", topic:"Transport in Plants", difficulty:"Medium", classLevel:"7" },
-  { q:"Food is transported in plants through:", opts:["Phloem","Xylem","Stomata","Chlorophyll"], ans:"Phloem", exp:"Phloem transports food (glucose) made in leaves to all parts of the plant! 🍃", subject:"Science", chapter:"Transportation in Animals and Plants", topic:"Transport in Plants", difficulty:"Medium", classLevel:"7" },
-  { q:"The liquid part of blood is called:", opts:["Plasma","Platelets","Serum","Haemoglobin"], ans:"Plasma", exp:"Plasma is the yellowish liquid part of blood that carries nutrients, hormones, and waste! 🔬", subject:"Science", chapter:"Transportation in Animals and Plants", topic:"Blood", difficulty:"Hard", classLevel:"7" },
-  { q:"White blood cells help in:", opts:["Fighting infections","Carrying oxygen","Clotting blood","Transporting food"], ans:"Fighting infections", exp:"White blood cells (WBCs) are our body's soldiers – they fight bacteria and viruses! 🛡️", subject:"Science", chapter:"Transportation in Animals and Plants", topic:"Blood", difficulty:"Easy", classLevel:"7" },
-
-  // ---- ENGLISH: Grammar – Nouns ----
-  { q:"A noun is a word that names a:", opts:["Person, place or thing","Action word","Describing word","Joining word"], ans:"Person, place or thing", exp:"Nouns name people (Ram), places (Delhi), things (book) or ideas (love)! 📝", subject:"English", chapter:"Grammar – Nouns", topic:"Definition of Noun", difficulty:"Easy", classLevel:"7" },
-  { q:"Which is a proper noun?", opts:["Delhi","City","River","Mountain"], ans:"Delhi", exp:"Proper nouns name specific things – Delhi is a specific city! Always capitalized 🏙️", subject:"English", chapter:"Grammar – Nouns", topic:"Types of Nouns", difficulty:"Easy", classLevel:"7" },
-  { q:"The plural of 'child' is:", opts:["Children","Childs","Childes","Child"], ans:"Children", exp:"Child → Children is an irregular plural. No '-s' or '-es' added! 👶", subject:"English", chapter:"Grammar – Nouns", topic:"Plural Nouns", difficulty:"Medium", classLevel:"7" },
-  { q:"Which of these is a collective noun?", opts:["Flock","Run","Tall","Quickly"], ans:"Flock", exp:"A collective noun names a group: a flock of birds, a team of players, a herd of cattle! 🐦", subject:"English", chapter:"Grammar – Nouns", topic:"Types of Nouns", difficulty:"Medium", classLevel:"7" },
-  { q:"The noun in 'Her kindness impressed everyone' is:", opts:["Kindness","Her","Impressed","Everyone"], ans:"Kindness", exp:"'Kindness' is an abstract noun – it names a quality or idea you can't touch! 💛", subject:"English", chapter:"Grammar – Nouns", topic:"Types of Nouns", difficulty:"Hard", classLevel:"7" },
-
-  // ---- ENGLISH: Grammar – Verbs and Tenses ----
-  { q:"'He runs every day' – the verb is in which tense?", opts:["Simple Present","Simple Past","Simple Future","Past Perfect"], ans:"Simple Present", exp:"'Runs' shows a habit in the present. Simple Present Tense! ⏰", subject:"English", chapter:"Grammar – Verbs and Tenses", topic:"Tenses", difficulty:"Easy", classLevel:"7" },
-  { q:"Past tense of 'go' is:", opts:["Went","Goed","Gone","Going"], ans:"Went", exp:"Go is an irregular verb. Its past tense is Went, not Goed! 🚶", subject:"English", chapter:"Grammar – Verbs and Tenses", topic:"Irregular Verbs", difficulty:"Easy", classLevel:"7" },
-  { q:"'She __ going to school.' – Fill in:", opts:["is","are","am","were"], ans:"is", exp:"'She' is third person singular, so we use 'is'. She is going to school! ✏️", subject:"English", chapter:"Grammar – Verbs and Tenses", topic:"Subject-Verb Agreement", difficulty:"Easy", classLevel:"7" },
-  { q:"Which sentence uses the future tense?", opts:["She will sing tomorrow","She sang yesterday","She sings daily","She was singing"], ans:"She will sing tomorrow", exp:"'Will sing' shows future tense – something that hasn't happened yet! 🔮", subject:"English", chapter:"Grammar – Verbs and Tenses", topic:"Tenses", difficulty:"Easy", classLevel:"7" },
-  { q:"The past participle of 'write' is:", opts:["Written","Wrote","Writing","Writed"], ans:"Written", exp:"Write → Wrote (past) → Written (past participle). Irregular verb! ✍️", subject:"English", chapter:"Grammar – Verbs and Tenses", topic:"Irregular Verbs", difficulty:"Medium", classLevel:"7" },
-
-  // ---- ENGLISH: Grammar – Adjectives ----
-  { q:"An adjective is a word that:", opts:["Describes a noun","Shows an action","Joins sentences","Names a place"], ans:"Describes a noun", exp:"Adjectives describe nouns: a RED apple, a TALL boy, a HAPPY child! 🎨", subject:"English", chapter:"Grammar – Adjectives", topic:"Definition of Adjective", difficulty:"Easy", classLevel:"7" },
-  { q:"In 'The big dog barked', the adjective is:", opts:["Big","Dog","Barked","The"], ans:"Big", exp:"'Big' describes the dog – it tells us what kind of dog! 🐕", subject:"English", chapter:"Grammar – Adjectives", topic:"Identifying Adjectives", difficulty:"Easy", classLevel:"7" },
-  { q:"Comparative degree of 'good' is:", opts:["Better","Gooder","Best","More good"], ans:"Better", exp:"Good → Better → Best are irregular degrees of comparison! ⭐", subject:"English", chapter:"Grammar – Adjectives", topic:"Degrees of Comparison", difficulty:"Medium", classLevel:"7" },
-  { q:"Superlative degree of 'tall' is:", opts:["Tallest","Taller","Most tall","Tallier"], ans:"Tallest", exp:"Tall → Taller → Tallest. Add '-est' to short adjectives for superlative! 🏔️", subject:"English", chapter:"Grammar – Adjectives", topic:"Degrees of Comparison", difficulty:"Easy", classLevel:"7" },
-  { q:"Which word is an adjective in: 'She wore a beautiful dress'?", opts:["Beautiful","Wore","Dress","She"], ans:"Beautiful", exp:"'Beautiful' describes the dress (a noun), so it is an adjective! 👗", subject:"English", chapter:"Grammar – Adjectives", topic:"Identifying Adjectives", difficulty:"Easy", classLevel:"7" },
-
-  // ---- ENGLISH: Grammar – Pronouns ----
-  { q:"'He, she, it' are:", opts:["Pronouns","Nouns","Verbs","Adjectives"], ans:"Pronouns", exp:"Pronouns replace nouns. Instead of 'Ram', we say 'He' 🔄", subject:"English", chapter:"Grammar – Pronouns", topic:"Personal Pronouns", difficulty:"Easy", classLevel:"7" },
-  { q:"Which is a reflexive pronoun?", opts:["Himself","He","Him","His"], ans:"Himself", exp:"Reflexive pronouns end in -self/-selves: myself, yourself, himself, herself! 🪞", subject:"English", chapter:"Grammar – Pronouns", topic:"Types of Pronouns", difficulty:"Medium", classLevel:"7" },
-  { q:"'This' and 'that' are examples of:", opts:["Demonstrative pronouns","Personal pronouns","Relative pronouns","Indefinite pronouns"], ans:"Demonstrative pronouns", exp:"This/that/these/those point to specific things – they are demonstrative pronouns! 👉", subject:"English", chapter:"Grammar – Pronouns", topic:"Types of Pronouns", difficulty:"Medium", classLevel:"7" },
-  { q:"Choose the correct pronoun: 'Ram and ___ went to school.'", opts:["I","Me","My","Mine"], ans:"I", exp:"Use subject pronoun 'I' as the subject of the verb. 'Me' is an object pronoun! 🧑‍🏫", subject:"English", chapter:"Grammar – Pronouns", topic:"Personal Pronouns", difficulty:"Hard", classLevel:"7" },
-  { q:"'Who' is used for:", opts:["Persons","Things","Animals only","Places"], ans:"Persons", exp:"'Who' refers to persons. 'Which' refers to things/animals. 'That' can be used for both! 👤", subject:"English", chapter:"Grammar – Pronouns", topic:"Relative Pronouns", difficulty:"Medium", classLevel:"7" },
-  { q:"Plural of 'I' is:", opts:["We","They","You","Us"], ans:"We", exp:"I (singular) → We (plural). Both are subject pronouns! 👥", subject:"English", chapter:"Grammar – Pronouns", topic:"Personal Pronouns", difficulty:"Easy", classLevel:"7" },
-
-  // ---- SST: The Mughal Empire ----
-  { q:"The Mughal Empire was founded by:", opts:["Babur","Akbar","Humayun","Aurangzeb"], ans:"Babur", exp:"Babur founded the Mughal Empire in 1526 after winning the First Battle of Panipat! 🏯", subject:"SST", chapter:"The Mughal Empire", topic:"Mughal Rulers", difficulty:"Easy", classLevel:"7" },
-  { q:"Who built the Taj Mahal?", opts:["Akbar","Babur","Aurangzeb","Shah Jahan"], ans:"Shah Jahan", exp:"Shah Jahan built the Taj Mahal in memory of his wife Mumtaz Mahal. It is in Agra! 💎", subject:"SST", chapter:"The Mughal Empire", topic:"Mughal Monuments", difficulty:"Easy", classLevel:"7" },
-  { q:"Akbar's policy of religious tolerance was called:", opts:["Sul-i-kul","Jihad","Dharma","Fatwa"], ans:"Sul-i-kul", exp:"Akbar believed in 'Sul-i-kul' meaning universal peace – he respected all religions! 🕊️", subject:"SST", chapter:"The Mughal Empire", topic:"Akbar's Policies", difficulty:"Medium", classLevel:"7" },
-  { q:"The First Battle of Panipat was fought in:", opts:["1526","1556","1600","1707"], ans:"1526", exp:"Babur defeated Ibrahim Lodi at the First Battle of Panipat in 1526, establishing Mughal rule! ⚔️", subject:"SST", chapter:"The Mughal Empire", topic:"Mughal History", difficulty:"Medium", classLevel:"7" },
-  { q:"Din-i-Ilahi was started by:", opts:["Akbar","Babur","Shah Jahan","Aurangzeb"], ans:"Akbar", exp:"Akbar introduced Din-i-Ilahi as a combination of elements from different religions! 🌟", subject:"SST", chapter:"The Mughal Empire", topic:"Akbar's Policies", difficulty:"Medium", classLevel:"7" },
-  { q:"The autobiography of Babur is called:", opts:["Baburnama","Akbarnama","Ain-i-Akbari","Tuzuk-i-Timuri"], ans:"Baburnama", exp:"Babur wrote his autobiography 'Baburnama' in the Chagatai Turkic language! 📚", subject:"SST", chapter:"The Mughal Empire", topic:"Mughal Literature", difficulty:"Hard", classLevel:"7" },
-  { q:"Fatehpur Sikri was built by:", opts:["Akbar","Shah Jahan","Babur","Jahangir"], ans:"Akbar", exp:"Akbar built Fatehpur Sikri near Agra as his new capital city! 🏯", subject:"SST", chapter:"The Mughal Empire", topic:"Mughal Monuments", difficulty:"Medium", classLevel:"7" },
-  { q:"The last great Mughal emperor was:", opts:["Aurangzeb","Shah Jahan","Akbar","Bahadur Shah Zafar"], ans:"Aurangzeb", exp:"Aurangzeb was the last powerful Mughal emperor. After him the empire declined! 👑", subject:"SST", chapter:"The Mughal Empire", topic:"Mughal Rulers", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SST: Democracy – Equality and Justice ----
-  { q:"Democracy means government by:", opts:["The people","The king","The army","The rich"], ans:"The people", exp:"Democracy comes from Greek: 'demos' (people) + 'kratos' (rule). Power belongs to the people! 🗳️", subject:"SST", chapter:"Democracy – Equality and Justice", topic:"Democracy", difficulty:"Easy", classLevel:"7" },
-  { q:"The voting age in India is:", opts:["18 years","21 years","16 years","25 years"], ans:"18 years", exp:"Citizens above 18 years can vote in India. This is called Universal Adult Franchise! 🗳️", subject:"SST", chapter:"Democracy – Equality and Justice", topic:"Elections", difficulty:"Easy", classLevel:"7" },
-  { q:"The Right to Equality is guaranteed by Article:", opts:["14","19","21","32"], ans:"14", exp:"Article 14 of the Indian Constitution guarantees the Right to Equality to all citizens! ⚖️", subject:"SST", chapter:"Democracy – Equality and Justice", topic:"Fundamental Rights", difficulty:"Medium", classLevel:"7" },
-  { q:"Untouchability was abolished in India in:", opts:["1950","1947","1960","1975"], ans:"1950", exp:"The Constitution that came into force on 26 Jan 1950 abolished untouchability under Article 17! 🇮🇳", subject:"SST", chapter:"Democracy – Equality and Justice", topic:"Equality", difficulty:"Medium", classLevel:"7" },
-  { q:"Which of these is NOT a Fundamental Right in India?", opts:["Right to property","Right to equality","Right to freedom","Right against exploitation"], ans:"Right to property", exp:"Right to Property was removed from Fundamental Rights by the 44th Amendment in 1978! 📜", subject:"SST", chapter:"Democracy – Equality and Justice", topic:"Fundamental Rights", difficulty:"Hard", classLevel:"7" },
-  { q:"Universal Adult Franchise means:", opts:["Every adult can vote","Only men can vote","Only educated can vote","Only taxpayers can vote"], ans:"Every adult can vote", exp:"Universal Adult Franchise = every adult citizen above 18 has the right to vote regardless of caste, religion or gender! 🗳️", subject:"SST", chapter:"Democracy – Equality and Justice", topic:"Elections", difficulty:"Easy", classLevel:"7" },
-  { q:"India is described as a:", opts:["Sovereign Socialist Secular Democratic Republic","Constitutional Monarchy","Federal Theocracy","Military Democracy"], ans:"Sovereign Socialist Secular Democratic Republic", exp:"These are the words in the Indian Constitution's Preamble describing our nation! 🇮🇳", subject:"SST", chapter:"Democracy – Equality and Justice", topic:"Indian Constitution", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SST: State Government ----
-  { q:"The head of a State Government is the:", opts:["Chief Minister","Prime Minister","Governor","President"], ans:"Chief Minister", exp:"The Chief Minister heads the State Government and is the elected leader of the state! 🏛️", subject:"SST", chapter:"State Government", topic:"State Legislature", difficulty:"Easy", classLevel:"7" },
-  { q:"The Governor of a state is appointed by the:", opts:["President","Prime Minister","Chief Minister","Parliament"], ans:"President", exp:"The Governor is appointed by the President of India and is the constitutional head of the state! 🎖️", subject:"SST", chapter:"State Government", topic:"Governor", difficulty:"Medium", classLevel:"7" },
-  { q:"The State Legislature is also called:", opts:["Vidhan Sabha","Lok Sabha","Rajya Sabha","Gram Sabha"], ans:"Vidhan Sabha", exp:"The Vidhan Sabha (Legislative Assembly) is the lower house of the state legislature! 🏛️", subject:"SST", chapter:"State Government", topic:"State Legislature", difficulty:"Easy", classLevel:"7" },
-  { q:"Which is NOT a function of the State Government?", opts:["Defence of the country","Police","Education","Agriculture"], ans:"Defence of the country", exp:"Defence is a Central/Union subject. State governments handle police, education, agriculture etc.! 🛡️", subject:"SST", chapter:"State Government", topic:"Functions of State Government", difficulty:"Medium", classLevel:"7" },
-  { q:"The state of Goa has how many Lok Sabha seats?", opts:["2","5","1","4"], ans:"2", exp:"Goa is a small state with 2 Lok Sabha constituencies – North Goa and South Goa! 🗺️", subject:"SST", chapter:"State Government", topic:"State Legislature", difficulty:"Hard", classLevel:"7" },
-  { q:"A bill becomes a law after being signed by the:", opts:["Governor","Chief Minister","Speaker","President"], ans:"Governor", exp:"At the state level, the Governor gives assent to bills passed by the State Legislature! ✍️", subject:"SST", chapter:"State Government", topic:"Law Making", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SST: Inside Our Earth ----
-  { q:"The outermost layer of the Earth is called the:", opts:["Crust","Mantle","Core","Hydrosphere"], ans:"Crust", exp:"The Crust is the outermost solid layer of the Earth. We live on it! The thinnest layer 🌍", subject:"SST", chapter:"Inside Our Earth", topic:"Layers of the Earth", difficulty:"Easy", classLevel:"7" },
-  { q:"The innermost layer of the Earth is:", opts:["Core","Mantle","Crust","Hydrosphere"], ans:"Core", exp:"The Core is at the centre of the Earth. The inner core is solid, outer core is liquid! 🔥", subject:"SST", chapter:"Inside Our Earth", topic:"Layers of the Earth", difficulty:"Easy", classLevel:"7" },
-  { q:"Rocks formed from cooled lava are called:", opts:["Igneous rocks","Sedimentary rocks","Metamorphic rocks","Limestone only"], ans:"Igneous rocks", exp:"Igneous = 'fire'. Lava cools and solidifies to form igneous rocks like basalt and granite! 🌋", subject:"SST", chapter:"Inside Our Earth", topic:"Types of Rocks", difficulty:"Easy", classLevel:"7" },
-  { q:"Fossils are found in which type of rock?", opts:["Sedimentary","Igneous","Metamorphic","All types"], ans:"Sedimentary", exp:"Fossils form when organisms are buried in sediment layers that turn to sedimentary rock! 🦕", subject:"SST", chapter:"Inside Our Earth", topic:"Types of Rocks", difficulty:"Medium", classLevel:"7" },
-  { q:"The middle layer of the Earth is called:", opts:["Mantle","Crust","Core","Magma layer"], ans:"Mantle", exp:"The Mantle lies between the Crust and the Core. It contains semi-molten rock called magma! 🌐", subject:"SST", chapter:"Inside Our Earth", topic:"Layers of the Earth", difficulty:"Easy", classLevel:"7" },
-  { q:"The deepest mine in the world can reach up to:", opts:["About 4 km","About 40 km","About 400 km","About 4000 km"], ans:"About 4 km", exp:"Even our deepest mines only reach about 4 km – the Earth's crust alone is 35 km thick! 🪨", subject:"SST", chapter:"Inside Our Earth", topic:"Layers of the Earth", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SST: Our Changing Earth ----
-  { q:"Earthquakes occur because of movement of:", opts:["Tectonic plates","Clouds","Oceans","Volcanoes"], ans:"Tectonic plates", exp:"The Earth's crust is made of tectonic plates. When they move and collide, earthquakes occur! 🌍", subject:"SST", chapter:"Our Changing Earth", topic:"Earthquakes", difficulty:"Easy", classLevel:"7" },
-  { q:"A volcano is formed when:", opts:["Magma erupts through the Earth's surface","Plates freeze","Ice melts quickly","Rivers flood plains"], ans:"Magma erupts through the Earth's surface", exp:"Magma (molten rock) from inside the Earth erupts through weak spots to form volcanoes! 🌋", subject:"SST", chapter:"Our Changing Earth", topic:"Volcanoes", difficulty:"Easy", classLevel:"7" },
-  { q:"The instrument used to measure earthquakes is:", opts:["Seismograph","Thermometer","Barometer","Anemometer"], ans:"Seismograph", exp:"A Seismograph measures the intensity and location of earthquakes! 📊", subject:"SST", chapter:"Our Changing Earth", topic:"Earthquakes", difficulty:"Medium", classLevel:"7" },
-  { q:"Meanders are formed by:", opts:["Rivers","Glaciers","Wind","Volcanoes"], ans:"Rivers", exp:"Rivers form curved loops called meanders on flat land as they wind across the surface! 〰️", subject:"SST", chapter:"Our Changing Earth", topic:"River Features", difficulty:"Medium", classLevel:"7" },
-  { q:"Which of these is a depositional feature of rivers?", opts:["Delta","Valley","Gorge","Waterfall"], ans:"Delta", exp:"A delta is formed when a river deposits silt at its mouth before meeting the sea! 🌊", subject:"SST", chapter:"Our Changing Earth", topic:"River Features", difficulty:"Medium", classLevel:"7" },
-  { q:"The Richter scale is used to measure:", opts:["Magnitude of earthquakes","Height of volcanoes","Speed of wind","Depth of ocean"], ans:"Magnitude of earthquakes", exp:"The Richter scale measures the magnitude (strength) of earthquakes from 1 to 10! 📈", subject:"SST", chapter:"Our Changing Earth", topic:"Earthquakes", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SST: Tracing Changes Through Thousand Years ----
-  { q:"Manuscripts in medieval India were usually written on:", opts:["Palm leaves or bark","Paper only","Cloth only","Stone always"], ans:"Palm leaves or bark", exp:"Before paper became common, manuscripts were written on palm leaves or the bark of the birch tree! 🌿", subject:"SST", chapter:"Tracing Changes Through Thousand Years", topic:"Historical Sources", difficulty:"Medium", classLevel:"7" },
-  { q:"The Persian wheel was used for:", opts:["Irrigation","Grinding grain","Measuring time","Warfare"], ans:"Irrigation", exp:"The Persian wheel (rhat) is a water-lifting device driven by animals, used for irrigation! 💧", subject:"SST", chapter:"Tracing Changes Through Thousand Years", topic:"Medieval Technology", difficulty:"Medium", classLevel:"7" },
-  { q:"The word 'Hindustan' originally referred to:", opts:["The region around the Indus river","All of India","South India","The Deccan plateau"], ans:"The region around the Indus river", exp:"'Hindustan' originally referred to the region around the Indus, used by early Islamic writers! 🗺️", subject:"SST", chapter:"Tracing Changes Through Thousand Years", topic:"Historical Geography", difficulty:"Hard", classLevel:"7" },
-  { q:"Historical records written by court historians are called:", opts:["Chronicles","Inscriptions","Coins","Maps"], ans:"Chronicles", exp:"Chronicles are historical accounts written by court historians recording events of their time! 📜", subject:"SST", chapter:"Tracing Changes Through Thousand Years", topic:"Historical Sources", difficulty:"Medium", classLevel:"7" },
-  { q:"Coins are an important source of history because they show:", opts:["Rulers, dates and symbols","Weather patterns","Agricultural practices","Population size"], ans:"Rulers, dates and symbols", exp:"Coins tell us about rulers who issued them, the time period, and the symbols of their kingdoms! 🪙", subject:"SST", chapter:"Tracing Changes Through Thousand Years", topic:"Historical Sources", difficulty:"Easy", classLevel:"7" },
-  { q:"The study of inscriptions is called:", opts:["Epigraphy","Numismatics","Archaeology","Palaeography"], ans:"Epigraphy", exp:"Epigraphy = study of inscriptions carved on stone, metal, or other materials! 🪨", subject:"SST", chapter:"Tracing Changes Through Thousand Years", topic:"Historical Sources", difficulty:"Hard", classLevel:"7" },
-
-  // ---- SST: New Kings and Kingdoms ----
-  { q:"The Chola Empire was located in:", opts:["South India","North India","East India","Central India"], ans:"South India", exp:"The Chola dynasty was one of the longest-ruling dynasties in South India! 🌴", subject:"SST", chapter:"New Kings and Kingdoms", topic:"Regional Kingdoms", difficulty:"Easy", classLevel:"7" },
-  { q:"Prashastis were:", opts:["Inscriptions praising kings","Tax records","Religious texts","Land grants"], ans:"Inscriptions praising kings", exp:"Prashastis were inscriptions composed to praise kings, recording their victories and qualities! 📜", subject:"SST", chapter:"New Kings and Kingdoms", topic:"Historical Sources", difficulty:"Medium", classLevel:"7" },
-  { q:"Land grants given to Brahmanas were called:", opts:["Agrahara","Prashasti","Mandala","Samanta"], ans:"Agrahara", exp:"Agrahara were land grants given to Brahmanas and temples, free from taxes! 🏛️", subject:"SST", chapter:"New Kings and Kingdoms", topic:"Land Grants", difficulty:"Hard", classLevel:"7" },
-  { q:"The Rashtrakutas were rulers of:", opts:["Deccan","Bengal","Punjab","Rajasthan"], ans:"Deccan", exp:"The Rashtrakutas were a powerful dynasty who ruled over the Deccan region of India! 🏯", subject:"SST", chapter:"New Kings and Kingdoms", topic:"Regional Kingdoms", difficulty:"Medium", classLevel:"7" },
-  { q:"Samantas were:", opts:["Subordinate rulers who paid tribute","Priests","Merchants","Tax collectors"], ans:"Subordinate rulers who paid tribute", exp:"Samantas were subordinate kings who paid tribute and provided military service to more powerful kings! ⚔️", subject:"SST", chapter:"New Kings and Kingdoms", topic:"Political Structure", difficulty:"Hard", classLevel:"7" },
-  { q:"Tripartite struggle was fought over control of:", opts:["Kannauj","Panipat","Delhi","Agra"], ans:"Kannauj", exp:"Three kingdoms – Gurjara-Pratiharas, Rashtrakutas and Palas – fought for control of Kannauj! 👑", subject:"SST", chapter:"New Kings and Kingdoms", topic:"Regional Kingdoms", difficulty:"Hard", classLevel:"7" },
-*/];
 // SECTION 3: AI TUTOR KNOWLEDGE BASE (rule-based)
 // =====================================================
 
@@ -513,6 +474,31 @@ function updateHomeStats() {
   const qcount = getActiveQuestions().length;
   const el = document.getElementById('hs-questions');
   if (el) el.textContent = qcount;
+
+  // Show/hide the upload nudge banner on home screen
+  const nudge = document.getElementById('home-upload-nudge');
+  if (nudge) nudge.style.display = qcount === 0 ? 'block' : 'none';
+}
+
+// Show a friendly prompt when no questions are loaded yet
+function showNoQuestionsState(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  // Remove any existing empty-state message
+  el.querySelectorAll('.no-questions-state').forEach(n => n.remove());
+  const div = document.createElement('div');
+  div.className = 'no-questions-state';
+  div.innerHTML = `
+    <div class="nqs-icon">📂</div>
+    <h3>No Questions Loaded Yet</h3>
+    <p>Upload a CSV file to get started. You can use the ready-made Class 7 starter pack below.</p>
+    <div class="nqs-actions">
+      <button class="nqs-btn-primary" onclick="showPage('page-csv')">➕ Upload Questions CSV</button>
+      <button class="nqs-btn-secondary" onclick="downloadStarterCsv()">⬇️ Download Starter CSV</button>
+    </div>
+    <p class="nqs-hint">The starter CSV has 152 questions across Math, Science, English &amp; SST for Class 7.</p>
+  `;
+  el.appendChild(div);
 }
 
 // =====================================================
@@ -904,7 +890,7 @@ function getAllSubjects() {
 function getChaptersForSubject(subject) {
   if (subject === '__all__') return ['All Chapters'];
   const all = getActiveQuestions();
-  const chapters = [...new Set(all.filter(q => q.subject === subject).map(q => q.chapter).filter(Boolean))];
+  const chapters = [...new Set(all.filter(q => norm(q.subject) === norm(subject)).map(q => q.chapter).filter(Boolean))];
   return chapters.length ? chapters : ['General'];
 }
 
@@ -1015,9 +1001,9 @@ function selectChapter(ch, btn) {
 function populateFilterDropdowns() {
   const allQ = getActiveQuestions();
   let pool = allQ;
-  if (selectedSubject !== '__all__') pool = pool.filter(q => q.subject === selectedSubject);
+  if (selectedSubject !== '__all__') pool = pool.filter(q => norm(q.subject) === norm(selectedSubject));
   const isAllChap = !selectedChapter || selectedChapter === '__all__' || selectedChapter === 'All Chapters';
-  if (!isAllChap) pool = pool.filter(q => q.chapter === selectedChapter);
+  if (!isAllChap) pool = pool.filter(q => norm(q.chapter) === norm(selectedChapter));
 
   // Topics
   const topics = [...new Set(pool.map(q => q.topic).filter(Boolean))].sort();
@@ -1060,22 +1046,22 @@ function populateFilterDropdowns() {
 function getFilteredPool() {
   let pool = getActiveQuestions();
 
-  // Subject filter
-  if (selectedSubject !== '__all__') pool = pool.filter(q => q.subject === selectedSubject);
+  // Subject filter (norm = case+space insensitive)
+  if (selectedSubject !== '__all__') pool = pool.filter(q => norm(q.subject) === norm(selectedSubject));
 
   // Chapter filter — skip if "All Chapters" or no chapter selected
   const isAllChap = !selectedChapter || selectedChapter === '__all__' || selectedChapter === 'All Chapters';
-  if (!isAllChap) pool = pool.filter(q => q.chapter === selectedChapter);
+  if (!isAllChap) pool = pool.filter(q => norm(q.chapter) === norm(selectedChapter));
 
   // Dropdown filters
   const topic      = document.getElementById('filter-topic')?.value      || '';
   const difficulty = document.getElementById('filter-difficulty')?.value || '';
   const classLevel = document.getElementById('filter-class')?.value      || '';
   const qtype      = document.getElementById('filter-type')?.value       || '';
-  if (topic)      pool = pool.filter(q => q.topic === topic);
-  if (difficulty) pool = pool.filter(q => q.difficulty?.toLowerCase() === difficulty.toLowerCase());
+  if (topic)      pool = pool.filter(q => norm(q.topic) === norm(topic));
+  if (difficulty) pool = pool.filter(q => norm(q.difficulty) === norm(difficulty));
   if (classLevel) pool = pool.filter(q => q.classLevel === classLevel);
-  if (qtype)      pool = pool.filter(q => q.questionType?.toLowerCase() === qtype.toLowerCase());
+  if (qtype)      pool = pool.filter(q => norm(q.questionType) === norm(qtype));
   return pool;
 }
 
@@ -1126,7 +1112,11 @@ function generateQuiz() {
   let padded     = false;
   let paddedFrom = '';
 
-  const quizScopeKey = makeScopeKey(selectedSubject, selectedChapter);
+  // Scope key includes ALL four filter dimensions so each unique filter combo
+  // has its own independent rotation queue — no bleed-over between filters.
+  const { topic: fTopic, difficulty: fDiff, qtype: fQtype } = getActiveFilterValues();
+  const quizScopeKey = makeScopeKey(selectedSubject, selectedChapter, fTopic, fDiff, fQtype);
+
   if (strictPool.length >= count) {
     finalPool = pickQuestions(strictPool, count, quizScopeKey);
   } else {
@@ -1137,10 +1127,10 @@ function generateQuiz() {
 
     let padPool = [];
     if (!isAllSubj && !isAllChap) {
-      padPool = allQ.filter(q => q.subject === selectedSubject && q.chapter !== selectedChapter && !strictPool.includes(q));
+      padPool = allQ.filter(q => norm(q.subject) === norm(selectedSubject) && norm(q.chapter) !== norm(selectedChapter) && !strictPool.includes(q));
       paddedFrom = `other ${selectedSubject} chapters`;
     } else if (!isAllSubj) {
-      padPool = allQ.filter(q => q.subject === selectedSubject && !strictPool.includes(q));
+      padPool = allQ.filter(q => norm(q.subject) === norm(selectedSubject) && !strictPool.includes(q));
       paddedFrom = `other ${selectedSubject} questions`;
     }
     if (!padPool.length) {
@@ -1149,7 +1139,8 @@ function generateQuiz() {
     }
 
     const needed = count - strictPool.length;
-    const padScopeKey = makeScopeKey(selectedSubject, '__all__');
+    // Pad scope: same subject, no chapter/topic/diff/type restriction
+    const padScopeKey = makeScopeKey(selectedSubject, '__all__', '', '', '');
     finalPool = shuffle([...pickQuestions(strictPool, strictPool.length, quizScopeKey), ...pickQuestions(padPool, needed, padScopeKey)]);
     padded    = true;
   }
@@ -1194,14 +1185,14 @@ function generateDailyPractice() {
   const allQ = getActiveQuestions();
   let pool = dailySubjectFilter === '__all__'
     ? allQ
-    : allQ.filter(q => q.subject === dailySubjectFilter);
+    : allQ.filter(q => norm(q.subject) === norm(dailySubjectFilter));
 
   if (pool.length === 0) {
     showToast('⚠️ No questions for this subject yet!');
     return;
   }
 
-  const dailyScopeKey = makeScopeKey(dailySubjectFilter, '__all__');
+  const dailyScopeKey = makeScopeKey(dailySubjectFilter, '__all__', '', '', '');
   const picked = pickQuestions(pool, Math.min(20, pool.length), dailyScopeKey);
   picked.forEach(q => { delete q._shuffled; delete q._correctText; });
 
@@ -2067,61 +2058,100 @@ function assignCsvIds(questions, bankId) {
   });
 }
 
-// ── Scope-keyed seen-set ──────────────────────────────────────────────────────
+// ── Queue-based rotation (scoped to ALL active filters) ──────────────────────
 //
-// WHY SCOPE-KEYED (not pool-content-keyed)
-// ─────────────────────────────────────────
-// The previous approach hashed the pool's _id list to make a key.
-// This breaks when CSV is loaded: the pool grows, the hash changes,
-// a brand-new seen-set is created, and already-seen questions repeat.
+// ROOT CAUSE of repeat-question bug:
+//   makeScopeKey only used subject+chapter. The topic/difficulty/type filters
+//   also narrow the pool, but used the SAME scope key as unfiltered quizzes.
+//   When a narrow-filtered pool (e.g. 89 questions) was compared against a
+//   _seen set built from a wide pool (3050 questions), most IDs in _seen were
+//   NOT in the narrow pool → candidates.length < n triggered a full reset
+//   EVERY TIME → the seen-set never actually rotated → same questions repeated.
 //
-// The fix: the seen-set key reflects what the USER SELECTED (subject +
-// chapter), not what happens to be in the pool at call time.
+// FIX: scope key includes ALL four active filter dimensions.
+//   Different filter combo → different key → independent queue → no bleed-over.
+//   Within the same filter combo → questions rotate through the full pool
+//   before any question repeats.
 //
-// ALGORITHM
-// ─────────
-//   1. Filter pool to questions not yet seen in this scope.
-//   2. If fewer candidates than requested → full rotation done, reset.
-//   3. Shuffle candidates, take first n, mark as seen.
+// ALGORITHM: shuffled-queue per scope
+//   1. On first call for a scope: shuffle the pool, store as queue.
+//   2. Pop n from front of queue and return them.
+//   3. When queue empties (or is too small), refill from current pool (re-shuffled).
+//   This guarantees no repeats until every question in the filtered pool
+//   has been seen at least once.
 //
-const _seen = {};  // { scopeKey: Set<_id> }
+const _queues = {};  // { scopeKey: _id[] }  — remaining unseen IDs, in shuffled order
 
-// Build a stable scope key from the user's current filter intent.
-function makeScopeKey(subject, chapter) {
-  const s = subject || '__all__';
-  const c = (!chapter || chapter === 'All Chapters' || chapter === '__all__') ? '__all__' : chapter;
-  return s + '::' + c;
+// Build a stable scope key from ALL currently-active filter dimensions.
+// Call this immediately before pickQuestions so it reflects the live UI state.
+function makeScopeKey(subject, chapter, topic, difficulty, qtype) {
+  const s  = subject    || '__all__';
+  const c  = (!chapter  || chapter  === 'All Chapters' || chapter  === '__all__') ? '__all__' : chapter;
+  const t  = topic      || '__all__';
+  const d  = difficulty || '__all__';
+  const qt = qtype      || '__all__';
+  return [s, c, t, d, qt].join('::');
 }
 
-// Pick n unique questions from pool.
-// scopeKey — pass makeScopeKey(selectedSubject, selectedChapter) from caller.
+// Read the current dropdown filter values for use in scope keys / daily.
+function getActiveFilterValues() {
+  return {
+    topic:      (document.getElementById('filter-topic')?.value      || ''),
+    difficulty: (document.getElementById('filter-difficulty')?.value || ''),
+    qtype:      (document.getElementById('filter-type')?.value       || ''),
+  };
+}
+
+// Pick n unique questions from pool, never repeating within a full rotation.
+// scopeKey MUST be built with makeScopeKey(...) by the caller.
 function pickQuestions(pool, n, scopeKey) {
   if (!pool.length) return [];
   n = Math.min(n, pool.length);
 
-  // Ensure _id exists (safety net for very old cached CSV without IDs)
-  pool.forEach((q, i) => { if (!q._id) q._id = 'U-' + i + '-' + (q.q || '').slice(0, 12); });
+  // Safety: ensure every question has a stable _id
+  pool.forEach((q, i) => {
+    if (!q._id) q._id = 'U-' + i + '-' + (q.q || '').slice(0, 20).replace(/\s+/g, '_');
+  });
 
-  // Fallback key if caller didn't provide one
-  if (!scopeKey) scopeKey = 'auto::' + pool.map(q => q._id).sort().slice(0, 10).join('|');
-
-  if (!_seen[scopeKey]) _seen[scopeKey] = new Set();
-
-  let candidates = pool.filter(q => !_seen[scopeKey].has(q._id));
-
-  if (candidates.length < n) {
-    _seen[scopeKey] = new Set();
-    candidates = [...pool];
+  // Fallback key: stable fingerprint of pool contents (used by exam sections
+  // that build their own scope keys and don't go through makeScopeKey)
+  if (!scopeKey) {
+    scopeKey = 'auto::' + pool.map(q => q._id).sort().slice(0, 8).join('|');
   }
 
-  const picked = shuffle(candidates).slice(0, n);
-  picked.forEach(q => _seen[scopeKey].add(q._id));
-  return picked;
+  // Build the queue for this scope if it doesn't exist or is stale
+  // (stale = queue contains IDs that are no longer in the current pool)
+  const poolIds = new Set(pool.map(q => q._id));
+
+  if (!_queues[scopeKey]) {
+    // First call for this scope: create a full shuffled queue
+    _queues[scopeKey] = shuffle(pool.map(q => q._id));
+  } else {
+    // Filter out any IDs that are no longer in pool (e.g. after CSV delete)
+    _queues[scopeKey] = _queues[scopeKey].filter(id => poolIds.has(id));
+  }
+
+  // If queue is too small to satisfy request, append a fresh shuffled batch
+  // (excluding IDs already in the remaining queue to avoid immediate repeats)
+  if (_queues[scopeKey].length < n) {
+    const inQueue = new Set(_queues[scopeKey]);
+    const fresh   = shuffle(pool.map(q => q._id).filter(id => !inQueue.has(id)));
+    _queues[scopeKey] = [..._queues[scopeKey], ...fresh];
+    // If still not enough (can happen when pool.length < n, capped above), just use pool
+    if (_queues[scopeKey].length < n) {
+      _queues[scopeKey] = shuffle(pool.map(q => q._id));
+    }
+  }
+
+  // Pop n IDs from the front of the queue
+  const pickedIds = _queues[scopeKey].splice(0, n);
+  const idToQ     = Object.fromEntries(pool.map(q => [q._id, q]));
+  return pickedIds.map(id => idToQ[id]).filter(Boolean);
 }
 
-// Wipe all seen-sets. Call after CSV is added or removed.
+// Wipe all queues. Call after CSV is added or removed.
 function clearSeenCache() {
-  Object.keys(_seen).forEach(k => delete _seen[k]);
+  Object.keys(_queues).forEach(k => delete _queues[k]);
 }
 
 
@@ -2262,21 +2292,39 @@ function parseCSV(text) {
     headers.forEach((h, idx) => row[h] = (cols[idx] || '').trim());
 
     if (!row.question) { errors.push(`Row ${i+1}: empty question — skipped.`); continue; }
-    const ansKey = row.correct_answer.toLowerCase().replace(/[^a-d]/g, '');
-    if (!(ansKey in ansMap)) { errors.push(`Row ${i+1}: correct_answer "${row.correct_answer}" must be A/B/C/D.`); continue; }
+    // correct_answer can be: a letter (A/B/C/D), or the full answer text
+    const rawAns = row.correct_answer.trim();
+    const ansKey = rawAns.toLowerCase().replace(/[^a-d]/g, '');
+    let   ansValue;
+    if (ansKey in ansMap) {
+      // Letter format (A/B/C/D): store the option text so it matches builtin format
+      ansValue = [row.option_a, row.option_b, row.option_c, row.option_d][ansMap[ansKey]] || rawAns;
+    } else if (rawAns) {
+      // Full text format: use directly (must match one of the options)
+      const opts = [row.option_a, row.option_b, row.option_c, row.option_d];
+      const matchIdx = opts.findIndex(o => o.trim().toLowerCase() === rawAns.toLowerCase());
+      if (matchIdx === -1) {
+        errors.push(`Row ${i+1}: correct_answer "${rawAns}" doesn't match any option (A-D or full text).`);
+        continue;
+      }
+      ansValue = opts[matchIdx];
+    } else {
+      errors.push(`Row ${i+1}: correct_answer is empty.`);
+      continue;
+    }
 
     questions.push({
       // Core quiz fields
       q:          row.question,
       opts:       [row.option_a, row.option_b, row.option_c, row.option_d],
-      ans:        ansMap[ansKey],
+      ans:        ansValue,   // always stored as text string (matches builtin format)
       exp:        row.explanation || '💡 See your textbook for more details.',
-      subject:    row.subject    || 'Custom',
-      chapter:    row.chapter    || 'General',
+      subject:    (row.subject    || 'Custom').trim(),
+      chapter:    (row.chapter    || 'General').trim(),
       // Extended metadata fields — stored as-is for display & filtering
       questionId: row.question_id       || '',
       classLevel: row.class             || '',
-      topic:      row.topic             || '',
+      topic:      (row.topic             || '').trim(),
       difficulty: row.difficulty        || '',
       questionType: row.question_type   || 'MCQ',
       learningObjective: row.learning_objective || '',
@@ -2552,23 +2600,25 @@ function deleteCsvBank(bankId) {
 }
 
 // ---- Sample CSV download (full schema) ----
-function downloadSampleCsv() {
-  const header = 'question_id,class,subject,chapter,topic,difficulty,question_type,question,option_a,option_b,option_c,option_d,correct_answer,explanation,learning_objective,ncert_reference';
-  const rows = [
-    'Q001,7,Math,Integers,Addition of Integers,Easy,MCQ,What is (-5) + (-3)?,-8,8,-2,2,A,Negative + Negative = More Negative. So (-5)+(-3) = -8,Students can add negative integers,NCERT Class 7 Maths Ch 1',
-    'Q002,7,Science,Nutrition in Plants,Photosynthesis,Easy,MCQ,What gas do plants release during photosynthesis?,Carbon dioxide,Nitrogen,Oxygen,Hydrogen,C,Plants release Oxygen during photosynthesis using sunlight water and CO2,Students understand photosynthesis output,NCERT Class 7 Science Ch 1',
-    'Q003,7,English,Grammar – Nouns,Proper Nouns,Medium,MCQ,Which of these is a proper noun?,city,river,Delhi,mountain,C,Proper nouns name specific places people or things and are always capitalised,Students identify proper nouns,NCERT Class 7 English Grammar',
-    'Q004,7,SST,The Mughal Empire,Mughal Rulers,Medium,MCQ,Who built the Taj Mahal?,Akbar,Aurangzeb,Babur,Shah Jahan,D,Shah Jahan built the Taj Mahal in memory of his wife Mumtaz Mahal,Students recall Mughal rulers and monuments,NCERT Class 7 History Ch 4',
-    'Q005,7,Science,Acids Bases and Salts,Indicators,Hard,MCQ,What colour does blue litmus paper turn in an acid?,Blue,Red,Green,Yellow,B,Acids turn blue litmus paper red. Bases turn red litmus paper blue,Students apply knowledge of indicators,NCERT Class 7 Science Ch 5'
-  ];
-  const csv = [header, ...rows].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
+function downloadSampleCsv() { downloadStarterCsv(); }
+
+// Downloads full 152-question starter CSV (all ex-hardcoded Class 7 questions)
+function downloadStarterCsv() {
+  // The CSV is embedded in the app and always available offline
+  // correct_answer column uses the FULL TEXT of the answer (not A/B/C/D)
+  // so it loads correctly via the CSV parser
+  const csv = window._starterCsv;
+  if (!csv) { showToast('⚠️ Starter CSV not available'); return; }
+  const blob = new Blob([csv], {type:'text/csv'});
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href = url; a.download = 'sample_questions_full.csv'; a.click();
+  a.href = url; a.download = 'class7_starter_questions.csv'; a.click();
   URL.revokeObjectURL(url);
-  showToast('📥 Sample CSV (full schema) downloaded!');
+  showToast('📥 Class 7 Starter CSV (152 questions) downloaded!');
 }
+// Alias used by empty-state button
+function downloadStarterCsv() { downloadSampleCsv(); }
+
 
 function showPage(id) {
   // Stop exam timer if navigating away
@@ -2585,6 +2635,7 @@ function showPage(id) {
     document.getElementById('quiz-filters').style.display = 'none';
     document.getElementById('quiz-start-row').style.display = 'none';
     injectClassBanner('page-quiz');
+    if (getAllQuestions().length === 0) { showNoQuestionsState('quiz-setup'); return; }
     renderSubjectTabs('quiz-subject-tabs', selectedSubject, 'selectSubject', true);
     renderQuizChapters();
   }
