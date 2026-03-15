@@ -2904,8 +2904,13 @@ function updateProgress(subject, isCorrect) {
   } else {
     progress.streak = 0;
   }
-  progress.subjectStats[subject].a++;
-  if (isCorrect) progress.subjectStats[subject].c++;
+  // Guard: subject may be undefined/null from incomplete CSV rows
+  const subj = (subject || 'General').trim() || 'General';
+  if (!progress.subjectStats[subj]) {
+    progress.subjectStats[subj] = { a: 0, c: 0 };
+  }
+  progress.subjectStats[subj].a++;
+  if (isCorrect) progress.subjectStats[subj].c++;
   checkAchievements();
   saveProgress();
 }
@@ -4444,8 +4449,12 @@ function selectMockOpt(qi, oi) {
 function submitMock() {
   let mcqScore = 0;
   mockMCQQuestions.forEach((q, i) => {
-    if (mockAnswers[i] === q.ans) { mcqScore++; updateProgress(q.subject, true); }
-    else { updateProgress(q.subject, false); }
+    // mockAnswers[i] is the selected option INDEX (0-3)
+    // q.ans is the correct answer TEXT — must find its index in q.opts to compare
+    const correctIdx = q.opts.indexOf(q.ans);
+    const isCorrect  = mockAnswers[i] !== undefined && mockAnswers[i] === correctIdx;
+    if (isCorrect) { mcqScore++; updateProgress(q.subject, true); }
+    else           { updateProgress(q.subject, false); }
   });
 
   const shortAnswered = mockShortQs.filter((_, i) => (document.getElementById(`short-ans-${i}`)?.value||'').trim().length > 10).length;
@@ -5205,10 +5214,12 @@ function showPage(id) {
   if (id === 'page-daily')    injectClassBanner('page-daily');
   if (id === 'page-mock')     injectClassBanner('page-mock');
   if (id === 'page-exam')     injectClassBanner('page-exam');
-  if (id === 'page-csv')    { renderCsvBanksList(); renderExamBanksList(); updateSampleBankButton(); updateSampleExamBankButton(); }
-  if (id === 'page-admin')  { if (typeof renderAdminPage === 'function') renderAdminPage(); }
-  if (id === 'page-review') { if (typeof renderReviewPage === 'function') renderReviewPage(); }
-  if (id === 'page-auth')   { /* nothing extra */ }
+  if (id === 'page-csv')     { renderCsvBanksList(); renderExamBanksList(); updateSampleBankButton(); updateSampleExamBankButton(); }
+  if (id === 'page-admin')   { if (typeof renderAdminPage   === 'function') renderAdminPage(); }
+  if (id === 'page-review')  { if (typeof renderReviewPage  === 'function') renderReviewPage(); }
+  if (id === 'page-reports') { if (typeof renderReportsPage === 'function') renderReportsPage(); }
+  if (id === 'page-tests')   { /* test runner triggered manually */ }
+  if (id === 'page-auth')    { /* nothing extra */ }
   // Re-apply translations whenever we navigate
   if (typeof applyTranslations === 'function') applyTranslations();
   window.scrollTo(0, 0);

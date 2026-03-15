@@ -28,8 +28,8 @@
       results sync automatically when you reconnect.
    ===================================================== */
 
-const SUPABASE_URL  = 'https://rgxtuyspvtfmbofbymrc.supabase.co';   // e.g. 'https://abcdef.supabase.co'
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJneHR1eXNwdnRmbWJvZmJ5bXJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1NDM0MzksImV4cCI6MjA4OTExOTQzOX0.VXjJXOsSdCkwVWZOs78AwkkXKw558soqw1foozbFZus';   // Your anon/public key
+const SUPABASE_URL  = '';   // e.g. 'https://abcdef.supabase.co'
+const SUPABASE_ANON = '';   // Your anon/public key
 
 /* ---- Supabase client (lazy-initialised) ---- */
 let _sb = null;
@@ -524,10 +524,17 @@ async function renderAdminPage() {
 }
 
 function renderAdminCards() {
-  const adminCard  = document.getElementById('feat-admin-card');
-  const reviewCard = document.getElementById('feat-review-card');
-  if (adminCard)  adminCard.style.display  = isAdmin()   ? '' : 'none';
-  if (reviewCard) reviewCard.style.display = isTeacher() ? '' : 'none';
+  const adminCard   = document.getElementById('feat-admin-card');
+  const reviewCard  = document.getElementById('feat-review-card');
+  const reportsCard = document.getElementById('feat-reports-card');
+  const testsCard   = document.getElementById('feat-tests-card');
+  if (adminCard)   adminCard.style.display   = isAdmin()    ? '' : 'none';
+  if (reviewCard)  reviewCard.style.display  = isTeacher()  ? '' : 'none';
+  // Reports visible to everyone (shows local progress for students, full class data for teachers)
+  if (reportsCard) reportsCard.style.display = '';
+  // Tests visible only to admins (or when URL has ?dev=1 for developers)
+  const isDev = new URLSearchParams(window.location.search).get('dev') === '1';
+  if (testsCard) testsCard.style.display = (isAdmin() || isDev) ? '' : 'none';
 }
 
 function renderBrandingForm() {

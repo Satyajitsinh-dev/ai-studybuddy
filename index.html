@@ -13,6 +13,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="i18n.js"></script>
   <script src="supabase.js"></script>
+  <script src="reports.js"></script>
+  <script src="tests.js"></script>
 </head>
 <body>
 
@@ -125,6 +127,18 @@
         <span class="feat-icon">📝</span>
         <span class="feat-title" data-i18n="feat_review">Review Answers</span>
         <span class="feat-desc"  data-i18n="feat_review_sub">Mark student papers</span>
+      </button>
+      <!-- Reports — visible to teachers and admins -->
+      <button class="feat-card card-reports" id="feat-reports-card" onclick="showPage('page-reports')">
+        <span class="feat-icon">📈</span>
+        <span class="feat-title">Reports &amp; Export</span>
+        <span class="feat-desc">Results · Analytics · PDF</span>
+      </button>
+      <!-- Test Runner — admin/dev only, hidden in production by default -->
+      <button class="feat-card card-tests" id="feat-tests-card" style="display:none" onclick="showPage('page-tests')">
+        <span class="feat-icon">🧪</span>
+        <span class="feat-title">App Tests</span>
+        <span class="feat-desc">Run all feature tests</span>
       </button>
       <!-- AI Tutor — last, marked as demo/in-progress -->
       <button class="feat-card card-ai feat-card-demo" onclick="showPage('page-tutor')">
@@ -481,6 +495,61 @@
     </div>
     <div id="exam-content"></div>
     <div id="exam-result" style="display:none;"></div>
+  </section>
+
+  <!-- ===== REPORTS & EXPORT ===== -->
+  <section class="page" id="page-reports" style="display:none;">
+    <div class="page-header">
+      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
+      <h2>📈 Reports &amp; Export</h2>
+      <p>Exam analytics, student performance and export tools</p>
+    </div>
+
+    <!-- Export actions -->
+    <div class="rpt-export-bar">
+      <button class="rpt-export-btn rpt-btn-csv"   onclick="exportResultsCSV()">⬇️ Download CSV</button>
+      <button class="rpt-export-btn rpt-btn-excel" onclick="exportResultsExcel()">📊 Download Excel</button>
+      <button class="rpt-export-btn rpt-btn-pdf"   onclick="exportProgressPDF()">📄 Progress PDF</button>
+    </div>
+
+    <!-- Summary cards -->
+    <div id="report-summary-cards" class="rpt-cards-row"></div>
+
+    <!-- Class analytics -->
+    <div class="rpt-section">
+      <h3>📊 Exam Analytics</h3>
+      <div id="report-class-analytics"></div>
+    </div>
+
+    <!-- Results table -->
+    <div class="rpt-section">
+      <h3>📋 All Results</h3>
+      <div id="report-results-table" style="overflow-x:auto;"></div>
+    </div>
+
+    <!-- Question difficulty -->
+    <div class="rpt-section">
+      <h3>🔬 Question Difficulty (Most Missed)</h3>
+      <div id="report-question-difficulty" style="overflow-x:auto;"></div>
+    </div>
+  </section>
+
+  <!-- ===== APP TESTS ===== -->
+  <section class="page" id="page-tests" style="display:none;">
+    <div class="page-header">
+      <button class="back-btn" onclick="showPage('page-home')">← Back</button>
+      <h2>🧪 App Tests</h2>
+      <p>Complete MVP test suite — runs entirely on demo data, no network needed</p>
+    </div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <button class="csv-sample-load-btn" style="font-size:16px;padding:12px 32px;" onclick="runAllTests()">
+        ▶️ Run All Tests
+      </button>
+      <p style="font-size:12px;color:var(--clr-muted);margin-top:8px;">
+        21 test suites · 100+ assertions · CSV parsing, exam scoring, rotation, i18n, branding, PDF, reports and more
+      </p>
+    </div>
+    <div id="test-results-container"></div>
   </section>
 
   <!-- ===== STUDENT NAME MODAL (shown before exams) ===== -->
