@@ -5300,14 +5300,24 @@ function updateSampleBankButton() {
   btn.title       = already ? 'Delete it from the list below to reload' : 'Loads all Class 7 sample questions instantly';
 }
 
-const LANDING_SEEN_KEY = 'studyBuddy_landingSeen';
+const LANDING_SEEN_KEY    = 'studyBuddy_landingSeen';
+const STUDENT_NAME_KEY    = 'studyBuddy_studentName'; // persists across sessions for school links
 
 function showLandingModal() {
-  const modal = document.getElementById('landing-modal');
+  const modal        = document.getElementById('landing-modal');
+  const params       = new URLSearchParams(window.location.search);
+  const hasInstitute = !!params.get('institute');
+  const isAuthFlow   = params.get('setup') === '1' || window.location.hash.includes('access_token');
+
+  // On a school link (?institute=) — show student name prompt instead of register modal
+  if (hasInstitute && !isAuthFlow) {
+    showStudentWelcome();
+    return;
+  }
+
+  // Individual use — show register/individual modal on first ever visit
   if (!modal) return;
-  // Don't show if: already seen, OR ?institute= URL param present (direct school link)
-  const alreadySeen  = localStorage.getItem(LANDING_SEEN_KEY);
-  const hasInstitute = !!(new URLSearchParams(window.location.search).get('institute'));
+  const alreadySeen = localStorage.getItem(LANDING_SEEN_KEY);
   if (alreadySeen || hasInstitute) return;
   modal.style.display = 'flex';
 }
@@ -5317,6 +5327,104 @@ function dismissLandingModal() {
   const modal = document.getElementById('landing-modal');
   if (modal) modal.style.display = 'none';
 }
+
+// Shown when a student opens a school URL for the first time.
+// Stores name in localStorage so it persists across sessions (unlike sessionStorage).
+function showStudentWelcome() {
+  // If we already have a name stored, skip — don't ask every visit
+  const savedName = localStorage.getItem(STUDENT_NAME_KEY);
+  if (savedName) {
+    // Silently pre-fill sessionStorage so exams pick it up
+    if (typeof setStudentInfo === 'function') {
+      setStudentInfo({ name: savedName, section: localStorage.getItem('studyBuddy_studentSection') || '' });
+    }
+    return;
+  }
+
+  // Remove any existing welcome overlay
+  document.getElementById('student-welcome-modal')?.remove();
+
+  const brand = (typeof getBrandCache === 'function' && getBrandCache()) || {};
+  const schoolName = brand.name || 'your school';
+
+  const overlay = document.createElement('div');
+  overlay.id = 'student-welcome-modal';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9990;background:rgba(15,10,40,.75);display:flex;align-items:center;justify-content:center;padding:16px;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:32px 26px;max-width:420px;width:100%;box-shadow:0 8px 40px rgba(79,70,229,.3);text-align:center;">
+      <div style="font-size:48px;margin-bottom:10px;">🎓</div>
+      <h2 style="font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--clr-primary);margin-bottom:6px;">
+        Welcome to ${schoolName}!
+      </h2>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:20px;line-height:1.6;">
+        Enter your name to get started. It will appear on your results and exam PDFs.
+      </p>
+      <div style="text-align:left;margin-bottom:14px;">
+        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:4px;">
+          Your Name <span style="color:#ef4444;">*</span>
+        </label>
+        <input id="welcome-name-input" type="text" placeholder="e.g. Aarav Sharma"
+          style="width:100%;border:1.5px solid #c7d2fe;border-radius:10px;padding:10px 13px;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box;"
+          onkeydown="if(event.key==='Enter')submitStudentWelcome()" />
+      </div>
+      <div style="text-align:left;margin-bottom:20px;">
+        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:4px;">
+          Class / Section <span style="font-weight:400;color:#9ca3af;">(optional)</span>
+        </label>
+        <input id="welcome-section-input" type="text" placeholder="e.g. 7-A"
+          style="width:100%;border:1.5px solid #c7d2fe;border-radius:10px;padding:10px 13px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;"
+          onkeydown="if(event.key==='Enter')submitStudentWelcome()" />
+      </div>
+      <div id="welcome-error" style="display:none;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:8px 12px;color:#b91c1c;font-size:13px;margin-bottom:12px;text-align:left;">
+        ⚠️ Please enter your name to continue.
+      </div>
+      <button onclick="submitStudentWelcome()"
+        style="width:100%;background:linear-gradient(135deg,var(--clr-primary),var(--clr-secondary));color:#fff;border:none;border-radius:12px;padding:13px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;">
+        Let's Go! 🚀
+      </button>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  // Auto-focus name input
+  setTimeout(() => document.getElementById('welcome-name-input')?.focus(), 100);
+}
+
+function submitStudentWelcome() {
+  const nameEl    = document.getElementById('welcome-name-input');
+  const sectionEl = document.getElementById('welcome-section-input');
+  const errEl     = document.getElementById('welcome-error');
+  const name      = nameEl?.value?.trim() || '';
+  const section   = sectionEl?.value?.trim() || '';
+
+  // Name is mandatory — shake input and show error, do not close modal
+  if (!name) {
+    if (errEl) errEl.style.display = 'block';
+    if (nameEl) {
+      nameEl.style.borderColor = '#ef4444';
+      nameEl.style.animation = 'shake 0.35s ease';
+      nameEl.focus();
+      setTimeout(() => { nameEl.style.animation = ''; }, 400);
+    }
+    return; // block — user cannot proceed
+  }
+
+  // Hide error if previously shown
+  if (errEl) errEl.style.display = 'none';
+
+  // Save to localStorage so it persists across sessions on this device
+  localStorage.setItem(STUDENT_NAME_KEY, name);
+  localStorage.setItem('studyBuddy_studentSection', section);
+
+  // Pre-fill sessionStorage for exam modals
+  if (typeof setStudentInfo === 'function') {
+    setStudentInfo({ name, section });
+  }
+
+  document.getElementById('student-welcome-modal')?.remove();
+  showToast(`Welcome, ${name}! 👋`);
+}
+
+window.submitStudentWelcome = submitStudentWelcome;
 
 function init() {
   assignDefaultIds();

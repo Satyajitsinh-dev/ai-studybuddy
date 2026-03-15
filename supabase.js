@@ -182,6 +182,8 @@ async function onSignIn(user) {
 
   updateAuthUI();
   renderAdminCards();
+  // Refresh admin URL bar with school slug (works whenever admin is on admin page)
+  if (typeof renderAdminUrlBar === 'function') renderAdminUrlBar();
 }
 
 function onSignOut() {
@@ -472,9 +474,235 @@ async function importStudents(students) {
 }
 
 /* =====================================================
-   PDF BRANDED HEADER
-   Called by downloadExamPDF() in script.js
+   TEACHER INVITE
+   Admin invites teachers by email — they receive a magic
+   link that signs them in with role = 'teacher'.
    ===================================================== */
+
+// Send a single teacher invite
+async function inviteTeacher(email, name) {
+  const client = sb();
+  if (!client || !isAdmin()) return { ok: false, error: 'Admin login required.' };
+  if (!email || !email.includes('@')) return { ok: false, error: 'Valid email required.' };
+
+  const instId = instituteId();
+  if (!instId) return { ok: false, error: 'No institute linked to your account.' };
+
+  const redirectTo = APP_BASE_URL + '?institute='
+    + (localStorage.getItem('studyBuddy_instituteSlug') || '')
+    + '&role=teacher';
+
+  const { error } = await client.auth.signInWithOtp({
+    email: email.trim().toLowerCase(),
+    options: {
+      emailRedirectTo: redirectTo,
+      data: {
+        name:         name || '',
+        institute_id: instId,
+        role:         'teacher',
+      }
+    }
+  });
+
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+// UI handler — single invite button
+async function inviteTeacherUI() {
+  const email  = document.getElementById('invite-teacher-email')?.value?.trim();
+  const name   = document.getElementById('invite-teacher-name')?.value?.trim();
+  const result = document.getElementById('invite-teacher-result');
+  const btn    = document.getElementById('invite-teacher-btn');
+
+  if (!email) {
+    if (result) result.innerHTML = '<p class="invite-msg invite-err">⚠️ Please enter an email address.</p>';
+    return;
+  }
+
+  if (btn) { btn.textContent = '⏳ Sending…'; btn.disabled = true; }
+
+  const res = await inviteTeacher(email, name);
+
+  if (btn) { btn.textContent = '📧 Send Invite'; btn.disabled = false; }
+
+  if (res.ok) {
+    if (result) result.innerHTML = `<p class="invite-msg invite-ok">✅ Invite sent to <b>${email}</b>. They'll receive a magic-link to sign in as teacher.</p>`;
+    // Clear inputs
+    const eEl = document.getElementById('invite-teacher-email');
+    const nEl = document.getElementById('invite-teacher-name');
+    if (eEl) eEl.value = '';
+    if (nEl) nEl.value = '';
+    // Refresh teachers list
+    await renderTeachersList();
+  } else {
+    if (result) result.innerHTML = `<p class="invite-msg invite-err">❌ ${res.error}</p>`;
+  }
+}
+
+// Bulk teacher CSV — same as student import but role = teacher
+function handleBulkTeacherFile(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const text = ev.target.result;
+    const lines = text.trim().split(/\r?\n/);
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    const eIdx = headers.indexOf('email');
+    const nIdx = headers.indexOf('name');
+
+    if (eIdx < 0) {
+      const area = document.getElementById('bulk-teacher-preview');
+      if (area) area.innerHTML = '<p class="invite-msg invite-err">❌ CSV must have an "email" column.</p>';
+      return;
+    }
+
+    const teachers = [];
+    lines.slice(1).forEach(line => {
+      if (!line.trim()) return;
+      const v = line.split(',').map(c => c.trim().replace(/^"|"$/g,''));
+      const email = v[eIdx];
+      if (!email || !email.includes('@')) return;
+      teachers.push({ email, name: nIdx >= 0 ? v[nIdx] : '' });
+    });
+
+    const area = document.getElementById('bulk-teacher-preview');
+    if (!teachers.length) {
+      if (area) area.innerHTML = '<p class="invite-msg invite-err">⚠️ No valid emails found in CSV.</p>';
+      return;
+    }
+
+    if (area) area.innerHTML = `
+      <div class="invite-preview-box">
+        <p style="font-weight:700;margin-bottom:10px;">📋 ${teachers.length} teacher${teachers.length>1?'s':''} found:</p>
+        ${teachers.map(t => `
+          <div class="invite-preview-row">
+            <span>👩‍🏫 ${t.name || '(no name)'}</span>
+            <span class="invite-email">${t.email}</span>
+          </div>`).join('')}
+        <div style="display:flex;gap:10px;margin-top:14px;">
+          <button class="csv-sample-load-btn"
+                  onclick="sendBulkTeacherInvites(${JSON.stringify(teachers).replace(/"/g,'&quot;')})">
+            📧 Send ${teachers.length} Invite${teachers.length>1?'s':''}
+          </button>
+          <button class="csv-sample-download-btn"
+                  onclick="document.getElementById('bulk-teacher-preview').innerHTML=''">
+            Cancel
+          </button>
+        </div>
+      </div>`;
+  };
+  reader.readAsText(file);
+  // Reset file input so same file can be re-selected
+  e.target.value = '';
+}
+
+async function sendBulkTeacherInvites(teachers) {
+  const area = document.getElementById('bulk-teacher-preview');
+  if (area) area.innerHTML = '<p class="invite-msg">⏳ Sending invites…</p>';
+
+  let ok = 0, failed = 0;
+  for (const t of teachers) {
+    const res = await inviteTeacher(t.email, t.name);
+    if (res.ok) ok++; else failed++;
+  }
+
+  if (area) area.innerHTML = `
+    <p class="invite-msg ${failed > 0 ? 'invite-err' : 'invite-ok'}">
+      ✅ ${ok} invite${ok!==1?'s':''} sent${failed > 0 ? ` · ⚠️ ${failed} failed` : ''}.
+    </p>`;
+
+  await renderTeachersList();
+}
+
+// Download a simple 2-column CSV template for teachers
+function downloadTeacherCsvTemplate() {
+  const csv = 'name,email\nMrs. Sharma,sharma@myschool.in\nMr. Patel,patel@myschool.in';
+  const blob = new Blob([csv], { type:'text/csv' });
+  const a    = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(blob), download: 'teachers-template.csv'
+  });
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+// Load and render the list of existing teachers for this institute
+async function renderTeachersList() {
+  const container = document.getElementById('teachers-list');
+  if (!container) return;
+
+  const client = sb();
+  if (!client || !isAdmin()) {
+    container.innerHTML = '<p style="color:var(--clr-muted);font-size:13px;">Sign in as admin to see teachers.</p>';
+    return;
+  }
+
+  const instId = instituteId();
+  if (!instId) { container.innerHTML = ''; return; }
+
+  const { data: teachers, error } = await client
+    .from('users')
+    .select('id, name, preferred_lang, created_at')
+    .eq('institute_id', instId)
+    .eq('role', 'teacher')
+    .order('created_at', { ascending: false });
+
+  if (error || !teachers?.length) {
+    container.innerHTML = '<p style="color:var(--clr-muted);font-size:13px;">No teachers added yet.</p>';
+    return;
+  }
+
+  // Fetch emails from auth.users via the user metadata (we stored email in user_metadata)
+  container.innerHTML = teachers.map(t => `
+    <div class="teacher-row">
+      <div class="teacher-info">
+        <span class="teacher-avatar">👩‍🏫</span>
+        <div>
+          <div class="teacher-name">${t.name || '(no name)'}</div>
+          <div class="teacher-meta">Added ${new Date(t.created_at).toLocaleDateString('en-IN')}</div>
+        </div>
+      </div>
+      <div class="teacher-actions">
+        <span class="teacher-role-badge">Teacher</span>
+        <button class="key-change-btn danger" style="font-size:11px;padding:4px 10px;"
+                onclick="removeTeacherUI('${t.id}', this)">
+          Remove
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+// Demote a teacher back to student (remove teacher role)
+async function removeTeacherUI(userId, btnEl) {
+  if (!confirm('Remove this teacher? They will lose access to review answers and class reports.')) return;
+
+  const client = sb();
+  if (!client || !isAdmin()) return;
+
+  if (btnEl) { btnEl.textContent = '⏳'; btnEl.disabled = true; }
+
+  const { error } = await client
+    .from('users')
+    .update({ role: 'student' })
+    .eq('id', userId)
+    .eq('institute_id', instituteId()); // safety: only demote within own institute
+
+  if (error) {
+    showToast('⚠️ Could not remove teacher: ' + error.message);
+    if (btnEl) { btnEl.textContent = 'Remove'; btnEl.disabled = false; }
+    return;
+  }
+
+  showToast('✅ Teacher removed.');
+  await renderTeachersList();
+}
+
+// Export to window so onclick handlers in HTML can reach them
+window.inviteTeacherUI        = inviteTeacherUI;
+window.handleBulkTeacherFile  = handleBulkTeacherFile;
+window.sendBulkTeacherInvites = sendBulkTeacherInvites;
+window.downloadTeacherCsvTemplate = downloadTeacherCsvTemplate;
+window.removeTeacherUI        = removeTeacherUI;
 function addBrandedPdfHeader(doc, extraLines) {
   const b = window.BRAND || {};
   const margin = 15;
@@ -532,10 +760,38 @@ function addBrandedPdfHeader(doc, extraLines) {
    ADMIN UI HELPERS — called by page-admin in index.html
    ===================================================== */
 async function renderAdminPage() {
-  renderAdminCards();   // show/hide admin-only cards in feature grid
+  renderAdminCards();
   renderBrandingForm();
   await renderSectionsPanel();
+  renderAdminUrlBar();
+  await renderTeachersList();
 }
+
+// Populates the green school URL bar at the top of the admin page
+function renderAdminUrlBar() {
+  const slug = localStorage.getItem('studyBuddy_instituteSlug')
+            || new URLSearchParams(window.location.search).get('institute')
+            || '';
+  const bar     = document.getElementById('admin-url-bar');
+  const linkEl  = document.getElementById('admin-url-bar-link');
+  const openBtn = document.getElementById('admin-url-open-btn');
+  if (!bar || !linkEl || !slug) return;
+
+  const url = APP_BASE_URL + '?institute=' + slug;
+  linkEl.textContent = url;
+  if (openBtn) { openBtn.href = url; }
+  bar.style.display = 'flex';
+}
+
+function copyAdminSchoolUrl() {
+  const url = document.getElementById('admin-url-bar-link')?.textContent?.trim();
+  if (!url) return;
+  const btn = document.getElementById('admin-url-copy-btn');
+  navigator.clipboard?.writeText(url)
+    .then(() => { if (btn) { btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = '📋 Copy', 2000); } })
+    .catch(() => { prompt('Copy your school URL:', url); });
+}
+window.copyAdminSchoolUrl = copyAdminSchoolUrl;
 
 function renderAdminCards() {
   const adminCard   = document.getElementById('feat-admin-card');
@@ -544,8 +800,8 @@ function renderAdminCards() {
   const testsCard   = document.getElementById('feat-tests-card');
   if (adminCard)   adminCard.style.display   = isAdmin()    ? '' : 'none';
   if (reviewCard)  reviewCard.style.display  = isTeacher()  ? '' : 'none';
-  // Reports visible to everyone (shows local progress for students, full class data for teachers)
-  if (reportsCard) reportsCard.style.display = '';
+  // Reports: teacher/admin only — shows student names and class data
+  if (reportsCard) reportsCard.style.display = isTeacher()  ? '' : 'none';
   // Tests visible only to admins (or when URL has ?dev=1 for developers)
   const isDev = new URLSearchParams(window.location.search).get('dev') === '1';
   if (testsCard) testsCard.style.display = (isAdmin() || isDev) ? '' : 'none';
@@ -749,27 +1005,60 @@ function setStudentInfo(info) {
 }
 
 function showStudentNameModal(onConfirm) {
-  // If already have info this session, skip modal
-  const existing = getStudentInfo();
+  // Check sessionStorage first (set this session), then localStorage (set on welcome)
+  const existing  = getStudentInfo();
+  const savedName = localStorage.getItem('studyBuddy_studentName');
+
   if (existing?.name) { onConfirm(existing); return; }
 
-  const modal = document.getElementById('student-modal');
+  // Pre-fill from localStorage if student already entered name on welcome screen
+  if (savedName) {
+    const info = {
+      name:    savedName,
+      section: localStorage.getItem('studyBuddy_studentSection') || ''
+    };
+    setStudentInfo(info);
+    onConfirm(info);
+    return;
+  }
+
+  const modal     = document.getElementById('student-modal');
+  const nameInput = document.getElementById('student-name-input');
+  const errEl     = document.getElementById('student-modal-error');
   if (!modal) { onConfirm({ name:'', section:'' }); return; }
 
+  // Pre-fill if input already has a value from a previous partial entry
+  if (nameInput && !nameInput.value) nameInput.value = '';
   modal.style.display = 'flex';
+  setTimeout(() => nameInput?.focus(), 100);
+
+  // Hide any previous error
+  if (errEl) errEl.style.display = 'none';
 
   document.getElementById('student-modal-start').onclick = () => {
     const name    = document.getElementById('student-name-input')?.value?.trim() || '';
     const section = document.getElementById('student-section-input')?.value?.trim() || '';
-    const info    = { name, section };
+
+    // Name is mandatory — block and show error
+    if (!name) {
+      if (errEl) errEl.style.display = 'block';
+      const inp = document.getElementById('student-name-input');
+      if (inp) {
+        inp.style.borderColor = '#ef4444';
+        inp.style.animation = 'shake 0.35s ease';
+        inp.focus();
+        setTimeout(() => { inp.style.animation = ''; inp.style.borderColor = ''; }, 400);
+      }
+      return;
+    }
+
+    if (errEl) errEl.style.display = 'none';
+    const info = { name, section };
     setStudentInfo(info);
+    localStorage.setItem('studyBuddy_studentName', name);
+    localStorage.setItem('studyBuddy_studentSection', section);
     modal.style.display = 'none';
     onConfirm(info);
-  };
-
-  document.getElementById('student-modal-skip').onclick = () => {
-    modal.style.display = 'none';
-    onConfirm({ name:'', section:'' });
   };
 }
 
@@ -960,9 +1249,10 @@ async function finaliseAdminRegistration() {
   const params   = new URLSearchParams(window.location.search);
   const hash     = new URLSearchParams(window.location.hash.replace('#',''));
   const isSetup  = params.get('setup') === '1';
+  const roleParam = params.get('role') || hash.get('role') || '';
   const hasToken = hash.get('access_token') || params.get('access_token');
 
-  if (!isSetup && !hasToken) return;
+  if (!isSetup && !hasToken && !roleParam) return;
 
   const client = sb();
   if (!client) return;
@@ -981,29 +1271,44 @@ async function finaliseAdminRegistration() {
   if (!session) return;
 
   const instId = session.user.user_metadata?.institute_id;
+  const metaRole = session.user.user_metadata?.role || roleParam;
 
-  if (instId) {
-    // Link this user to the institute as admin (idempotent — safe to call multiple times)
+  if (instId && metaRole === 'teacher') {
+    // Teacher first login — ensure their role is set correctly in public.users
+    await client
+      .from('users')
+      .upsert({
+        id:           session.user.id,
+        institute_id: instId,
+        role:         'teacher',
+        name:         session.user.user_metadata?.name || '',
+      }, { onConflict: 'id' });
+
+  } else if (instId && (isSetup || metaRole === 'admin')) {
+    // Admin first login — finalise admin registration
     await client.rpc('finalise_admin_registration', { p_institute_id: instId });
   }
 
-  // Clean URL — strip tokens and ?setup=1
+  // Clean URL
   const clean = new URL(window.location.href);
   clean.searchParams.delete('setup');
+  clean.searchParams.delete('role');
   clean.hash = '';
   window.history.replaceState({}, '', clean.toString());
 
-  // Load profile (sets currentProfile, shows admin cards)
+  // Load profile
   await onSignIn(session.user);
 
-  // Show admin setup screen — always on a setup landing, first time or not
-  // Small delay so DOM/cards have time to render
-  setTimeout(() => {
-    const slug = localStorage.getItem('studyBuddy_instituteSlug')
-              || params.get('institute')
-              || '';
-    showAdminSetupWelcome(slug);
-  }, 400);
+  // Show admin setup screen only for first-time admin
+  if (isSetup || (metaRole === 'admin' && instId)) {
+    setTimeout(() => {
+      const slug = localStorage.getItem('studyBuddy_instituteSlug')
+                || params.get('institute') || '';
+      showAdminSetupWelcome(slug);
+    }, 400);
+  } else if (metaRole === 'teacher') {
+    showToast('✅ Signed in as Teacher — Review Answers card is now available.');
+  }
 }
 
 // Full-screen school setup modal — shown immediately after admin clicks magic link.

@@ -693,10 +693,11 @@ function runExamIntegrationTests() {
   const earned = shortAns.length >= minLen ? 2 : shortAns.length >= minLen*0.4 ? 1 : 0;
   assert('Exam integration: short answer length scoring', earned === 2);
 
-  // persistExamResult smoke test
+  // persistExamResult smoke test — save then immediately clean up
   if (typeof persistExamResult === 'function') {
+    const beforeCount = getAllResults().length;
     const r = persistExamResult({
-      exam_type:'mock', student_name:'Test Student', student_section:'7-A',
+      exam_type:'mock', student_name:'__TEST_STUDENT__', student_section:'7-A',
       class_level:'7', mcq_score:4, mcq_total:5,
       answers_log: mcqPool.map(q => ({ type:'mcq', question_id:q._id, q:q.q, isCorrect:1, marks:1 })),
       taken_at: new Date().toISOString(),
@@ -704,6 +705,13 @@ function runExamIntegrationTests() {
     assert('Exam integration: result persisted',       !!r);
     assert('Exam integration: result has id',          !!r.id);
     assert('Exam integration: result saved locally',   getAllResults().some(res => res.id === r.id));
+
+    // CLEAN UP — remove test result immediately so it doesn't pollute reports
+    try {
+      const all = getAllResults().filter(res => res.id !== r.id);
+      localStorage.setItem('studyBuddy_results', JSON.stringify(all));
+    } catch(e) { /* ignore */ }
+    assert('Exam integration: test result cleaned up', getAllResults().length === beforeCount);
   }
 }
 
@@ -1170,9 +1178,21 @@ function runReconcileClassTests() {
    MAIN RUNNER
    ===================================================== */
 
+// Remove any results seeded by previous test runs
+function clearTestData() {
+  try {
+    const all = getAllResults().filter(r => r.student_name !== '__TEST_STUDENT__');
+    localStorage.setItem('studyBuddy_results', JSON.stringify(all));
+  } catch(e) { /* ignore */ }
+}
+window.clearTestData = clearTestData;
+
 async function runAllTests() {
   TEST_COUNT = 0; PASS_COUNT = 0; FAIL_COUNT = 0;
   TEST_RESULTS.length = 0;
+
+  // Clean up any leftover test data from previous runs before starting
+  clearTestData();
 
   const suites = [
     // ── Core data ──

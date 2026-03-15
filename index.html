@@ -545,8 +545,11 @@
       <button class="csv-sample-load-btn" style="font-size:16px;padding:12px 32px;" onclick="runAllTests()">
         ▶️ Run All Tests
       </button>
+      <button class="csv-sample-download-btn" style="margin-left:10px;" onclick="clearTestData();showToast('🧹 Test data cleared from reports.')">
+        🧹 Clear Test Data
+      </button>
       <p style="font-size:12px;color:var(--clr-muted);margin-top:8px;">
-        21 test suites · 100+ assertions · CSV parsing, exam scoring, rotation, i18n, branding, PDF, reports and more
+        37 test suites · 280+ assertions · runs on demo data only — no network needed
       </p>
     </div>
     <div id="test-results-container"></div>
@@ -558,7 +561,7 @@
       <h3 class="modal-title" data-i18n="exam_modal_title">Before you begin…</h3>
       <p class="modal-sub" data-i18n="exam_modal_sub">Enter your name so it appears on your result and PDF.</p>
       <div class="modal-field">
-        <label class="filter-label" data-i18n="exam_modal_name">Your name</label>
+        <label class="filter-label" data-i18n="exam_modal_name">Your name <span style="color:#ef4444;">*</span></label>
         <input id="student-name-input" class="bank-name-input" type="text"
                placeholder="e.g. Aanya Sharma" autocomplete="name" />
       </div>
@@ -567,9 +570,11 @@
         <input id="student-section-input" class="bank-name-input" type="text"
                placeholder="e.g. 7-A or Rose" />
       </div>
+      <div id="student-modal-error" style="display:none;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:8px 12px;color:#b91c1c;font-size:13px;margin-top:8px;">
+        ⚠️ Please enter your name to start the exam.
+      </div>
       <div class="modal-actions">
         <button id="student-modal-start" class="big-btn btn-green" data-i18n="exam_modal_start">Start Exam ✍️</button>
-        <button id="student-modal-skip"  class="key-change-btn"   data-i18n="exam_modal_skip">Skip</button>
       </div>
     </div>
   </div>
@@ -614,6 +619,20 @@
       <button class="back-btn" onclick="showPage('page-home')" data-i18n="back">← Back</button>
       <h2 data-i18n="admin_title">⚙️ Admin Panel</h2>
       <p>Branding, sections and student management</p>
+    </div>
+
+    <!-- Permanent school URL bar — always visible to admin -->
+    <div class="admin-school-url-bar" id="admin-url-bar" style="display:none;">
+      <div>
+        <div class="admin-url-bar-label">🔗 Your School URL — share with students &amp; teachers</div>
+        <div class="admin-url-bar-link" id="admin-url-bar-link"></div>
+      </div>
+      <div class="admin-url-bar-btns">
+        <button class="admin-url-copy-btn" id="admin-url-copy-btn"
+                onclick="copyAdminSchoolUrl()">📋 Copy</button>
+        <a class="admin-url-open-btn" id="admin-url-open-btn"
+           href="#" target="_blank" rel="noopener">↗ Open</a>
+      </div>
     </div>
 
     <!-- Branding -->
@@ -671,6 +690,60 @@
         <input id="new-section-name" class="bank-name-input" type="text"
                placeholder="Section (e.g. A or Rose)" style="width:160px;" />
         <button class="csv-sample-load-btn" onclick="addSectionUI()" data-i18n="admin_add_section">+ Add Section</button>
+      </div>
+    </div>
+
+    <!-- Invite Teachers -->
+    <div class="csv-banks-section" style="margin-top:28px;">
+      <h3>👩‍🏫 Invite Teachers</h3>
+      <p class="exam-bank-desc">
+        Teachers can review written answers and see class reports.<br>
+        Enter an email below — they'll receive a magic-link to sign in as a teacher.
+      </p>
+
+      <!-- Single invite -->
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:flex-end;">
+        <div style="flex:1;min-width:220px;">
+          <label class="filter-label">Teacher Email</label>
+          <input id="invite-teacher-email" class="bank-name-input" type="email"
+                 placeholder="teacher@myschool.in" style="margin-top:4px;" />
+        </div>
+        <div style="min-width:160px;">
+          <label class="filter-label">Name (optional)</label>
+          <input id="invite-teacher-name" class="bank-name-input" type="text"
+                 placeholder="e.g. Mrs. Sharma" style="margin-top:4px;" />
+        </div>
+        <button class="csv-sample-load-btn" onclick="inviteTeacherUI()"
+                id="invite-teacher-btn" style="align-self:flex-end;">
+          📧 Send Invite
+        </button>
+      </div>
+      <div id="invite-teacher-result" style="margin-top:10px;"></div>
+
+      <!-- Bulk invite via CSV -->
+      <div style="margin-top:18px;padding-top:16px;border-top:1.5px solid #e0e7ff;">
+        <p class="exam-bank-desc" style="margin-bottom:10px;">
+          Or invite multiple teachers at once via CSV — columns: <code>name, email</code>
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="csv-sample-load-btn" onclick="document.getElementById('bulk-teacher-file').click()">
+            📂 Upload Teachers CSV
+          </button>
+          <button class="csv-sample-download-btn" onclick="downloadTeacherCsvTemplate()">
+            ⬇️ Download Template
+          </button>
+          <input type="file" id="bulk-teacher-file" accept=".csv" style="display:none"
+                 onchange="handleBulkTeacherFile(event)" />
+        </div>
+        <div id="bulk-teacher-preview"></div>
+      </div>
+
+      <!-- Existing teachers list -->
+      <div style="margin-top:18px;padding-top:16px;border-top:1.5px solid #e0e7ff;">
+        <p class="filter-label" style="margin-bottom:8px;">Current Teachers</p>
+        <div id="teachers-list">
+          <p style="color:var(--clr-muted);font-size:13px;">Loading…</p>
+        </div>
       </div>
     </div>
 
