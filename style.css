@@ -1276,3 +1276,145 @@ body {
 @media (max-width: 400px) {
   .lang-switcher { display: none; }
 }
+
+/* =====================================================
+   DEMO BADGE on AI Tutor card
+   ===================================================== */
+.feat-card-demo {
+  position: relative;
+}
+.feat-demo-badge {
+  display: inline-block;
+  margin-top: 6px;
+  background: rgba(255,255,255,.22);
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .02em;
+}
+
+/* =====================================================
+   LANDING MODAL
+   ===================================================== */
+.landing-modal-card {
+  max-width: 480px;
+  padding: 36px 28px 28px;
+}
+.landing-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+.landing-btn-primary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+  box-shadow: 0 4px 16px rgba(79,70,229,.28);
+  text-decoration: none;
+  transition: opacity .18s, transform .12s;
+  text-align: left;
+}
+.landing-btn-primary:hover { opacity: .9; transform: translateY(-2px); }
+.landing-btn-secondary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 2px solid #c7d2fe;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--clr-primary);
+  background: #fff;
+  transition: background .18s, border-color .18s;
+  text-align: left;
+}
+.landing-btn-secondary:hover { background: #eef2ff; border-color: var(--clr-primary); }
+.landing-btn-sub {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: .75;
+}
+.landing-btn-primary .landing-btn-sub  { color: rgba(255,255,255,.85); }
+.landing-btn-secondary .landing-btn-sub { color: var(--clr-muted); }
+
+@media (max-width: 480px) {
+  .landing-modal-card { padding: 24px 16px 20px; }
+  .landing-btn-primary,
+  .landing-btn-secondary { font-size: 14px; padding: 13px 16px; }
+}
+
+/* =====================================================
+   TOPBAR REGISTER SCHOOL LINK
+   ===================================================== */
+.topbar-register-link {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 10px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s;
+  font-family: 'Nunito', sans-serif;
+}
+.topbar-register-link:hover { background: rgba(255,255,255,.28); }
+
+/* Hide when a school's branded URL is active — branding loaded means already registered */
+.branded .topbar-register-link { display: none; }
+
+/* =====================================================
+   HOME PAGE REGISTER STRIP
+   ===================================================== */
+.home-register-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 28px auto 8px;
+  max-width: 700px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+  border: 1.5px solid #c7d2fe;
+  border-radius: 14px;
+  font-size: 14px;
+  color: var(--clr-muted);
+  font-weight: 600;
+}
+.home-register-link {
+  color: var(--clr-primary);
+  font-weight: 800;
+  text-decoration: none;
+  border-bottom: 2px solid #c7d2fe;
+  transition: border-color .15s, color .15s;
+}
+.home-register-link:hover {
+  color: var(--clr-secondary);
+  border-color: var(--clr-secondary);
+}
+
+@media (max-width: 480px) {
+  .topbar-register-link { display: none; } /* hidden on very small screens — strip covers it */
+  .home-register-strip  { font-size: 13px; padding: 12px 14px; }
+}

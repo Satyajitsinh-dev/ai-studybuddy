@@ -22,6 +22,7 @@
       <img id="brand-logo" src="" alt="" style="display:none;height:32px;width:32px;object-fit:contain;border-radius:6px;" />
       <span class="logo-emoji" id="logo-emoji-default">🤖</span>
       <span class="logo-text" id="brand-name" data-i18n="app_name">AI Study Buddy</span>
+      <a href="register.html" class="topbar-register-link" title="Register your school">🏫 Register School</a>
     </div>
     <div class="topbar-right">
       <!-- Language switcher -->
@@ -58,13 +59,13 @@
     <div class="hero-blob blob2"></div>
     <div class="hero-content">
       <div class="hero-mascot">🤖</div>
-      <h1 class="hero-title">Hey there, Scholar! 👋</h1>
-      <p class="hero-sub" id="hero-sub-text">Your fun AI-powered study partner for any class.<br>Load your question bank, practise and ace those exams! 🚀</p>
+      <h1 class="hero-title" data-i18n="home_greeting">Hey there, Scholar! 👋</h1>
+      <p class="hero-sub" id="hero-sub-text" data-i18n="home_sub_default">Your AI-powered study partner for any class.</p>
       <div class="hero-stats-row">
-        <div class="hstat"><span id="hs-questions">0</span><small>Questions</small></div>
-        <div class="hstat"><span id="hs-attempts">0</span><small>Attempts</small></div>
-        <div class="hstat"><span id="hs-correct">0</span><small>Correct</small></div>
-        <div class="hstat"><span id="hs-score">0%</span><small>Accuracy</small></div>
+        <div class="hstat"><span id="hs-questions">0</span><small data-i18n="stat_questions">Questions</small></div>
+        <div class="hstat"><span id="hs-attempts">0</span><small data-i18n="stat_attempts">Attempts</small></div>
+        <div class="hstat"><span id="hs-correct">0</span><small data-i18n="stat_correct">Correct</small></div>
+        <div class="hstat"><span id="hs-score">0%</span><small data-i18n="stat_accuracy">Accuracy</small></div>
       </div>
       <!-- Shown only when no questions are loaded -->
       <div id="home-upload-nudge" class="home-upload-nudge" style="display:none">
@@ -76,13 +77,8 @@
       </div>
     </div>
 
-    <!-- Feature Cards -->
+    <!-- Feature Cards — AI Tutor moved to last, marked as demo -->
     <div class="feature-grid" style="margin-top:32px;">
-      <button class="feat-card card-ai"    onclick="showPage('page-tutor')">
-        <span class="feat-icon">💬</span>
-        <span class="feat-title" data-i18n="feat_tutor">Ask AI Tutor</span>
-        <span class="feat-desc"  data-i18n="feat_tutor_sub">Get instant doubt help!</span>
-      </button>
       <button class="feat-card card-quiz"  onclick="showPage('page-quiz')">
         <span class="feat-icon">📝</span>
         <span class="feat-title" data-i18n="feat_quiz">Practice Quiz</span>
@@ -130,6 +126,19 @@
         <span class="feat-title" data-i18n="feat_review">Review Answers</span>
         <span class="feat-desc"  data-i18n="feat_review_sub">Mark student papers</span>
       </button>
+      <!-- AI Tutor — last, marked as demo/in-progress -->
+      <button class="feat-card card-ai feat-card-demo" onclick="showPage('page-tutor')">
+        <span class="feat-icon">💬</span>
+        <span class="feat-title" data-i18n="feat_tutor">Ask AI Tutor</span>
+        <span class="feat-desc"  data-i18n="feat_tutor_sub">Get instant doubt help!</span>
+        <span class="feat-demo-badge" data-i18n="feat_demo_badge">⚗️ Demo version</span>
+      </button>
+    </div>
+
+    <!-- School registration strip — always visible, survives modal dismissal -->
+    <div class="home-register-strip">
+      <span>🏫 Setting up for a school or institute?</span>
+      <a href="register.html" class="home-register-link">Register your school — free, 2 minutes →</a>
     </div>
   </section>
 
@@ -626,6 +635,30 @@
     </div>
     <div id="review-list"></div>
   </section>
+
+  <!-- ===== LANDING MODAL (shown on first visit) ===== -->
+  <div id="landing-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-card landing-modal-card">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:52px;margin-bottom:8px;">🤖</div>
+        <h2 class="modal-title" style="font-size:26px;" data-i18n="app_name">AI Study Buddy</h2>
+        <p class="modal-sub" style="font-size:15px;" data-i18n="home_sub_default">Your AI-powered study partner for any class.</p>
+      </div>
+      <div class="landing-options">
+        <a href="register.html" class="landing-btn-primary">
+          🏫 Register Your School
+          <span class="landing-btn-sub">Set up for your school in 2 minutes — free</span>
+        </a>
+        <button class="landing-btn-secondary" onclick="dismissLandingModal()">
+          👤 Continue as Individual
+          <span class="landing-btn-sub">Use locally without a school account</span>
+        </button>
+      </div>
+      <p style="text-align:center;font-size:12px;color:var(--clr-muted);margin-top:16px;">
+        Already have a school URL? <a href="#" onclick="dismissLandingModal();return false;" style="color:var(--clr-primary);font-weight:700;">Open the app directly →</a>
+      </p>
+    </div>
+  </div>
 
   <!-- ===== TOAST ===== -->
   <div class="toast" id="toast"></div>

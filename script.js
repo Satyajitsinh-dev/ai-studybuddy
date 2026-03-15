@@ -2423,14 +2423,13 @@ function getClassFilteredQuestions() {
 // Update all dynamic UI text that references the active class
 function updateClassUI() {
   const cls = getActiveClass();
-  const label = cls ? `🎓 Class ${cls}` : '🎓 Select Class';
+  // Nav dropdown label
   const btnLabel = document.getElementById('class-dropdown-label');
-  if (btnLabel) btnLabel.textContent = label;
-
-  const heroSub = document.getElementById('hero-sub-text');
-  if (heroSub) heroSub.innerHTML = `Your fun AI-powered study partner${cls ? ` for <b>Class ${cls}</b>` : ''}.<br>Let's learn, practice and ace those exams! 🚀`;
+  if (btnLabel) btnLabel.textContent = cls ? `🎓 Class ${cls}` : (typeof t === 'function' ? t('select_class') : '🎓 Select Class');
+  // Tutor subtitle
   const tutorSub = document.getElementById('tutor-page-sub');
   if (tutorSub) tutorSub.textContent = `Choose Claude 🟣, ChatGPT 🟢 or Gemini 🔵 — ask anything${cls ? ` about Class ${cls}` : ''}!`;
+  // Hero subtitle is handled by updateHomeStats — do not override here
 }
 
 // Build and populate the dropdown list
@@ -2942,25 +2941,32 @@ function updateHomeStats() {
   document.getElementById('hs-correct').textContent = progress.correct;
   const acc = progress.totalAttempts > 0 ? Math.round((progress.correct/progress.totalAttempts)*100) : 0;
   document.getElementById('hs-score').textContent = acc + '%';
-  // Live question count — updates whenever banks are added/removed
   const qcount = getActiveQuestions().length;
   const el = document.getElementById('hs-questions');
   if (el) el.textContent = qcount;
 
-  // Show/hide the upload nudge banner on home screen
+  // Show/hide nudge
   const nudge = document.getElementById('home-upload-nudge');
   if (nudge) nudge.style.display = qcount === 0 ? 'block' : 'none';
 
-  // Update hero subtitle dynamically based on active class
+  // Update stat labels via i18n
+  if (typeof t === 'function') {
+    document.querySelectorAll('[data-i18n="stat_questions"]').forEach(e => e.textContent = t('stat_questions'));
+    document.querySelectorAll('[data-i18n="stat_attempts"]').forEach(e  => e.textContent = t('stat_attempts'));
+    document.querySelectorAll('[data-i18n="stat_correct"]').forEach(e   => e.textContent = t('stat_correct'));
+    document.querySelectorAll('[data-i18n="stat_accuracy"]').forEach(e  => e.textContent = t('stat_accuracy'));
+  }
+
+  // Update hero subtitle via i18n + class state
   const sub = document.getElementById('hero-sub-text');
-  if (sub) {
+  if (sub && typeof t === 'function') {
     const cls = getActiveClass();
     if (cls && qcount > 0) {
-      sub.innerHTML = `Your AI-powered study partner for <b>Class ${cls}</b>. 🎓<br>Let's learn, practise and ace those exams! 🚀`;
+      sub.innerHTML = t('home_sub_loaded', { cls }) ;
     } else if (qcount > 0) {
-      sub.innerHTML = `Your AI-powered study partner. 🎓<br>Select your class and start practising! 🚀`;
+      sub.textContent = t('home_sub_noclass');
     } else {
-      sub.innerHTML = `Your fun AI-powered study partner for any class.<br>Load your question bank, practise and ace those exams! 🚀`;
+      sub.textContent = t('home_sub_default');
     }
   }
 }
@@ -5283,11 +5289,27 @@ function updateSampleBankButton() {
   btn.title       = already ? 'Delete it from the list below to reload' : 'Loads all Class 7 sample questions instantly';
 }
 
+const LANDING_SEEN_KEY = 'studyBuddy_landingSeen';
+
+function showLandingModal() {
+  const modal = document.getElementById('landing-modal');
+  if (!modal) return;
+  // Don't show if: already seen, OR ?institute= URL param present (direct school link)
+  const alreadySeen  = localStorage.getItem(LANDING_SEEN_KEY);
+  const hasInstitute = !!(new URLSearchParams(window.location.search).get('institute'));
+  if (alreadySeen || hasInstitute) return;
+  modal.style.display = 'flex';
+}
+
+function dismissLandingModal() {
+  localStorage.setItem(LANDING_SEEN_KEY, '1');
+  const modal = document.getElementById('landing-modal');
+  if (modal) modal.style.display = 'none';
+}
+
 function init() {
   assignDefaultIds();
-  // i18n — apply saved language immediately
   if (typeof applyTranslations === 'function') applyTranslations();
-  // Supabase — auth + branding + sync (non-blocking)
   if (typeof initSupabase === 'function') initSupabase();
   updateClassUI();
   updateNavScore();
@@ -5295,8 +5317,9 @@ function init() {
   const subjects = getAllSubjects();
   selectedSubject = subjects[0] || 'Math';
   renderClassDropdown();
-  // Highlight active language button
   highlightLangBtn();
+  // Show registration landing modal on first ever visit
+  showLandingModal();
 }
 
 function highlightLangBtn() {

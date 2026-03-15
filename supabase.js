@@ -113,7 +113,12 @@ function isLoggedIn()  { return !!currentUser; }
 function userRole()    { return currentProfile?.role || 'student'; }
 function isAdmin()     { return userRole() === 'admin'; }
 function isTeacher()   { return userRole() === 'teacher' || isAdmin(); }
-function instituteId() { return currentProfile?.institute_id || null; }
+function instituteId() {
+  // Prefer the logged-in user's institute; fall back to URL param cached value
+  return currentProfile?.institute_id
+    || localStorage.getItem('studyBuddy_instituteId')
+    || null;
+}
 
 async function initAuth() {
   const client = sb();
@@ -229,6 +234,11 @@ function applyBranding(b) {
     if (b.logo_url) { logoEl.src = b.logo_url; logoEl.style.display = 'inline'; }
     else logoEl.style.display = 'none';
   }
+
+  // When a school brand is active, the register link is irrelevant — hide it
+  document.body.classList.add('branded');
+  const strip = document.querySelector('.home-register-strip');
+  if (strip) strip.style.display = 'none';
 }
 
 async function saveBranding(formData) {
@@ -725,12 +735,139 @@ function showStudentNameModal(onConfirm) {
 }
 
 /* =====================================================
+   URL-BASED INSTITUTE DETECTION
+   Reads ?institute=slug from the URL and loads that
+   school's branding — no login needed for students.
+   Works for Option A (URL parameter) deployment.
+   ===================================================== */
+
+// Returns the institute slug from ?institute= URL param, or null
+function getInstituteSlugFromUrl() {
+  try {
+    return new URLSearchParams(window.location.search).get('institute') || null;
+  } catch { return null; }
+}
+
+// Load branding for a given slug (public — no auth needed)
+async function loadBrandingBySlug(slug) {
+  const client = sb();
+  if (!client || !slug) return;
+  try {
+    const { data, error } = await client
+      .from('institutes')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+    if (data && !error) {
+      localStorage.setItem(BRAND_KEY, JSON.stringify(data));
+      applyBranding(data);
+      // Store the institute_id so offline-first results get tagged correctly
+      localStorage.setItem('studyBuddy_instituteSlug', slug);
+      localStorage.setItem('studyBuddy_instituteId', data.id);
+    }
+  } catch(e) {
+    console.warn('Could not load branding for slug:', slug, e.message);
+  }
+}
+
+/* =====================================================
+   SELF-SERVICE INSTITUTE REGISTRATION
+   Calls the register_institute Postgres function via RPC.
+   No manual SQL needed — any school can register themselves.
+   ===================================================== */
+
+async function registerInstitute(formData) {
+  const client = sb();
+  if (!client) {
+    return { ok: false, error: 'Supabase is not configured. Add your SUPABASE_URL and SUPABASE_ANON key to supabase.js first.' };
+  }
+
+  // Auto-generate slug from school name if not provided
+  const slug = formData.slug
+    ? formData.slug
+    : formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  const { data, error } = await client.rpc('register_institute', {
+    p_name:            formData.name            || '',
+    p_slug:            slug,
+    p_address:         formData.address          || '',
+    p_phone:           formData.phone            || '',
+    p_email:           formData.contact_email    || '',
+    p_primary_color:   formData.primary_color    || '#4f46e5',
+    p_secondary_color: formData.secondary_color  || '#7c3aed',
+    p_admin_email:     formData.admin_email       || '',
+  });
+
+  if (error) return { ok: false, error: error.message };
+  if (data && !data.ok) return { ok: false, error: data.error };
+
+  // Send magic link to the admin so they can sign in and claim the institute
+  if (formData.admin_email && data.ok) {
+    await client.auth.signInWithOtp({
+      email: formData.admin_email,
+      options: {
+        data: {
+          institute_id: data.institute_id,
+          role:         'admin',
+          name:         formData.admin_name || '',
+        },
+        // Redirect back to the app with institute param after clicking the link
+        emailRedirectTo: window.location.origin
+          + window.location.pathname
+          + '?institute=' + data.slug
+          + '&setup=1',
+      }
+    });
+  }
+
+  return { ok: true, slug: data.slug, institute_id: data.institute_id };
+}
+
+// Called once after admin clicks their magic link and lands back on the app.
+// Detected via ?setup=1 in the URL.
+async function finaliseAdminRegistration() {
+  const params      = new URLSearchParams(window.location.search);
+  const isSetup     = params.get('setup') === '1';
+  if (!isSetup) return;
+
+  const client = sb();
+  if (!client) return;
+
+  // Wait for auth session to be ready
+  const { data: { session } } = await client.auth.getSession();
+  if (!session) return;
+
+  const instId = session.user.user_metadata?.institute_id;
+  if (!instId) return;
+
+  const { data } = await client.rpc('finalise_admin_registration', {
+    p_institute_id: instId
+  });
+
+  if (data?.ok) {
+    showToast('🎉 Admin account activated! Welcome to your Admin Panel.');
+    // Clean up URL — remove ?setup=1 without reloading
+    const clean = new URL(window.location.href);
+    clean.searchParams.delete('setup');
+    window.history.replaceState({}, '', clean.toString());
+    // Reload profile so admin cards appear
+    await onSignIn(session.user);
+  }
+}
+
+/* =====================================================
    INIT — called from script.js init()
    ===================================================== */
 async function initSupabase() {
   updateSyncBadge();
-  await initAuth();
-  // Apply cached branding immediately (even before auth completes)
+  // Apply cached branding immediately (offline-safe, zero flicker)
   const cached = getBrandCache();
   if (cached) applyBranding(cached);
+  // Load branding from URL param — works without login (for students)
+  const slug = getInstituteSlugFromUrl();
+  if (slug) await loadBrandingBySlug(slug);
+  // Auth — non-blocking; resolves roles and branding for logged-in users
+  await initAuth();
+  // Finalise admin setup if redirected from magic link
+  await finaliseAdminRegistration();
 }

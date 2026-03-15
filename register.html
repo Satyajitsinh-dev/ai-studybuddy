@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Your School – AI Study Buddy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="i18n.js"></script>
+  <script src="supabase.js"></script>
+  <style>
+    :root { --clr-primary:#4f46e5; --clr-secondary:#7c3aed; --clr-green:#10b981; --clr-bg:#f0f4ff; --clr-card:#ffffff; --clr-text:#1e1b4b; --clr-muted:#6b7280; --radius:18px; --shadow:0 4px 24px rgba(79,70,229,.12); }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Nunito',sans-serif;background:var(--clr-bg);color:var(--clr-text);min-height:100vh;}
+    .topbar{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:12px 20px;display:flex;align-items:center;gap:10px;}
+    .topbar-logo{font-size:26px;}
+    .topbar-name{font-family:'Baloo 2',cursive;font-size:19px;font-weight:800;color:#fff;}
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+    .lang-switcher{display:flex;gap:3px;}
+    .lang-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .15s;}
+    .lang-btn:hover{background:rgba(255,255,255,.3);}
+    .lang-btn-active{background:#fff!important;color:var(--clr-primary)!important;border-color:#fff;}
+    .topbar-back{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:6px 14px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;font-family:inherit;}
+    .topbar-back:hover{background:rgba(255,255,255,.28);}
+    .hero{text-align:center;padding:44px 16px 20px;}
+    .hero h1{font-family:'Baloo 2',cursive;font-size:clamp(24px,5vw,38px);font-weight:800;color:var(--clr-primary);margin-bottom:10px;}
+    .hero p{font-size:15px;color:var(--clr-muted);max-width:520px;margin:0 auto;line-height:1.65;}
+    .form-wrap{max-width:620px;margin:0 auto;padding:0 16px 60px;}
+    .form-card{background:var(--clr-card);border-radius:var(--radius);box-shadow:var(--shadow);padding:30px 26px;}
+    .section-title{font-family:'Baloo 2',cursive;font-size:17px;font-weight:800;color:var(--clr-primary);margin:22px 0 12px;padding-bottom:6px;border-bottom:2px solid #e0e7ff;}
+    .section-title:first-child{margin-top:0;}
+    .field-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px;}
+    .field{display:flex;flex-direction:column;gap:4px;}
+    .field label{font-size:12.5px;font-weight:700;color:var(--clr-text);}
+    .field .req{color:#ef4444;margin-left:2px;}
+    .field input{border:1.5px solid #c7d2fe;border-radius:10px;padding:9px 13px;font-size:14px;font-family:inherit;color:var(--clr-text);background:#fff;outline:none;transition:border-color .2s;}
+    .field input:focus{border-color:var(--clr-primary);box-shadow:0 0 0 3px rgba(79,70,229,.1);}
+    .field .hint{font-size:11px;color:var(--clr-muted);}
+    .url-preview{background:#eef2ff;border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;color:var(--clr-primary);word-break:break-all;line-height:1.6;display:none;}
+    .url-preview .url-str{font-family:monospace;background:#fff;border-radius:6px;padding:2px 8px;border:1px solid #c7d2fe;display:inline-block;margin-top:3px;font-size:13px;}
+    .color-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+    .color-preview{height:40px;border-radius:10px;flex:1;min-width:80px;border:1.5px solid rgba(0,0,0,.1);transition:background .2s;}
+    .submit-area{margin-top:26px;text-align:center;}
+    .submit-btn{background:linear-gradient(135deg,var(--clr-primary),var(--clr-secondary));color:#fff;border:none;border-radius:14px;padding:13px 38px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(79,70,229,.3);transition:opacity .2s,transform .1s;text-decoration:none;display:inline-block;}
+    .submit-btn:hover:not(:disabled){opacity:.9;transform:translateY(-1px);}
+    .submit-btn:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+    .submit-note{font-size:12px;color:var(--clr-muted);margin-top:9px;}
+    .form-error{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:11px 14px;font-size:13px;color:#b91c1c;margin-top:14px;display:none;}
+    .success-card{text-align:center;padding:36px 20px;display:none;}
+    .success-icon{font-size:58px;margin-bottom:14px;}
+    .success-card h2{font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;color:var(--clr-green);margin-bottom:8px;}
+    .success-card>p{color:var(--clr-muted);font-size:14px;line-height:1.65;}
+    .success-url-box{background:#f0fdf4;border:2px solid #bbf7d0;border-radius:14px;padding:18px;margin:18px 0;}
+    .success-url-box .label{font-size:11px;font-weight:700;color:var(--clr-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;}
+    .success-url-box .url{font-family:monospace;font-size:14px;font-weight:700;color:var(--clr-primary);word-break:break-all;}
+    .copy-btn{background:var(--clr-green);color:#fff;border:none;border-radius:10px;padding:7px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:9px;}
+    .success-steps{background:#eef2ff;border-radius:12px;padding:14px 18px;text-align:left;margin-top:14px;}
+    .success-steps h4{font-weight:800;color:var(--clr-primary);margin-bottom:8px;font-size:13px;}
+    .success-steps ol{padding-left:17px;font-size:13px;color:var(--clr-text);line-height:2;}
+    @media(max-width:480px){.form-card{padding:18px 14px;}.field-grid{grid-template-columns:1fr;}.topbar-name{font-size:16px;}}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="topbar-logo">🤖</span>
+  <span class="topbar-name">AI Study Buddy</span>
+  <div class="topbar-right">
+    <div class="lang-switcher">
+      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="lang-hi" onclick="setLang('hi')">हिं</button>
+      <button class="lang-btn" id="lang-gu" onclick="setLang('gu')">ગુ</button>
+    </div>
+    <a class="topbar-back" href="index.html" data-i18n="reg_back">← Back to App</a>
+  </div>
+</header>
+
+<div class="hero">
+  <h1 data-i18n="reg_hero_title">Register Your School 🏫</h1>
+  <p data-i18n="reg_hero_sub">Set up AI Study Buddy for your school in under 2 minutes.</p>
+</div>
+
+<div class="form-wrap">
+
+  <div class="form-card" id="reg-form-card">
+
+    <div class="section-title" data-i18n="reg_section_school">School Details</div>
+    <div class="field-grid">
+      <div class="field" style="grid-column:1/-1;">
+        <label><span data-i18n="reg_school_name">School / Institute Name</span> <span class="req">*</span></label>
+        <input id="reg-name" type="text" oninput="onNameInput(this.value)"
+               data-i18n="reg_school_name_ph" data-i18n-attr="placeholder" placeholder="e.g. Green Valley School" />
+        <span class="hint" data-i18n="reg_school_name_hint">This appears in the app header, reports and PDFs.</span>
+      </div>
+      <div class="field" style="grid-column:1/-1;">
+        <label><span data-i18n="reg_app_url">Your App URL</span> <span class="req">*</span></label>
+        <input id="reg-slug" type="text" oninput="onSlugInput(this.value)"
+               data-i18n="reg_app_url_ph" data-i18n-attr="placeholder" placeholder="e.g. green-valley-school" />
+        <span class="hint" data-i18n="reg_app_url_hint">Letters, numbers, hyphens only. Cannot be changed later.</span>
+        <div class="url-preview" id="url-preview">
+          <span data-i18n="reg_url_preview_label">Your school's URL will be:</span><br>
+          <span class="url-str" id="url-preview-str"></span>
+        </div>
+      </div>
+      <div class="field">
+        <label data-i18n="reg_address">Address</label>
+        <input id="reg-address" type="text"
+               data-i18n="reg_address_ph" data-i18n-attr="placeholder" placeholder="123 Main St, City" />
+      </div>
+      <div class="field">
+        <label data-i18n="reg_phone">Phone</label>
+        <input id="reg-phone" type="tel"
+               data-i18n="reg_phone_ph" data-i18n-attr="placeholder" placeholder="+91 98765 43210" />
+      </div>
+      <div class="field" style="grid-column:1/-1;">
+        <label data-i18n="reg_school_email">School Email</label>
+        <input id="reg-contact-email" type="email"
+               data-i18n="reg_school_email_ph" data-i18n-attr="placeholder" placeholder="info@myschool.in" />
+        <span class="hint" data-i18n="reg_school_email_hint">Shown on PDF reports. Not used for login.</span>
+      </div>
+    </div>
+
+    <div class="section-title" data-i18n="reg_section_colours">Brand Colours</div>
+    <div class="color-row">
+      <div class="field" style="flex:1;">
+        <label data-i18n="reg_primary_colour">Primary Colour</label>
+        <input id="reg-primary" type="color" value="#4f46e5" oninput="updateColorPreview()"
+               style="width:100%;height:44px;border-radius:10px;border:1.5px solid #c7d2fe;cursor:pointer;padding:4px;" />
+      </div>
+      <div class="field" style="flex:1;">
+        <label data-i18n="reg_secondary_colour">Secondary Colour</label>
+        <input id="reg-secondary" type="color" value="#7c3aed" oninput="updateColorPreview()"
+               style="width:100%;height:44px;border-radius:10px;border:1.5px solid #c7d2fe;cursor:pointer;padding:4px;" />
+      </div>
+      <div class="color-preview" id="color-preview" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);"></div>
+    </div>
+
+    <div class="section-title" data-i18n="reg_section_admin">Admin Account</div>
+    <div class="field-grid">
+      <div class="field">
+        <label><span data-i18n="reg_admin_name">Your Name</span> <span class="req">*</span></label>
+        <input id="reg-admin-name" type="text"
+               data-i18n="reg_admin_name_ph" data-i18n-attr="placeholder" placeholder="e.g. Priya Sharma" />
+      </div>
+      <div class="field">
+        <label><span data-i18n="reg_admin_email">Your Email</span> <span class="req">*</span></label>
+        <input id="reg-admin-email" type="email"
+               data-i18n="reg_admin_email_ph" data-i18n-attr="placeholder" placeholder="admin@myschool.in" />
+        <span class="hint" data-i18n="reg_admin_email_hint">You'll receive a magic link to activate your admin account.</span>
+      </div>
+    </div>
+
+    <div class="form-error" id="form-error"></div>
+
+    <div class="submit-area">
+      <button class="submit-btn" id="submit-btn" onclick="submitRegistration()" data-i18n="reg_submit">Register School 🚀</button>
+      <p class="submit-note" data-i18n="reg_submit_note">Free forever · No credit card · No server needed</p>
+    </div>
+  </div>
+
+  <!-- Success screen -->
+  <div class="form-card success-card" id="success-card">
+    <div class="success-icon">🎉</div>
+    <h2 data-i18n="reg_success_title">You're all set!</h2>
+    <p data-i18n="reg_success_sub">Your school has been registered. Share this URL with your students and teachers:</p>
+    <div class="success-url-box">
+      <div class="label" data-i18n="reg_success_url_label">Your School's App URL</div>
+      <div class="url" id="success-url"></div>
+      <button class="copy-btn" id="copy-btn" onclick="copyUrl()" data-i18n="reg_copy_url">📋 Copy URL</button>
+    </div>
+    <div class="success-steps">
+      <h4 data-i18n="reg_next_steps">Next steps:</h4>
+      <ol>
+        <li data-i18n="reg_step1">Check your email — click the magic link to activate your admin account</li>
+        <li data-i18n="reg_step2">You'll land back on the app — the Admin Panel ⚙️ card will appear</li>
+        <li data-i18n="reg_step3">Upload your question bank from the 📂 Question Bank section</li>
+        <li data-i18n="reg_step4">Share your URL with teachers — they sign in the same way</li>
+        <li data-i18n="reg_step5">Students can use the app without signing in — just open the URL</li>
+      </ol>
+    </div>
+    <div style="margin-top:22px;">
+      <a class="submit-btn" id="goto-app-btn" href="" data-i18n="reg_open_app">Open Your School's App →</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const BASE_URL = window.location.origin + window.location.pathname.replace('register.html','') + 'index.html';
+
+  function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+
+  function onNameInput(val) {
+    const el = document.getElementById('reg-slug');
+    if (!el._manuallyEdited) el.value = slugify(val);
+    updateUrlPreview();
+  }
+  function onSlugInput(val) {
+    const el = document.getElementById('reg-slug');
+    el._manuallyEdited = val.length > 0;
+    el.value = val.toLowerCase().replace(/[^a-z0-9-]/g,'');
+    updateUrlPreview();
+  }
+  function updateUrlPreview() {
+    const slug = document.getElementById('reg-slug').value;
+    const prev = document.getElementById('url-preview');
+    document.getElementById('url-preview-str').textContent = BASE_URL + '?institute=' + slug;
+    prev.style.display = slug.length >= 3 ? 'block' : 'none';
+  }
+  function updateColorPreview() {
+    const p = document.getElementById('reg-primary').value;
+    const s = document.getElementById('reg-secondary').value;
+    document.getElementById('color-preview').style.background = `linear-gradient(135deg,${p},${s})`;
+  }
+  function copyUrl() {
+    const url = document.getElementById('success-url').textContent;
+    const btn = document.getElementById('copy-btn');
+    navigator.clipboard?.writeText(url)
+      .then(() => { btn.textContent = t('reg_copied'); })
+      .catch(() => { prompt(t('reg_success_url_label') + ':', url); });
+  }
+  async function submitRegistration() {
+    const btn   = document.getElementById('submit-btn');
+    const errEl = document.getElementById('form-error');
+    errEl.style.display = 'none';
+    const name         = document.getElementById('reg-name').value.trim();
+    const slug         = document.getElementById('reg-slug').value.trim();
+    const address      = document.getElementById('reg-address').value.trim();
+    const phone        = document.getElementById('reg-phone').value.trim();
+    const contactEmail = document.getElementById('reg-contact-email').value.trim();
+    const primary      = document.getElementById('reg-primary').value;
+    const secondary    = document.getElementById('reg-secondary').value;
+    const adminName    = document.getElementById('reg-admin-name').value.trim();
+    const adminEmail   = document.getElementById('reg-admin-email').value.trim();
+    const errors = [];
+    if (!name)                                    errors.push(t('reg_err_name'));
+    if (slug.length < 3)                          errors.push(t('reg_err_slug'));
+    if (!adminName)                               errors.push(t('reg_err_admin_name'));
+    if (!adminEmail || !adminEmail.includes('@')) errors.push(t('reg_err_admin_email'));
+    if (errors.length) { errEl.textContent = errors.join(' '); errEl.style.display = 'block'; return; }
+    btn.disabled = true; btn.textContent = t('reg_submitting');
+    const result = await registerInstitute({ name, slug, address, phone,
+      contact_email: contactEmail, primary_color: primary, secondary_color: secondary,
+      admin_name: adminName, admin_email: adminEmail });
+    if (!result.ok) {
+      btn.disabled = false; btn.textContent = t('reg_submit');
+      errEl.textContent = result.error || t('reg_err_generic');
+      errEl.style.display = 'block'; return;
+    }
+    const appUrl = BASE_URL + '?institute=' + result.slug;
+    document.getElementById('success-url').textContent     = appUrl;
+    document.getElementById('goto-app-btn').href           = appUrl;
+    document.getElementById('reg-form-card').style.display = 'none';
+    document.getElementById('success-card').style.display  = 'block';
+    window.scrollTo(0,0);
+  }
+  function initPage() {
+    const lang = localStorage.getItem('studyBuddy_lang') || 'en';
+    ['en','hi','gu'].forEach(l => {
+      const b = document.getElementById('lang-' + l);
+      if (b) b.classList.toggle('lang-btn-active', l === lang);
+    });
+    applyTranslations();
+    updateColorPreview();
+  }
+  document.addEventListener('DOMContentLoaded', initPage);
+</script>
+
+</body>
+</html>

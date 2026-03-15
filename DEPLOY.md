@@ -104,57 +104,46 @@ const SUPABASE_ANON = 'eyJ...your-anon-key...';
 
 Then commit and push. The app will now use Supabase for auth, branding, and data sync.
 
-### 5. Create your first institute
-Run this in the Supabase SQL Editor (replace with your school's details):
+### 5. Register your first school (self-service)
 
-```sql
-INSERT INTO institutes (name, slug, primary_color, secondary_color, address, phone, email)
-VALUES (
-  'Green Valley School',
-  'green-valley-school',
-  '#4f46e5',
-  '#7c3aed',
-  '123 Main Street, Ahmedabad',
-  '+91 98765 43210',
-  'info@greenvalley.in'
-)
-RETURNING id;
+No SQL needed. Open this URL in a browser:
+
+```
+https://YOUR-USERNAME.github.io/study-buddy/register.html
 ```
 
-Copy the `id` returned. Then create your admin user:
-1. Sign in to the app using your email (sends a magic link)
-2. In Supabase SQL Editor, run:
+Fill in the form — school name, address, contact details, colours, and your admin email. Click **Register School**. The app will:
 
-```sql
-UPDATE users
-SET institute_id = 'PASTE-INSTITUTE-ID-HERE', role = 'admin'
-WHERE id = auth.uid();
-```
+1. Create the institute row in the database automatically
+2. Generate a unique URL for your school: `…/index.html?institute=green-valley-school`
+3. Send a magic link to your admin email
 
-3. Refresh the app — you'll see the Admin Panel card on the home screen.
+Click the magic link in your email — you land back on the app as a fully activated admin. The **Admin Panel ⚙️** card will appear on the home screen.
 
-### 6. Multi-institute setup
-Repeat step 5 for each school. Each school gets its own `institutes` row.
-Teachers and students at each school only see their own institute's data — enforced by Row-Level Security at the database level.
+### 6. Adding more schools
+
+Same process — each school visits `/register.html` and fills in their own form. Every school gets their own isolated URL and data. No manual SQL, no involvement from you.
+
+**Sharing with students and teachers:**
+- Give each school their URL: `…/index.html?institute=their-slug`
+- Students just open the URL — **no sign-in required**. The app loads with their school's branding automatically
+- Teachers sign in via their email magic link to access the Teacher Review panel
+- Admins sign in to access the Admin Panel
+
+**QR code tip:** generate a QR code for the school URL at https://qr.io and print it on the notice board. Students scan it and the app opens with their school's branding.
+
 
 ---
 
 ## App URL strategies for multiple schools
 
-### Option A — URL parameter (simplest)
-Share a URL per school:
+### Option A — URL parameter ✅ built in
+Each school gets a unique URL — this is already handled automatically:
 ```
-https://YOUR-USERNAME.github.io/study-buddy?institute=green-valley-school
+https://YOUR-USERNAME.github.io/study-buddy/index.html?institute=green-valley-school
 ```
 
-In `supabase.js`, detect this automatically at startup:
-```javascript
-const slugFromUrl = new URLSearchParams(location.search).get('institute');
-if (slugFromUrl) {
-  const { data } = await sb().from('institutes').select('*').eq('slug', slugFromUrl).single();
-  if (data) applyBranding(data);
-}
-```
+`supabase.js` reads the `?institute=` parameter on every page load, fetches that school's branding from Supabase, and applies it instantly — no login needed, works for students. Generated automatically by `/register.html`.
 
 ### Option B — Subdomain per school (requires Vercel/Netlify)
 ```
