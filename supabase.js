@@ -28,8 +28,16 @@
       results sync automatically when you reconnect.
    ===================================================== */
 
-const SUPABASE_URL  = 'https://rgxtuyspvtfmbofbymrc.supabase.co';   // e.g. 'https://abcdef.supabase.co'
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJneHR1eXNwdnRmbWJvZmJ5bXJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1NDM0MzksImV4cCI6MjA4OTExOTQzOX0.VXjJXOsSdCkwVWZOs78AwkkXKw558soqw1foozbFZus';   // Your anon/public key
+const SUPABASE_URL  = 'https://rgxtuyspvtfmbofbymrc.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJneHR1eXNwdnRmbWJvZmJ5bXJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1NjI4OTgsImV4cCI6MjA4OTEzODg5OH0.WT0d5P1_-o7gnE4AFZzNQGRJQIqD8Y8aQ3mDjYsVpQ8';
+
+// =====================================================
+// APP BASE URL — set this to your deployed app URL.
+// Used for magic link redirects.
+// For GitHub Pages: 'https://USERNAME.github.io/REPO/index.html'
+// For local dev:    'http://localhost:5500/index.html'  (or whatever port)
+// =====================================================
+const APP_BASE_URL = 'https://satyajitsinh-dev.github.io/study-buddy/index.html';
 
 /* ---- Supabase client (lazy-initialised) ---- */
 let _sb = null;
@@ -131,6 +139,8 @@ function isLoggedIn()  { return !!currentUser; }
 function userRole()    { return currentProfile?.role || 'student'; }
 function isAdmin()     { return userRole() === 'admin'; }
 function isTeacher()   { return userRole() === 'teacher' || isAdmin(); }
+// Test helper — allows tests.js to set currentProfile without window assignment
+function _setCurrentProfileForTest(profile) { currentProfile = profile; }
 function instituteId() {
   // Prefer the logged-in user's institute; fall back to URL param cached value
   return currentProfile?.institute_id
@@ -200,7 +210,10 @@ function updateAuthUI() {
 async function sendMagicLink(email) {
   const client = sb();
   if (!client) { showToast('⚠️ Supabase not configured.'); return; }
-  const { error } = await client.auth.signInWithOtp({ email });
+  const { error } = await client.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: APP_BASE_URL }
+  });
   if (error) showToast('⚠️ ' + error.message);
   else {
     document.getElementById('auth-sent-msg').style.display = 'block';
@@ -898,12 +911,9 @@ async function registerInstitute(formData) {
 
   // Send magic link to the admin so they can sign in and claim the institute
   if (formData.admin_email && data.ok) {
-    // emailRedirectTo must be whitelisted in Supabase Dashboard:
-    // Authentication → URL Configuration → Redirect URLs → add:
-    //   https://YOUR-SITE/index.html
-    //   http://localhost:*/index.html   (for local dev)
-    const redirectTo = window.location.origin
-      + window.location.pathname.replace('register.html', 'index.html')
+    // APP_BASE_URL (defined at top of this file) must also be whitelisted in:
+    // Supabase Dashboard → Authentication → URL Configuration → Redirect URLs
+    const redirectTo = APP_BASE_URL
       + '?institute=' + data.slug
       + '&setup=1';
 
@@ -924,21 +934,43 @@ async function registerInstitute(formData) {
 }
 
 // Called once after admin clicks their magic link and lands back on the app.
-// Detected via ?setup=1 in the URL.
+// Supabase delivers the session in TWO ways depending on config:
+//   1. ?setup=1 in query params  (when emailRedirectTo includes ?setup=1)
+//   2. #access_token=... in hash (when Site URL is used as fallback)
+// We handle both.
 async function finaliseAdminRegistration() {
-  const params      = new URLSearchParams(window.location.search);
-  const isSetup     = params.get('setup') === '1';
-  if (!isSetup) return;
+  const params  = new URLSearchParams(window.location.search);
+  const hash    = new URLSearchParams(window.location.hash.replace('#', ''));
+  const isSetup = params.get('setup') === '1';
+  const hasToken = hash.get('access_token') || params.get('access_token');
+
+  // Only run if this looks like a magic link landing
+  if (!isSetup && !hasToken) return;
 
   const client = sb();
   if (!client) return;
 
-  // Wait for auth session to be ready
+  // If token arrived in hash, exchange it for a session first
+  if (hasToken && !isSetup) {
+    try {
+      const { error } = await client.auth.setSession({
+        access_token:  hash.get('access_token') || params.get('access_token'),
+        refresh_token: hash.get('refresh_token') || params.get('refresh_token') || '',
+      });
+      if (error) { console.warn('setSession error:', error.message); return; }
+    } catch(e) { console.warn('setSession failed:', e.message); return; }
+  }
+
+  // Now get the session (works for both flows)
   const { data: { session } } = await client.auth.getSession();
   if (!session) return;
 
   const instId = session.user.user_metadata?.institute_id;
-  if (!instId) return;
+  if (!instId) {
+    // No institute_id in metadata — user already set up or came via direct login
+    await onSignIn(session.user);
+    return;
+  }
 
   const { data } = await client.rpc('finalise_admin_registration', {
     p_institute_id: instId
@@ -946,13 +978,16 @@ async function finaliseAdminRegistration() {
 
   if (data?.ok) {
     showToast('🎉 Admin account activated! Welcome to your Admin Panel.');
-    // Clean up URL — remove ?setup=1 without reloading
-    const clean = new URL(window.location.href);
-    clean.searchParams.delete('setup');
-    window.history.replaceState({}, '', clean.toString());
-    // Reload profile so admin cards appear
-    await onSignIn(session.user);
   }
+
+  // Clean URL — remove token fragments and ?setup=1
+  const clean = new URL(window.location.href);
+  clean.searchParams.delete('setup');
+  clean.hash = '';
+  window.history.replaceState({}, '', clean.toString());
+
+  // Reload profile so admin cards appear
+  await onSignIn(session.user);
 }
 
 /* =====================================================
