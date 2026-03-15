@@ -29,7 +29,7 @@
    ===================================================== */
 
 const SUPABASE_URL  = 'https://rgxtuyspvtfmbofbymrc.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJneHR1eXNwdnRmbWJvZmJ5bXJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1NjI4OTgsImV4cCI6MjA4OTEzODg5OH0.WT0d5P1_-o7gnE4AFZzNQGRJQIqD8Y8aQ3mDjYsVpQ8';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJneHR1eXNwdnRmbWJvZmJ5bXJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1NDM0MzksImV4cCI6MjA4OTExOTQzOX0.VXjJXOsSdCkwVWZOs78AwkkXKw558soqw1foozbFZus';
 
 // =====================================================
 // APP BASE URL — set this to your deployed app URL.
