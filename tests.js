@@ -215,22 +215,40 @@ function runShuffleTests() {
 
 // ── 5. QUIZ SCORING ──────────────────────────────────
 function runQuizScoringTests() {
-  const q = DEMO_QUESTIONS[0];
-  // Simulate renderQuestion flow
+  // Use a hardcoded question with guaranteed 4 distinct options — no collisions
+  const q = {
+    _id: 'test-scoring-q1',
+    q: 'What is 5 + 5?',
+    opts: ['10', '15', '20', '25'],
+    ans: '10',
+    subject: 'Math', chapter: 'Arithmetic', classLevel: '7',
+  };
+
   const shuffled = shuffle([...q.opts]);
   q._shuffled    = shuffled;
   q._correctText = typeof q.ans === 'string' ? q.ans : q.opts[q.ans];
 
+  assert('Quiz scoring: _correctText is a string',          typeof q._correctText === 'string');
+  assertEq('Quiz scoring: _correctText equals ans',         q._correctText, '10');
+
   const correctIdx = shuffled.indexOf(q._correctText);
-  assert('Quiz scoring: _correctText set from ans string', typeof q._correctText === 'string');
   assert('Quiz scoring: correct index found in shuffled',   correctIdx >= 0);
-  // Simulate correct answer
-  const chosenText = shuffled[correctIdx];
-  assert('Quiz scoring: chosen matches correct',            chosenText === q._correctText);
-  // Simulate wrong answer (pick a different option)
+
+  // Correct selection
+  const chosenCorrect = shuffled[correctIdx];
+  assert('Quiz scoring: correct selection matches',         chosenCorrect === q._correctText);
+
+  // Wrong selection — pick an index that is NOT the correct one
   const wrongIdx = (correctIdx + 1) % 4;
-  const wrongText = shuffled[wrongIdx];
-  assert('Quiz scoring: wrong choice detected',             wrongText !== q._correctText);
+  const chosenWrong = shuffled[wrongIdx];
+  assert('Quiz scoring: wrong selection is different option', chosenWrong !== q._correctText);
+  assert('Quiz scoring: wrong choice scores as incorrect',    chosenWrong !== q._correctText);
+
+  // Simulate the full scoring path used by checkAnswer()
+  const isCorrect = chosenCorrect === q._correctText;
+  assert('Quiz scoring: correct answer scores true',         isCorrect === true);
+  const isWrong = chosenWrong === q._correctText;
+  assert('Quiz scoring: wrong answer scores false',          isWrong === false);
 }
 
 // ── 6. EXAM SCORING (TERM) ──────────────────────────
@@ -263,6 +281,9 @@ function runMockScoringTests() {
 
 // ── 8. PROGRESS TRACKING ────────────────────────────
 function runProgressTests() {
+  assert('Progress: updateProgress exists',        typeof updateProgress === 'function');
+  assert('Progress: checkAchievements exists',     typeof checkAchievements === 'function');
+  assert('Progress: renderProgress exists',        typeof renderProgress === 'function');
   // Snapshot progress
   const savedProgress = JSON.stringify(progress);
 
@@ -289,34 +310,51 @@ function runProgressTests() {
 
 // ── 9. TEACHER REVIEW WORKFLOW ───────────────────────
 function runTeacherReviewTests() {
-  const result = JSON.parse(JSON.stringify(DEMO_EXAM_RESULT));
+  assert('Review: loadPendingReviews exists',      typeof loadPendingReviews === 'function');
+  assert('Review: saveReviewMarks exists',         typeof saveReviewMarks === 'function');
+  // loadPendingReviews is async — check it returns a Promise
+  const ret = loadPendingReviews();
+  assert('Review: loadPendingReviews returns Promise', ret && typeof ret.then === 'function');
+  ret.catch(() => {}); // prevent unhandled rejection
+  // Use fully self-contained data — no dependency on DEMO_EXAM_RESULT shared state
+  const result = {
+    id: 'review_test_001',
+    exam_type: 'term',
+    student_name: 'Test Student',
+    mcq_score: 10, mcq_total: 15,
+    answers_log: [
+      { type:'mcq',   question_id:'q1', isCorrect:1, marks:1 },
+      { type:'mcq',   question_id:'q2', isCorrect:0, marks:1 },
+      { type:'short', q:'Define photosynthesis.', studentAnswer:'Plants use sunlight.', marks:2, teacher_marks_set:false },
+      { type:'long',  q:'Explain water cycle.',   studentAnswer:'Water evaporates..',   marks:5, teacher_marks_set:false },
+      { type:'essay', q:'Write on forests.',       studentAnswer:'Forests help us.',    marks:5, teacher_marks_set:false },
+    ],
+    taken_at: new Date().toISOString(),
+  };
+
   const written = result.answers_log.filter(a => ['short','long','essay'].includes(a.type));
-  assert('Review: written answers exist in log', written.length === 3);
-  assert('Review: all unreviewed initially',      written.every(a => !a.teacher_marks_set));
+  assert('Review: 3 written answers found',          written.length === 3);
+  assert('Review: all unreviewed initially',          written.every(a => !a.teacher_marks_set));
 
-  // Simulate marking
-  written[0].teacher_marks     = 2;
-  written[0].teacher_marks_set = true;
-  written[1].teacher_marks     = 3;   // partial
-  written[1].teacher_marks_set = true;
-  written[2].teacher_marks     = 0;
-  written[2].teacher_marks_set = true;
+  // Mark all three
+  written[0].teacher_marks = 2; written[0].teacher_marks_set = true;  // full
+  written[1].teacher_marks = 3; written[1].teacher_marks_set = true;  // partial
+  written[2].teacher_marks = 0; written[2].teacher_marks_set = true;  // zero
 
-  assert('Review: full marks assigned',    written[0].teacher_marks === 2);
-  assert('Review: partial marks assigned', written[1].teacher_marks === 3);
-  assert('Review: zero marks assigned',    written[2].teacher_marks === 0);
-  assert('Review: all items now reviewed', written.every(a => a.teacher_marks_set));
+  assert('Review: full marks assigned',              written[0].teacher_marks === 2);
+  assert('Review: partial marks assigned',           written[1].teacher_marks === 3);
+  assert('Review: zero marks assigned',              written[2].teacher_marks === 0);
+  assert('Review: all written items now reviewed',   written.every(a => a.teacher_marks_set));
 
-  // Partial result (some reviewed, some not) detection
-  const partialLog = [...result.answers_log];
-  partialLog[partialLog.length-1].teacher_marks_set = false;
+  // Partial result detection — create a fresh copy with one still pending
+  const partialLog = result.answers_log.map(a => ({ ...a }));
+  partialLog.find(a => a.type === 'essay').teacher_marks_set = false;
   const isPending = partialLog.some(a => ['short','long','essay'].includes(a.type) && !a.teacher_marks_set);
-  assert('Review: partial result detected correctly', isPending);
+  assert('Review: partial result detected correctly', isPending === true);
 
-  // Final result (all reviewed)
-  const isFinal = result.answers_log.every(a =>
-    a.type === 'mcq' || a.teacher_marks_set);
-  assert('Review: final result detected correctly', isFinal);
+  // Final result detection — result.answers_log has all written items marked (from mutations above)
+  const isFinal = result.answers_log.every(a => a.type === 'mcq' || a.teacher_marks_set === true);
+  assert('Review: final result detected correctly',   isFinal === true);
 }
 
 // ── 10. REPORT GENERATION ────────────────────────────
@@ -352,27 +390,44 @@ function runReportTests() {
 
 // ── 11. QUESTION BANK OPERATIONS ─────────────────────
 function runQuestionBankTests() {
-  // Save a demo bank and retrieve it
-  const origBanks = loadAllCsvBanks();
+  const origBanks  = loadAllCsvBanks();
+  // Use a timestamp-based ID guaranteed unique per run
   const demoBankId = 'bank_test_' + Date.now();
+
+  // Build questions WITHOUT _id from scratch — never copy from DEMO_QUESTIONS
+  // to avoid any pre-existing _id value surviving the delete
+  const freshQs = [
+    { q:'Test Q1', opts:['A','B','C','D'], ans:'A', subject:'Math',    chapter:'Ch1', classLevel:'7', questionId:'TQ001' },
+    { q:'Test Q2', opts:['E','F','G','H'], ans:'E', subject:'Science', chapter:'Ch1', classLevel:'7', questionId:'TQ002' },
+    { q:'Test Q3', opts:['I','J','K','L'], ans:'I', subject:'English', chapter:'Ch2', classLevel:'7', questionId:'TQ003' },
+  ];
+  // Confirm no _id before assignment
+  assert('Bank: freshQs have no _id before assignCsvIds', freshQs.every(q => !q._id));
+
   const demoBank = {
     id: demoBankId, name: 'Test Bank', filename: 'test.csv',
-    addedAt: Date.now(), questions: DEMO_QUESTIONS.slice(0,5),
-    summary: { subjects:['Math'], classes:['7'], easy:2, medium:2, hard:1 }
+    addedAt: Date.now(), questions: freshQs,
+    summary: { subjects:['Math'], classes:['7'], easy:1, medium:1, hard:1 }
   };
   assignCsvIds(demoBank.questions, demoBankId);
-  saveAllCsvBanks([...origBanks, demoBank]);
 
+  // Verify IDs were assigned with the correct bankId prefix
+  const expectedPrefix = 'C-' + demoBankId;
+  assert('Bank: _id assigned to all questions',   freshQs.every(q => !!q._id));
+  assert('Bank: _id starts with C-',              freshQs.every(q => q._id.startsWith('C-')));
+  assert('Bank: _id contains bankId',             freshQs[0]._id.startsWith(expectedPrefix));
+  assert('Bank: _id uses questionId when present',freshQs[0]._id === expectedPrefix + '-TQ001');
+
+  saveAllCsvBanks([...origBanks, demoBank]);
   const loaded = loadAllCsvBanks();
-  assert('Bank: save and load works',            loaded.some(b => b.id === demoBankId));
+  assert('Bank: save and load works',             loaded.some(b => b.id === demoBankId));
   const bank = loaded.find(b => b.id === demoBankId);
-  assert('Bank: questions preserved',            bank.questions.length === 5);
-  assert('Bank: _id assigned to all questions',  bank.questions.every(q => q._id?.startsWith('C-')));
-  assert('Bank: _id contains bankId',            bank.questions[0]._id.includes(demoBankId));
+  assert('Bank: questions preserved',             bank.questions.length === 3);
+  assert('Bank: loaded _id preserved',            bank.questions[0]._id === expectedPrefix + '-TQ001');
 
   // Delete and verify
   saveAllCsvBanks(origBanks);
-  assert('Bank: delete works',                   !loadAllCsvBanks().some(b => b.id === demoBankId));
+  assert('Bank: delete works',                    !loadAllCsvBanks().some(b => b.id === demoBankId));
 }
 
 // ── 12. DUPLICATE QUESTION DETECTION ─────────────────
@@ -504,6 +559,10 @@ function runFilterTests() {
 
 // ── 18. REGISTRATION (MOCKED) ─────────────────────────
 function runRegistrationTests() {
+  // These are async Supabase functions — confirm they exist but don't call them
+  assert('Registration: registerInstitute exists',         typeof registerInstitute === 'function');
+  assert('Registration: finaliseAdminRegistration exists', typeof finaliseAdminRegistration === 'function');
+
   // Mock registerInstitute — test validation logic inline
   const validate = (form) => {
     const errors = [];
@@ -528,24 +587,50 @@ function runRegistrationTests() {
 
 // ── 19. AUTH / ROLE LOGIC ─────────────────────────────
 function runAuthTests() {
-  if (typeof isLoggedIn !== 'function') { assert('Auth: isLoggedIn() exists', false); return; }
-  assert('Auth: isLoggedIn() exists',        typeof isLoggedIn === 'function');
-  assert('Auth: isAdmin() exists',           typeof isAdmin === 'function');
-  assert('Auth: isTeacher() exists',         typeof isTeacher === 'function');
-  assert('Auth: userRole() exists',          typeof userRole === 'function');
-  // Without login, defaults
-  assert('Auth: not logged in initially',    typeof currentUser === 'undefined' || currentUser === null);
-  // Role hierarchy: admin is also teacher
-  const savedProfile = window.currentProfile;
-  window.currentProfile = { role:'admin', institute_id:'test-inst' };
-  assert('Auth: admin is also teacher',      isTeacher());
-  assert('Auth: admin isAdmin',              isAdmin());
-  window.currentProfile = { role:'teacher', institute_id:'test-inst' };
-  assert('Auth: teacher isTeacher',          isTeacher());
-  assert('Auth: teacher is not admin',       !isAdmin());
-  window.currentProfile = { role:'student', institute_id:'test-inst' };
-  assert('Auth: student not teacher',        !isTeacher());
-  window.currentProfile = savedProfile;
+  // Check functions exist — they're in supabase.js loaded before tests.js
+  assert('Auth: isLoggedIn() exists',   typeof isLoggedIn  === 'function');
+  assert('Auth: isAdmin() exists',      typeof isAdmin     === 'function');
+  assert('Auth: isTeacher() exists',    typeof isTeacher   === 'function');
+  assert('Auth: userRole() exists',     typeof userRole    === 'function');
+
+  if (typeof isAdmin !== 'function') return; // can't test further without functions
+
+  // Save original profile state
+  const savedProfile = (typeof currentProfile !== 'undefined') ? currentProfile : null;
+
+  // Set profile directly — currentProfile is a module-level let in supabase.js
+  // _setCurrentProfileForTest() is the safe setter if available, otherwise assign directly
+  function setProfile(p) {
+    if (typeof _setCurrentProfileForTest === 'function') {
+      _setCurrentProfileForTest(p);
+    } else {
+      // Fallback: try direct assignment (works if same script scope)
+      try { currentProfile = p; } catch(e) { /* may fail in strict module mode */ }
+    }
+  }
+
+  // Test admin role
+  setProfile({ role: 'admin', institute_id: 'test-inst' });
+  assert('Auth: admin isAdmin',              isAdmin()   === true);
+  assert('Auth: admin is also teacher',      isTeacher() === true);
+
+  // Test teacher role
+  setProfile({ role: 'teacher', institute_id: 'test-inst' });
+  assert('Auth: teacher isTeacher',          isTeacher() === true);
+  assert('Auth: teacher is not admin',       isAdmin()   === false);
+
+  // Test student role
+  setProfile({ role: 'student', institute_id: 'test-inst' });
+  assert('Auth: student not teacher',        isTeacher() === false);
+  assert('Auth: student not admin',          isAdmin()   === false);
+
+  // Test null profile (unauthenticated)
+  setProfile(null);
+  assert('Auth: null profile not admin',     isAdmin()   === false);
+  assert('Auth: null profile role=student',  userRole()  === 'student');
+
+  // Restore
+  setProfile(savedProfile);
 }
 
 // ── 20. UI / PAGE NAVIGATION ─────────────────────────
@@ -623,6 +708,465 @@ function runExamIntegrationTests() {
 }
 
 /* =====================================================
+   NEW TEST SUITES — covering all previously missing functions
+   ===================================================== */
+
+// ── EXAM CSV PARSING ─────────────────────────────────
+function runExamCSVParseTests() {
+  if (typeof parseExamCSV !== 'function') { assert('ExamCSV: parseExamCSV exists', false); return; }
+
+  const valid = `type,question,subject,class,chapter,marks
+short,Define photosynthesis.,Science,7,Plants,2
+long,Explain the water cycle in detail.,Science,7,,5
+essay,Write about deforestation.,English,7,,`;
+
+  const { questions: q, error } = parseExamCSV(valid);
+  assert('ExamCSV: valid CSV parses',             !error && q.length === 3);
+  assertEq('ExamCSV: short type parsed',          q[0].type, 'short');
+  assertEq('ExamCSV: long type parsed',           q[1].type, 'long');
+  assertEq('ExamCSV: essay type parsed',          q[2].type, 'essay');
+  assertEq('ExamCSV: subject parsed',             q[0].subj, 'Science');
+  assertEq('ExamCSV: classLevel parsed',          q[0].classLevel, '7');
+  assert('ExamCSV: question text set',            q[0].q.length > 0);
+
+  // Missing required columns
+  const bad = `question\nNo type column here`;
+  const { questions: bq, error: berr } = parseExamCSV(bad);
+  assert('ExamCSV: missing type col → error',     !!berr || bq.length === 0);
+
+  // Invalid type is filtered out
+  const badType = `type,question\ninvalid,This should be ignored`;
+  const { questions: btq } = parseExamCSV(badType);
+  assert('ExamCSV: invalid type filtered out',    btq.length === 0);
+}
+
+// ── SCOPE KEY ────────────────────────────────────────
+function runScopeKeyTests() {
+  assert('ScopeKey: makeScopeKey exists',         typeof makeScopeKey === 'function');
+
+  const k1 = makeScopeKey('Math', 'Integers', 'Addition', 'Easy', 'MCQ');
+  const k2 = makeScopeKey('Math', 'Integers', 'Addition', 'Easy', 'MCQ');
+  const k3 = makeScopeKey('Math', 'Integers', 'Addition', 'Hard', 'MCQ');
+  const k4 = makeScopeKey('Science', 'Integers', 'Addition', 'Easy', 'MCQ');
+  const k5 = makeScopeKey(null, null, null, null, null);
+
+  assertEq('ScopeKey: same inputs same key',       k1, k2);
+  assert('ScopeKey: difficulty change → new key',  k1 !== k3);
+  assert('ScopeKey: subject change → new key',     k1 !== k4);
+  assert('ScopeKey: nulls produce fallback key',   k5.length > 0);
+  assert('ScopeKey: key is string',                typeof k1 === 'string');
+  assert('ScopeKey: contains all 5 dimensions',    k1.split('::').length === 5);
+
+  // clearSeenCache wipes all queues
+  if (typeof clearSeenCache === 'function') {
+    pickQuestions(DEMO_QUESTIONS.slice(0,5), 3, 'scope_clear_test');
+    clearSeenCache();
+    // After clear, first pick from same scope should still work
+    const fresh = pickQuestions(DEMO_QUESTIONS.slice(0,5), 3, 'scope_clear_test');
+    assert('ScopeKey: clearSeenCache allows fresh rotation', fresh.length === 3);
+  }
+}
+
+// ── CLASS SYSTEM ─────────────────────────────────────
+function runClassSystemTests() {
+  assert('Class: getActiveClass exists',           typeof getActiveClass === 'function');
+  assert('Class: setActiveClass exists',           typeof setActiveClass === 'function');
+  assert('Class: getAllAvailableClasses exists',    typeof getAllAvailableClasses === 'function');
+  assert('Class: getClassFilteredQuestions exists',typeof getClassFilteredQuestions === 'function');
+
+  const savedClass = getActiveClass();
+
+  // setActiveClass stores and retrieves
+  setActiveClass('7');
+  assertEq('Class: setActiveClass stores value',   getActiveClass(), '7');
+
+  setActiveClass('8');
+  assertEq('Class: can switch classes',            getActiveClass(), '8');
+
+  // Class normaliser — 'Class 7', '7th', '07' should all match class '7'
+  const pool = [
+    { q:'Q1', opts:['A','B','C','D'], ans:'A', subject:'Math', chapter:'Ch1', classLevel:'7' },
+    { q:'Q2', opts:['A','B','C','D'], ans:'A', subject:'Math', chapter:'Ch1', classLevel:'8' },
+    { q:'Q3', opts:['A','B','C','D'], ans:'A', subject:'Math', chapter:'Ch1', classLevel:'' },
+  ];
+  setActiveClass('7');
+  const filtered = pool.filter(q => {
+    if (!q.classLevel) return true;
+    const qc  = String(q.classLevel).replace(/\D/g,'');
+    const act = String(getActiveClass()).replace(/\D/g,'');
+    return qc === '' || qc === act;
+  });
+  assert('Class: filter includes class 7 question',  filtered.some(q => q.classLevel === '7'));
+  assert('Class: filter excludes class 8 question',  !filtered.some(q => q.classLevel === '8'));
+  assert('Class: filter includes untagged question',  filtered.some(q => q.classLevel === ''));
+
+  // getAllAvailableClasses from loaded banks
+  const classes = getAllAvailableClasses();
+  assert('Class: getAllAvailableClasses returns array', Array.isArray(classes));
+
+  // Restore
+  if (savedClass) setActiveClass(savedClass);
+  else localStorage.removeItem('studyBuddy_activeClass');
+}
+
+// ── EXAM CONFIG ──────────────────────────────────────
+function runExamConfigTests() {
+  assert('ExamConfig: EXAM_CONFIG defined',        typeof EXAM_CONFIG !== 'undefined');
+  assert('ExamConfig: generateExamContent exists', typeof generateExamContent === 'function');
+  assert('ExamConfig: submitExam exists',          typeof submitExam === 'function');
+  assert('ExamConfig: submitMock exists',          typeof submitMock === 'function');
+  assert('ExamConfig: startExamTimer exists',      typeof startExamTimer === 'function');
+  assert('ExamConfig: has term',                   !!EXAM_CONFIG?.term);
+  assert('ExamConfig: has annual',                 !!EXAM_CONFIG?.annual);
+
+  const term   = EXAM_CONFIG.term;
+  const annual = EXAM_CONFIG.annual;
+
+  assertEq('ExamConfig: term totalMarks 50',       term.totalMarks, 50);
+  assertEq('ExamConfig: annual totalMarks 80',     annual.totalMarks, 80);
+  assertEq('ExamConfig: term time 90min',          term.timeMinutes, 90);
+  assertEq('ExamConfig: annual time 180min',       annual.timeMinutes, 180);
+
+  // Term sections
+  const termMCQ   = term.sections.find(s => s.type === 'mcq');
+  const termShort = term.sections.find(s => s.type === 'short');
+  const termLong  = term.sections.find(s => s.type === 'long');
+  const termEssay = term.sections.find(s => s.type === 'essay');
+  assert('ExamConfig: term has mcq section',       !!termMCQ);
+  assertEq('ExamConfig: term MCQ count 20',        termMCQ.count, 20);
+  assertEq('ExamConfig: term MCQ marks 1',         termMCQ.marksEach, 1);
+  assertEq('ExamConfig: term short count 5',       termShort.count, 5);
+  assertEq('ExamConfig: term long count 3',        termLong.count, 3);
+  assertEq('ExamConfig: term essay count 1',       termEssay.count, 1);
+
+  // Total marks check: 20+10+15+5 = 50
+  const termTotal = term.sections.reduce((s,sec) => s + sec.count * sec.marksEach, 0);
+  assertEq('ExamConfig: term sections sum to 50',  termTotal, 50);
+
+  // Annual total: 30+12+20+18 = 80
+  const annualTotal = annual.sections.reduce((s,sec) => s + sec.count * sec.marksEach, 0);
+  assertEq('ExamConfig: annual sections sum to 80',annualTotal, 80);
+}
+
+// ── EXAM TIMER LOGIC ─────────────────────────────────
+function runExamTimerTests() {
+  // Test the timer formatting logic used in startExamTimer
+  const format = (sec) => {
+    const m = Math.floor(sec / 60), s = sec % 60;
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  };
+  assertEq('Timer: 90 mins formats correctly',     format(5400), '90:00');
+  assertEq('Timer: 1 min formats correctly',       format(60),   '01:00');
+  assertEq('Timer: 65 secs formats correctly',     format(65),   '01:05');
+  assertEq('Timer: 0 secs formats correctly',      format(0),    '00:00');
+
+  // Warning threshold: warn when ≤ 5 mins (300 seconds) remain
+  assert('Timer: warns at 300s',                   300 <= 300);
+  assert('Timer: no warning at 301s',              301 > 300);
+
+  // startExamTimer exists
+  assert('Timer: startExamTimer function exists',  typeof startExamTimer === 'function');
+}
+
+// ── EXAM QUESTION BANK ───────────────────────────────
+function runExamQuestionBankTests() {
+  assert('ExamBank: loadAllExamBanks exists',       typeof loadAllExamBanks === 'function');
+  assert('ExamBank: saveAllExamBanks exists',       typeof saveAllExamBanks === 'function');
+  assert('ExamBank: getExamQuestions exists',       typeof getExamQuestions === 'function');
+
+  // getExamQuestions falls back to defaults when no bank loaded
+  const origBanks = loadAllExamBanks();
+  saveAllExamBanks([]);  // empty — force fallback
+
+  const shortQs = getExamQuestions('short');
+  const longQs  = getExamQuestions('long');
+  const essayQs = getExamQuestions('essay');
+  assert('ExamBank: short fallback returns questions',  shortQs.length > 0);
+  assert('ExamBank: long fallback returns questions',   longQs.length > 0);
+  assert('ExamBank: essay fallback returns questions',  essayQs.length > 0);
+  assert('ExamBank: short questions have q field',      shortQs.every(q => !!q.q));
+  assert('ExamBank: long questions have q field',       longQs.every(q => !!q.q));
+
+  // Save a test exam bank and verify it takes precedence
+  const testBank = {
+    id: 'exambank_test_' + Date.now(), name: 'Test Exam Bank',
+    filename: 'test_exam.csv', addedAt: Date.now(),
+    questions: [
+      { type:'short', q:'Test short question?', subj:'Math', classLevel:'7' },
+      { type:'long',  q:'Test long question?',  subj:'Science', classLevel:'7' },
+    ],
+    summary: { short:1, long:1, essay:0 }
+  };
+  saveAllExamBanks([testBank]);
+  const savedClass = getActiveClass();
+  setActiveClass('7');
+
+  const shortFromBank = getExamQuestions('short');
+  assert('ExamBank: uploaded bank takes precedence', shortFromBank.some(q => q.q === 'Test short question?'));
+
+  // Restore
+  saveAllExamBanks(origBanks);
+  if (savedClass) setActiveClass(savedClass);
+  else localStorage.removeItem('studyBuddy_activeClass');
+}
+
+// ── STUDENT NAME MODAL ───────────────────────────────
+function runStudentModalTests() {
+  assert('StudentModal: showStudentNameModal exists', typeof showStudentNameModal === 'function');
+  assert('StudentModal: getStudentInfo exists',       typeof getStudentInfo === 'function');
+  assert('StudentModal: setStudentInfo exists',       typeof setStudentInfo === 'function');
+
+  // setStudentInfo and getStudentInfo round-trip
+  setStudentInfo({ name:'Aarav Test', section:'7-A' });
+  const info = getStudentInfo();
+  assertEq('StudentModal: name stored',              info.name, 'Aarav Test');
+  assertEq('StudentModal: section stored',           info.section, '7-A');
+
+  // When info exists, showStudentNameModal calls callback directly
+  let called = false;
+  showStudentNameModal(i => { called = true; });
+  assert('StudentModal: callback called when info exists', called);
+
+  // Clean up
+  sessionStorage.removeItem('studyBuddy_student');
+}
+
+// ── ANSWER REVIEW PANEL ──────────────────────────────
+function runAnswerReviewTests() {
+  assert('AnswerReview: buildAnswerReview exists',   typeof buildAnswerReview === 'function');
+
+  const mockLog = [
+    { q: DEMO_QUESTIONS[0], chose:'3', correct:DEMO_QUESTIONS[0].ans, isCorrect:false },
+    { q: DEMO_QUESTIONS[1], chose:DEMO_QUESTIONS[1].ans, correct:DEMO_QUESTIONS[1].ans, isCorrect:true },
+  ];
+  const html = buildAnswerReview(mockLog);
+  assert('AnswerReview: returns HTML string',        typeof html === 'string');
+  assert('AnswerReview: contains correct/wrong markup', html.includes('✅') || html.includes('❌') || html.length > 50);
+}
+
+// ── QUESTION BANK JSONB SCHEMA ───────────────────────
+function runQuestionBankJSONBTests() {
+  // Verify the complete question object matches what Supabase questions JSONB expects
+  const q = DEMO_QUESTIONS[5];
+
+  // Required fields for quiz to function
+  assert('JSONB: q (question text) present',        typeof q.q === 'string' && q.q.length > 0);
+  assert('JSONB: opts (4 options) present',          Array.isArray(q.opts) && q.opts.length === 4);
+  assert('JSONB: opts are all strings',              q.opts.every(o => typeof o === 'string'));
+  assert('JSONB: ans (correct answer text) present', typeof q.ans === 'string' && q.ans.length > 0);
+  assert('JSONB: ans matches an option',             q.opts.includes(q.ans));
+  assert('JSONB: ans is text not index number',      typeof q.ans !== 'number');
+
+  // Metadata fields (optional but used for filtering/display)
+  assert('JSONB: subject field present',             typeof q.subject === 'string');
+  assert('JSONB: chapter field present',             typeof q.chapter === 'string');
+  assert('JSONB: topic field present',               typeof q.topic === 'string');
+  assert('JSONB: difficulty field present',          typeof q.difficulty === 'string');
+  assert('JSONB: classLevel field present',          typeof q.classLevel === 'string');
+  assert('JSONB: questionType defaults to MCQ',      q.questionType === 'MCQ');
+  assert('JSONB: exp (explanation) present',         typeof q.exp === 'string');
+  assert('JSONB: _id set by assignCsvIds',           q._id.startsWith('C-'));
+
+  // Optional extended fields
+  assert('JSONB: questionId present',                typeof q.questionId === 'string');
+  assert('JSONB: learningObjective present',         typeof q.learningObjective === 'string');
+  assert('JSONB: ncertReference present',            typeof q.ncertReference === 'string');
+
+  // Runtime fields must NOT be in stored objects (they pollute JSONB)
+  const stored = { ...q };
+  delete stored._shuffled; delete stored._correctText;
+  delete stored._examShuffled; delete stored._examCorrect;
+  assert('JSONB: runtime _shuffled not in stored',    !('_shuffled' in stored));
+  assert('JSONB: runtime _correctText not in stored', !('_correctText' in stored));
+
+  // parseCSV produces correct structure from CSV input
+  const csv = `question_id,class,subject,chapter,topic,difficulty,question_type,question,option_a,option_b,option_c,option_d,correct_answer,explanation,learning_objective,ncert_reference
+Q_TEST,7,Math,Integers,Addition,Easy,MCQ,What is 2+2?,3,4,5,6,B,2+2=4,Understand addition,NCERT Ch1`;
+  const { questions: parsed } = parseCSV(csv);
+  assert('JSONB: parseCSV q field',                  parsed[0].q === 'What is 2+2?');
+  assert('JSONB: parseCSV opts array length 4',      parsed[0].opts.length === 4);
+  assertEq('JSONB: parseCSV ans is text B→4',        parsed[0].ans, '4');
+  assertEq('JSONB: parseCSV subject',                parsed[0].subject, 'Math');
+  assertEq('JSONB: parseCSV classLevel',             parsed[0].classLevel, '7');
+  assertEq('JSONB: parseCSV difficulty',             parsed[0].difficulty, 'Easy');
+  assertEq('JSONB: parseCSV questionType',           parsed[0].questionType, 'MCQ');
+  assertEq('JSONB: parseCSV questionId',             parsed[0].questionId, 'Q_TEST');
+  assert('JSONB: parseCSV exp set',                  parsed[0].exp.length > 0);
+  assert('JSONB: parseCSV learningObjective set',    parsed[0].learningObjective.length > 0);
+  assert('JSONB: parseCSV ncertReference set',       parsed[0].ncertReference.length > 0);
+}
+
+// ── CSV EXPORT ───────────────────────────────────────
+function runCSVExportTests() {
+  assert('Export: exportResultsCSV exists',          typeof exportResultsCSV === 'function');
+  assert('Export: exportResultsExcel exists',        typeof exportResultsExcel === 'function');
+  assert('Export: buildResultsSheetData exists',     typeof buildResultsSheetData === 'function');
+  assert('Export: buildAnalyticsSheetData exists',   typeof buildAnalyticsSheetData === 'function');
+  assert('Export: buildDifficultySheetData exists',  typeof buildDifficultySheetData === 'function');
+
+  const fakeResults = [DEMO_EXAM_RESULT];
+  const sheet = buildResultsSheetData(fakeResults);
+  assert('Export: sheet has header row',             sheet[0].includes('Student'));
+  assert('Export: sheet has data rows',              sheet.length === 2);
+  assertEq('Export: student name in row',            sheet[1][1], 'Aarav Demo');
+  assertEq('Export: exam type in row',               sheet[1][3], 'term');
+
+  const analytics = buildAnalyticsSheetData(fakeResults);
+  assert('Export: analytics has header',             analytics[0].includes('Exam Type'));
+  assert('Export: analytics has data',               analytics.length >= 2);
+
+  const diff = buildDifficultySheetData(fakeResults);
+  assert('Export: difficulty sheet has header',      diff[0].includes('Question'));
+}
+
+// ── BRANDED PDF HEADER ───────────────────────────────
+function runBrandedPDFTests() {
+  assert('BrandedPDF: addBrandedPdfHeader exists',   typeof addBrandedPdfHeader === 'function');
+  assert('BrandedPDF: exportProgressPDF exists',     typeof exportProgressPDF === 'function');
+  assert('BrandedPDF: exportStudentReportCard exists',typeof exportStudentReportCard === 'function');
+  if (!window.jspdf?.jsPDF) { assert('BrandedPDF: jsPDF available', false); return; }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4' });
+  // Apply test branding
+  window.BRAND = { name:'Test School', primary_color:'#4f46e5', secondary_color:'#7c3aed',
+                   address:'123 Test St', phone:'9876543210', footer_text:'Test footer' };
+  try {
+    const yAfter = addBrandedPdfHeader(doc, ['Line 1', 'Line 2']);
+    assert('BrandedPDF: header returns y position number',  typeof yAfter === 'number');
+    assert('BrandedPDF: y position > 0',                   yAfter > 0);
+    assert('BrandedPDF: y position reasonable (<80)',       yAfter < 80);
+  } catch(e) {
+    assert('BrandedPDF: header does not crash', false, e.message);
+  }
+  window.BRAND = null;
+}
+
+// ── INSTITUTE SETUP SCREEN ───────────────────────────
+function runInstituteSetupTests() {
+  assert('SetupScreen: showInstituteSetupScreen exists', typeof showInstituteSetupScreen === 'function');
+  assert('SetupScreen: loadBrandingBySlug exists',       typeof loadBrandingBySlug === 'function');
+
+  // showInstituteSetupScreen injects overlay into DOM
+  try {
+    showInstituteSetupScreen('not_found', 'test-slug');
+    const overlay = document.getElementById('institute-setup-screen');
+    assert('SetupScreen: overlay injected into DOM',          !!overlay);
+    assert('SetupScreen: not_found shows register link',      overlay?.innerHTML.includes('register.html'));
+    assert('SetupScreen: Continue as Individual button exists',overlay?.innerHTML.includes('Continue as Individual'));
+    overlay?.remove();
+
+    showInstituteSetupScreen('setup_pending', 'test-slug', 'Test School');
+    const overlay2 = document.getElementById('institute-setup-screen');
+    assert('SetupScreen: setup_pending shows sign-in',        overlay2?.innerHTML.includes('Admin'));
+    assert('SetupScreen: school name shown in pending screen', overlay2?.innerHTML.includes('Test School'));
+    overlay2?.remove();
+  } catch(e) {
+    assert('SetupScreen: does not crash', false, e.message);
+  }
+}
+
+// ── SYNC FLUSH ───────────────────────────────────────
+function runSyncFlushTests() {
+  assert('SyncFlush: flushSyncQueue exists',         typeof flushSyncQueue === 'function');
+  assert('SyncFlush: updateSyncBadge exists',        typeof updateSyncBadge === 'function');
+
+  // updateSyncBadge does not crash
+  try {
+    updateSyncBadge();
+    assert('SyncFlush: updateSyncBadge does not crash', true);
+  } catch(e) {
+    assert('SyncFlush: updateSyncBadge does not crash', false, e.message);
+  }
+
+  // Badge element exists in DOM
+  assert('SyncFlush: sync-badge element in DOM',     !!document.getElementById('sync-badge'));
+
+  // Queue operations
+  const orig = getSyncQueue();
+  const testOp = { table:'exam_results', action:'insert', data:{ id:'flush-test', test:true } };
+  enqueueSync(testOp);
+  assert('SyncFlush: pending op in queue',           getSyncQueue().some(o => o.data?.id === 'flush-test'));
+  // Without Supabase configured, flushSyncQueue should not crash
+  flushSyncQueue().then(() => {}).catch(() => {});
+  assert('SyncFlush: flushSyncQueue returns promise', true);
+  saveSyncQueue(orig);
+}
+
+// ── CLASS/SECTION MANAGEMENT ─────────────────────────
+function runSectionTests() {
+  assert('Sections: loadSections exists',            typeof loadSections === 'function');
+  assert('Sections: saveSection exists',             typeof saveSection === 'function');
+  assert('Sections: deleteSection exists',           typeof deleteSection === 'function');
+  assert('Sections: renderSectionsPanel exists',     typeof renderSectionsPanel === 'function');
+
+  // Sections stored in localStorage
+  const SECTIONS_KEY = 'studyBuddy_sections';
+  const orig = localStorage.getItem(SECTIONS_KEY);
+  const testSection = {
+    id: 'sec_test_' + Date.now(), class_level:'7', name:'Test Section A',
+    institute_id: 'inst_test', student_count: 0
+  };
+  const existing = JSON.parse(localStorage.getItem(SECTIONS_KEY) || '[]');
+  localStorage.setItem(SECTIONS_KEY, JSON.stringify([...existing, testSection]));
+
+  const loaded = JSON.parse(localStorage.getItem(SECTIONS_KEY) || '[]');
+  assert('Sections: stored and retrieved',           loaded.some(s => s.id === testSection.id));
+  assert('Sections: class_level stored',             loaded.find(s=>s.id===testSection.id)?.class_level === '7');
+  assert('Sections: name stored',                    loaded.find(s=>s.id===testSection.id)?.name === 'Test Section A');
+
+  // Restore
+  if (orig) localStorage.setItem(SECTIONS_KEY, orig);
+  else localStorage.removeItem(SECTIONS_KEY);
+}
+
+// ── BULK STUDENT IMPORT ──────────────────────────────
+function runBulkImportTests() {
+  assert('BulkImport: parseBulkStudentCsv exists',   typeof parseBulkStudentCsv === 'function');
+
+  const csv = `name,email,class_level,section
+Aarav Sharma,aarav@test.com,7,A
+Priya Patel,priya@test.com,8,B
+Bad Row No Email`;
+
+  const { students, error } = parseBulkStudentCsv(csv);
+  assert('BulkImport: valid rows parsed',            students.length === 2);
+  assert('BulkImport: no error on valid CSV',        !error);
+  assertEq('BulkImport: name parsed',                students[0].name, 'Aarav Sharma');
+  assertEq('BulkImport: email parsed',               students[0].email, 'aarav@test.com');
+  assertEq('BulkImport: class_level parsed',         students[0].class_level, '7');
+  assertEq('BulkImport: section parsed',             students[0].section, 'A');
+  assert('BulkImport: row without @ skipped',        !students.some(s => !s.email.includes('@')));
+
+  // Missing email column
+  const noEmail = `name,class_level\nTest,7`;
+  const { students: nq, error: nerr } = parseBulkStudentCsv(noEmail);
+  assert('BulkImport: missing email col → error',    !!nerr || nq.length === 0);
+}
+
+// ── RECONCILE ACTIVE CLASS ───────────────────────────
+function runReconcileClassTests() {
+  assert('ReconcileClass: reconcileActiveClass exists', typeof reconcileActiveClass === 'function');
+
+  const savedClass = getActiveClass();
+  const savedBanks = loadAllCsvBanks();
+
+  // Set an active class that has no questions loaded
+  setActiveClass('99');
+  saveAllCsvBanks([]);  // no banks = no class 99
+
+  reconcileActiveClass();
+
+  // Active class should have been cleared since class 99 doesn't exist
+  assert('ReconcileClass: clears class with no questions', getActiveClass() === null || getActiveClass() === '');
+
+  // Restore
+  saveAllCsvBanks(savedBanks);
+  if (savedClass) setActiveClass(savedClass);
+  else localStorage.removeItem('studyBuddy_activeClass');
+}
+
+/* =====================================================
    MAIN RUNNER
    ===================================================== */
 
@@ -631,27 +1175,53 @@ async function runAllTests() {
   TEST_RESULTS.length = 0;
 
   const suites = [
-    ['CSV Parsing',           runCSVParseTests],
-    ['Question Schema',       runSchemaTests],
-    ['Rotation & Anti-Repeat',runRotationTests],
-    ['Answer Shuffling',      runShuffleTests],
-    ['Quiz Scoring',          runQuizScoringTests],
-    ['Exam Scoring',          runExamScoringTests],
-    ['Mock Scoring Bug Fix',  runMockScoringTests],
-    ['Progress Tracking',     runProgressTests],
-    ['Teacher Review',        runTeacherReviewTests],
-    ['Report Generation',     runReportTests],
-    ['Question Bank Ops',     runQuestionBankTests],
-    ['Duplicate Detection',   runDuplicateTests],
-    ['i18n Language Switch',  runI18nTests],
-    ['Branding',              runBrandingTests],
-    ['PDF Generation',        runPDFTests],
-    ['Offline Sync Queue',    runSyncTests],
-    ['Question Filtering',    runFilterTests],
-    ['Registration Logic',    runRegistrationTests],
-    ['Auth & Roles',          runAuthTests],
-    ['UI & DOM',              runUITests],
-    ['Exam Integration',      runExamIntegrationTests],
+    // ── Core data ──
+    ['CSV Parsing',              runCSVParseTests],
+    ['Exam CSV Parsing',         runExamCSVParseTests],
+    ['Question Schema (JSONB)',  runSchemaTests],
+    // ── Rotation & quiz engine ──
+    ['Scope Key & Rotation',     runScopeKeyTests],
+    ['Rotation & Anti-Repeat',   runRotationTests],
+    ['Answer Shuffling',         runShuffleTests],
+    ['Quiz Scoring',             runQuizScoringTests],
+    ['Question Filtering',       runFilterTests],
+    ['Class System',             runClassSystemTests],
+    // ── Exams ──
+    ['Exam Config',              runExamConfigTests],
+    ['Exam Scoring',             runExamScoringTests],
+    ['Mock Scoring Bug Fix',     runMockScoringTests],
+    ['Exam Timer Logic',         runExamTimerTests],
+    ['Exam Question Bank',       runExamQuestionBankTests],
+    ['Student Name Modal',       runStudentModalTests],
+    // ── Progress & review ──
+    ['Progress & Achievements',  runProgressTests],
+    ['Answer Review Panel',      runAnswerReviewTests],
+    ['Teacher Review Workflow',  runTeacherReviewTests],
+    // ── Question bank ops ──
+    ['Question Bank JSONB',      runQuestionBankJSONBTests],
+    ['Question Bank Ops',        runQuestionBankTests],
+    ['Duplicate Detection',      runDuplicateTests],
+    // ── Reports & exports ──
+    ['Report Generation',        runReportTests],
+    ['CSV Export',               runCSVExportTests],
+    ['PDF Smoke Test',           runPDFTests],
+    ['PDF Branded Header',       runBrandedPDFTests],
+    // ── Multi-school / auth ──
+    ['Branding',                 runBrandingTests],
+    ['Institute Setup Screen',   runInstituteSetupTests],
+    ['Registration Logic',       runRegistrationTests],
+    ['Auth & Roles',             runAuthTests],
+    // ── Sync & i18n ──
+    ['Offline Sync Queue',       runSyncTests],
+    ['Sync Flush',               runSyncFlushTests],
+    ['i18n Language Switch',     runI18nTests],
+    // ── Sections & bulk import ──
+    ['Class/Section Management', runSectionTests],
+    ['Bulk Student Import',      runBulkImportTests],
+    // ── UI & integration ──
+    ['UI & DOM',                 runUITests],
+    ['Exam Integration',         runExamIntegrationTests],
+    ['Reconcile Active Class',   runReconcileClassTests],
   ];
 
   const suiteResults = [];

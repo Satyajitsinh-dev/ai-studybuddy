@@ -5322,6 +5322,7 @@ function init() {
   assignDefaultIds();
   if (typeof applyTranslations === 'function') applyTranslations();
   if (typeof initSupabase === 'function') initSupabase();
+  if (typeof renderAdminCards === 'function') renderAdminCards(); // runs immediately — shows test card for ?dev=1
   updateClassUI();
   updateNavScore();
   updateHomeStats();
@@ -5329,7 +5330,6 @@ function init() {
   selectedSubject = subjects[0] || 'Math';
   renderClassDropdown();
   highlightLangBtn();
-  // Show registration landing modal on first ever visit
   showLandingModal();
 }
 
